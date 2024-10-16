@@ -12,7 +12,8 @@ public static class ServiceCollectionExtensions
 	public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
 	{
 		var connectionString = configuration.GetConnectionString("TemplateDb");
-		services.AddDbContext<TemplateDbContext>(options => options.UseSqlServer(connectionString));
+		var version = new MySqlServerVersion(new Version(8, 0, 2));
+		services.AddDbContext<TemplateDbContext>(options => options.UseMySql(connectionString, version));
 
 		//this for identity and jwt when needed
 		services.AddIdentityCore<User>()
