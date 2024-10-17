@@ -12,7 +12,7 @@ using Template.Infrastructure.Persistence;
 namespace Template.Infrastructure.Migrations
 {
     [DbContext(typeof(TemplateDbContext))]
-    [Migration("20241016224804_Initial")]
+    [Migration("20241017101621_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -174,6 +174,28 @@ namespace Template.Infrastructure.Migrations
                     b.ToTable("categories");
                 });
 
+            modelBuilder.Entity("Template.Domain.Entities.SubCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("subcategories");
+                });
+
             modelBuilder.Entity("Template.Domain.Entities.User", b =>
                 {
                     b.Property<string>("Id")
@@ -287,6 +309,20 @@ namespace Template.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Template.Domain.Entities.SubCategory", b =>
+                {
+                    b.HasOne("Template.Domain.Entities.Category", null)
+                        .WithMany("SubCategories")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Template.Domain.Entities.Category", b =>
+                {
+                    b.Navigation("SubCategories");
                 });
 #pragma warning restore 612, 618
         }

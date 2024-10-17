@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Template.Domain.Entities;
 using Template.Infrastructure.Persistence;
+using Template.Infrastructure.Seeders;
 
 namespace Template.Infrastructure.Extensions;
 
@@ -21,5 +22,7 @@ public static class ServiceCollectionExtensions
 			.AddTokenProvider<DataProtectorTokenProvider<User>>("TemplateTokenProvidor")
 			.AddEntityFrameworkStores<TemplateDbContext>()
 			.AddDefaultTokenProviders();
+
+		services.AddScoped<ISeeder, CategoriesSeeder>();
 	}
 }

@@ -2,6 +2,7 @@ using Template.API.Extensions;
 using Template.Application.Extensions;
 using Template.Domain.Entities;
 using Template.Infrastructure.Extensions;
+using Template.Infrastructure.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,8 @@ var app = builder.Build();
 
 var scope = app.Services.CreateScope(); //for seeders
 // example: var govSeeder = scope.ServiceProvider.GetRequiredService<IGovernorateSeeder>();
+var catSeeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
+await catSeeder.Seed();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
