@@ -14,7 +14,10 @@ public static class ServiceCollectionExtensions
 	{
 		var connectionString = configuration.GetConnectionString("TemplateDb");
 		var version = new MySqlServerVersion(new Version(8, 0, 2));
-		services.AddDbContext<TemplateDbContext>(options => options.UseMySql(connectionString, version));
+		services.AddDbContext<TemplateDbContext>(
+			options => options.UseMySql(connectionString, version)
+							  .EnableSensitiveDataLogging()
+			);
 
 		//this for identity and jwt when needed
 		services.AddIdentityCore<User>()

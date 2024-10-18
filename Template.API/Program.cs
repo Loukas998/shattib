@@ -1,3 +1,5 @@
+using Serilog;
+using Serilog.Events;
 using Template.API.Extensions;
 using Template.Application.Extensions;
 using Template.Domain.Entities;
@@ -17,6 +19,14 @@ builder.Services.AddSwaggerGen();
 builder.AddPresentation();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Host.UseSerilog((context, configuration) =>
+{
+	configuration
+		.MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+		.MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Information)
+		.WriteTo.Console(outputTemplate: "[{Timestamp:dd-MM HH:mm:ss} {Level:u3}] |{SourceContext}| {NewLine}{Message:lj}{NewLine}{Exception}");
+});
 
 builder.Services.AddCors(options =>
 {
@@ -40,7 +50,10 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
+app.UseSerilogRequestLogging();
+
 app.UseHttpsRedirection();
+
 app.MapGroup("api/identity").WithTags("Identity").MapIdentityApi<User>();
 
 app.UseCors("AllowAll");
