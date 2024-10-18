@@ -1,10 +1,9 @@
-﻿
-using Template.Domain.Entities;
+﻿using Template.Domain.Entities.Products;
 using Template.Infrastructure.Persistence;
 
 namespace Template.Infrastructure.Seeders
 {
-	internal class CategoriesSeeder(TemplateDbContext dbContext) : ISeeder
+    internal class CategoriesSeeder(TemplateDbContext dbContext) : ISeeder
 	{
 		public async Task Seed()
 		{
