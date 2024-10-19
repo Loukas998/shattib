@@ -1,33 +1,35 @@
-﻿using Template.Domain.Entities.Products;
+﻿using Microsoft.EntityFrameworkCore;
+using Template.Domain.Entities.Products;
 using Template.Domain.Repositories;
+using Template.Infrastructure.Persistence;
 
 namespace Template.Infrastructure.Repositories
 {
-	public class ProductRepository : IProductRepository
+	public class ProductRepository(TemplateDbContext dbContext) : IProductRepository
 	{
-		public Task<int> CreateProductAsync(Product entity)
+		public async Task<int> CreateProductAsync(Product entity)
 		{
-			throw new NotImplementedException();
+			dbContext.products.Add(entity);
+			await dbContext.SaveChangesAsync();
+			return entity.Id;
 		}
 
-		public Task Delete(Product entity)
+		public async Task Delete(Product entity)
 		{
-			throw new NotImplementedException();
+			dbContext.products.Remove(entity);
+			await dbContext.SaveChangesAsync();
 		}
 
-		public Task<IEnumerable<Product>> GetAllAsync()
+		public async Task<IEnumerable<Product>> GetAllAsync()
 		{
-			throw new NotImplementedException();
+			return await dbContext.products.ToListAsync();
 		}
 
-		public Task<Product> GetProductByIdAsync(int id)
+		public async Task<Product> GetProductByIdAsync(int id)
 		{
-			throw new NotImplementedException();
+			return await dbContext.products.FirstOrDefaultAsync(x => x.Id == id);
 		}
 
-		public Task SaveChanges()
-		{
-			throw new NotImplementedException();
-		}
+		public async Task SaveChanges() => await dbContext.SaveChangesAsync();
 	}
 }

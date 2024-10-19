@@ -2,6 +2,8 @@
 {
 	public class ProductDto
 	{
+		public int Id { get; set; }
+		public int SubCategoryId { get; set; }
 		public string Name { get; set; } = default!;
 		public string Description { get; set; } = default!;
 		public string Features { get; set; } = default!;

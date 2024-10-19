@@ -6,7 +6,7 @@ using Template.Domain.Entities.Products;
 
 namespace Template.Infrastructure.Persistence;
 
-internal class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : IdentityDbContext<User>(options)
+public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : IdentityDbContext<User>(options)
 {
 	//internal DbSet<EntityType> table_name {get; set;}
 	internal DbSet<Category> categories { get; set; }

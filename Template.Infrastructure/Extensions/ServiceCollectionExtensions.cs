@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Template.Domain.Entities;
+using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
+using Template.Infrastructure.Repositories;
 using Template.Infrastructure.Seeders;
 
 namespace Template.Infrastructure.Extensions;
@@ -27,5 +29,6 @@ public static class ServiceCollectionExtensions
 			.AddDefaultTokenProviders();
 
 		services.AddScoped<ISeeder, CategoriesSeeder>();
+		services.AddScoped<IProductRepository, ProductRepository>();
 	}
 }

@@ -4,6 +4,7 @@ namespace Template.Application.Products.Commands.CreateProductCommand
 {
 	public class CreateProductCommand : IRequest<int>
 	{
+		public int SubCategoryId { get; set; } = default!;
 		public string Name { get; set; } = default!;
 		public string Description { get; set; } = default!;
 		public string Features { get; set; } = default!;

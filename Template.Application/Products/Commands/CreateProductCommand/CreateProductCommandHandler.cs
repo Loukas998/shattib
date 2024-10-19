@@ -1,12 +1,19 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.Extensions.Logging;
+using Template.Domain.Entities.Products;
+using Template.Domain.Repositories;
 
 namespace Template.Application.Products.Commands.CreateProductCommand
 {
-	public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, int>
+	public class CreateProductCommandHandler(ILogger<CreateProductCommandHandler> logger,
+		IMapper mapper, IProductRepository productRepository) : IRequestHandler<CreateProductCommand, int>
 	{
-		public Task<int> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+		public async Task<int> Handle(CreateProductCommand request, CancellationToken cancellationToken)
 		{
-			throw new NotImplementedException();
+			logger.LogInformation("Creating new product {@Product}", request);
+			var product = mapper.Map<Product>(request);
+			return await productRepository.CreateProductAsync(product);
 		}
 	}
 }

@@ -1,7 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Products.Commands.CreateProductCommand;
+using Template.Application.Products.Commands.DeleteProductCommand;
 using Template.Application.Products.Commands.UpdateProductCommand;
+using Template.Application.Products.Dtos;
+using Template.Application.Products.Queries.GetAllProducts;
+using Template.Application.Products.Queries.GetProduct;
 
 namespace Template.API.Controllers
 {
@@ -10,36 +14,40 @@ namespace Template.API.Controllers
     public class ProductsController(IMediator mediator) : ControllerBase
     {
 		[HttpPost]
-        public Task<ActionResult> CreateProduct(CreateProductCommand command)
+        public async Task<IActionResult> CreateProduct([FromForm] CreateProductCommand command)
         {
-			throw new NotImplementedException();
+			int id = await mediator.Send(command);
+			return CreatedAtAction(nameof(GetProductById), new { id }, null);
+		}
+
+		[HttpGet("{productId}")]
+        public async Task<ActionResult<ProductDto>> GetProductById([FromRoute] int productId)
+        {
+			var product = await mediator.Send(new GetProductByIdQuery(productId));
+			return Ok(product);
 		}
 
 		[HttpGet]
-        [Route("{productId}")]
-        public Task<ActionResult> GetProductById(int productId)
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProducts()
         {
-			throw new NotImplementedException();
-		}
-
-		[HttpGet]
-        public Task<ActionResult> GetAllProducts()
-        {
-			throw new NotImplementedException();
+			var products = await mediator.Send(new GetAllProductQuery());
+			return Ok(products);
 		}
 
 		[HttpPatch]
 		[Route("{productId}")]
-		public Task<ActionResult> UpdateProduct(UpdateProductCommand command, int productId)
+		public async Task<IActionResult> UpdateProduct([FromForm] UpdateProductCommand command,[FromRoute] int productId)
         {
-			throw new NotImplementedException();
+			command.ProductId = productId;
+			await mediator.Send(command);
+			return NoContent();
 		}
 
-		[HttpDelete]
-		[Route("{productId}")]
-		public Task<ActionResult> DeleteProduct(int productId)
+		[HttpDelete("{productId}")]
+		public async Task<IActionResult> DeleteProduct([FromRoute] int productId)
         {
-			throw new NotImplementedException();
+			await mediator.Send(new DeleteProductCommand(productId));
+			return NoContent();
 		}
     }
 }
