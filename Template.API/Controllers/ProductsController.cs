@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Products.Commands.CreateProductCommand;
+using Template.Application.Products.Commands.DeleteImagesCommand.DeleteImagesCommand;
 using Template.Application.Products.Commands.DeleteProductCommand;
 using Template.Application.Products.Commands.UpdateProductCommand;
+using Template.Application.Products.Commands.UpdateProductCommand.UpdateImagesCommand;
 using Template.Application.Products.Dtos;
 using Template.Application.Products.Queries.GetAllProducts;
 using Template.Application.Products.Queries.GetProduct;
@@ -43,11 +45,29 @@ namespace Template.API.Controllers
 			return NoContent();
 		}
 
+		[HttpPatch]
+		[Route("{productId}/images/{imageId}")]
+		public async Task<IActionResult> UpdateProductImage([FromForm] UpdateProductImageCommand command, [FromRoute] int imageId,
+			[FromRoute] int productId)
+		{
+			command.OldImageId = imageId;
+			command.ProductId = productId;
+			await mediator.Send(command);
+			return NoContent();
+		}
+
 		[HttpDelete("{productId}")]
 		public async Task<IActionResult> DeleteProduct([FromRoute] int productId)
         {
 			await mediator.Send(new DeleteProductCommand(productId));
 			return NoContent();
 		}
-    }
+
+		[HttpDelete("Images/{imageId}")]
+		public async Task<IActionResult> DeleteProductImage([FromRoute] int imageId)
+		{
+			await mediator.Send(new DeleteProductImageCommand(imageId));
+			return NoContent();
+		}
+	}
 }

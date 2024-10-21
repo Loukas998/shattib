@@ -6,10 +6,13 @@ namespace Template.Domain.Repositories
 	public interface IProductRepository
 	{
 		public Task<int> CreateProductAsync(Product entity);
-		public Task<Product> GetProductByIdAsync(int id);
+		public Task<Product?> GetProductByIdAsync(int id);
 		public Task<IEnumerable<Product>> GetAllAsync();
 		public Task SaveChanges();
 		public Task Delete(Product entity);
 		public Task StoreProductImagesAsync(List<IFormFile> images, int entityId);
+		public Task StoreProductImageAsync(IFormFile images, int entityId);
+		public Task DeleteProductImageAsync(ProductImages image);
+		public Task<ProductImages?> GetProductImageAsync(int imageId);
 	}
 }
