@@ -13,7 +13,12 @@ namespace Template.Application.Products.Commands.CreateProductCommand
 		{
 			logger.LogInformation("Creating new product {@Product}", request);
 			var product = mapper.Map<Product>(request);
-			return await productRepository.CreateProductAsync(product);
+			int id = await productRepository.CreateProductAsync(product);
+			if(request.Images != null)
+			{
+				await productRepository.StoreProductImagesAsync(request.Images, id);
+			}
+			return id;
 		}
 	}
 }

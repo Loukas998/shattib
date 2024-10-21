@@ -1,4 +1,5 @@
-﻿using Template.Domain.Entities.Products;
+﻿using Microsoft.AspNetCore.Http;
+using Template.Domain.Entities.Products;
 
 namespace Template.Domain.Repositories
 {
@@ -9,5 +10,6 @@ namespace Template.Domain.Repositories
 		public Task<IEnumerable<Product>> GetAllAsync();
 		public Task SaveChanges();
 		public Task Delete(Product entity);
+		public Task StoreProductImagesAsync(List<IFormFile> images, int entityId);
 	}
 }

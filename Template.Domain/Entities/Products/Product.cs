@@ -18,5 +18,7 @@ namespace Template.Domain.Entities.Products
 		public bool RetrivalAndReplacing { get; set; } = default!;
 		public string? Notes { get; set; }
 		public string? Keywords { get; set; }
+
+		public List<ProductImages> Images { get; set; } = new();
 	}
 }

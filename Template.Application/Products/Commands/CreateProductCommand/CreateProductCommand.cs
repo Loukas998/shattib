@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace Template.Application.Products.Commands.CreateProductCommand
 {
@@ -16,5 +17,6 @@ namespace Template.Application.Products.Commands.CreateProductCommand
 		public bool Deaf { get; set; } = default!;
 		public bool RetrivalAndReplacing { get; set; } = default!;
 		public string? Notes { get; set; }
+		public List<IFormFile>? Images { get; set; }
 	}
 }

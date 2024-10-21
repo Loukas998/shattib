@@ -12,17 +12,17 @@ namespace Template.API.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class ProductsController(IMediator mediator) : ControllerBase
-    {
+	{ 
 		[HttpPost]
         public async Task<IActionResult> CreateProduct([FromForm] CreateProductCommand command)
         {
 			int id = await mediator.Send(command);
-			return CreatedAtAction(nameof(GetProductById), new { id }, null);
+			return CreatedAtAction(nameof(GetProductById), new { productId = id }, null);
 		}
 
 		[HttpGet("{productId}")]
-        public async Task<ActionResult<ProductDto>> GetProductById([FromRoute] int productId)
-        {
+		public async Task<ActionResult<ProductDto>> GetProductById([FromRoute] int productId)
+		{
 			var product = await mediator.Send(new GetProductByIdQuery(productId));
 			return Ok(product);
 		}

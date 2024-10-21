@@ -12,6 +12,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 	internal DbSet<Category> categories { get; set; }
 	internal DbSet<SubCategory> subcategories { get; set; }
 	internal DbSet<Product> products { get; set; }
+	internal DbSet<ProductImages> ProductImages { get; set; }
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
@@ -26,5 +27,10 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 			.HasMany(sc => sc.Products)
 			.WithOne()
 			.HasForeignKey(p => p.SubCategoryId);
+
+		modelBuilder.Entity<Product>()
+			.HasMany(p => p.Images)
+			.WithOne()
+			.HasForeignKey(i => i.ProductId);
 	}
 }
