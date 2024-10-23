@@ -54,10 +54,16 @@ app.UseHttpsRedirection();
 
 app.MapGroup("api/identity").WithTags("Identity").MapIdentityApi<User>();
 
+var imagesPath = Path.Combine(builder.Environment.ContentRootPath, "Images");
+if (!Directory.Exists(imagesPath))
+{
+    Directory.CreateDirectory(imagesPath);
+}
+
 app.UseStaticFiles(new StaticFileOptions
 {
-	FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Images")),
-	RequestPath = "/Images"
+    FileProvider = new PhysicalFileProvider(imagesPath),
+    RequestPath = "/Images"
 });
 
 app.UseCors("AllowAll");
