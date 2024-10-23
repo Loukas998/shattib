@@ -20,5 +20,6 @@ namespace Template.Domain.Entities.Products
 		public string? Keywords { get; set; }
 
 		public List<ProductImages> Images { get; set; } = new();
+		public List<Specification> Specifications { get; set; } = new();
 	}
 }

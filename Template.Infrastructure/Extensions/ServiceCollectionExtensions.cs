@@ -29,6 +29,8 @@ public static class ServiceCollectionExtensions
 			.AddDefaultTokenProviders();
 
 		services.AddScoped<ISeeder, CategoriesSeeder>();
+
 		services.AddScoped<IProductRepository, ProductRepository>();
+		services.AddScoped<ISpecificationRepository, SpecificationRepository>();
 	}
 }
