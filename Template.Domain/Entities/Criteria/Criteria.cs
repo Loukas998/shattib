@@ -7,5 +7,5 @@ public class Criteria
 
     public List<CriteriaItem> CriteriaItems { get; set; }
     public List<Comment> Comments { get; set; }
-    public List<Invoice> Invoices { get; set; }
+    public List<CriteriaBills> Invoices { get; set; }
 }

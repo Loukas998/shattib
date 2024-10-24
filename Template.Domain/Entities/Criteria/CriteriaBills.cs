@@ -1,6 +1,6 @@
 namespace Template.Domain.Entities.Criteria;
 
-public class Invoice
+public class CriteriaBills
 {
     public int Id { get; set; }
     public string Image { get; set; } = default!;
