@@ -1,6 +1,5 @@
 using Microsoft.Extensions.FileProviders;
 using Serilog;
-using Serilog.Events;
 using Template.API.Extensions;
 using Template.Application.Extensions;
 using Template.Domain.Entities;
@@ -21,17 +20,14 @@ builder.AddPresentation();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-builder.Host.UseSerilog((context, configuration) =>
-{
-	configuration.ReadFrom.Configuration(context.Configuration);
-});
+builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
 
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy("AllowAll",
-		b => b.AllowAnyHeader()
-			.AllowAnyOrigin()
-			.AllowAnyMethod());
+    options.AddPolicy("AllowAll",
+        b => b.AllowAnyHeader()
+            .AllowAnyOrigin()
+            .AllowAnyMethod());
 });
 
 var app = builder.Build();
@@ -39,13 +35,13 @@ var app = builder.Build();
 var scope = app.Services.CreateScope(); //for seeders
 // example: var govSeeder = scope.ServiceProvider.GetRequiredService<IGovernorateSeeder>();
 var catSeeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
-await catSeeder.Seed();
+// await catSeeder.Seed();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseSerilogRequestLogging();
@@ -54,15 +50,10 @@ app.UseHttpsRedirection();
 
 app.MapGroup("api/identity").WithTags("Identity").MapIdentityApi<User>();
 
-var imagesPath = Path.Combine(builder.Environment.ContentRootPath, "Images");
-if (!Directory.Exists(imagesPath))
-{
-    Directory.CreateDirectory(imagesPath);
-}
 
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(imagesPath),
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Images")),
     RequestPath = "/Images"
 });
 
