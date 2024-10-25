@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Template.Domain.Entities.Criteria;
 using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
@@ -8,7 +9,7 @@ public class CommentRepository(TemplateDbContext dbContext) : ICommentRepository
 {
     public async Task<List<Comment>> GetCommentsAsync()
     {
-        throw new NotImplementedException();
+        return await dbContext.Comments.ToListAsync();
     }
 
     public async Task<int> CreateCommentAsync(Comment comment)

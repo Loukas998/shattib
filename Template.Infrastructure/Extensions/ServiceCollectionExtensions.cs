@@ -33,6 +33,8 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<ISpecificationRepository, SpecificationRepository>();
+
+        services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddTransient<IFileService, FileService>();
     }
 }
