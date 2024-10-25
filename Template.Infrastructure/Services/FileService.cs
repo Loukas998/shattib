@@ -4,8 +4,13 @@ using Template.Domain.Repositories;
 
 namespace Template.Infrastructure.Services;
 
+// Note: This Class Should not be used in any Repository Because It has nothing to do with database operations
 public class FileService(IWebHostEnvironment environment) : IFileService
 {
+    /// <summary>
+    ///     Note::
+    ///     path: The relative path to Images/{path}
+    /// </summary>
     public async Task<string>? SaveFileAsync(IFormFile file, string path, string[] allowedFileExtensions)
     {
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
