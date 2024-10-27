@@ -11,7 +11,7 @@ public class FileService(IWebHostEnvironment environment) : IFileService
     ///     Note::
     ///     path: The relative path to Images/{path}
     /// </summary>
-    public async Task<string>? SaveFileAsync(IFormFile file, string path, string[] allowedFileExtensions)
+    public async Task<string?> SaveFileAsync(IFormFile file, string path, string[] allowedFileExtensions)
     {
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
         var prefixedPath = $"Images/{path}";

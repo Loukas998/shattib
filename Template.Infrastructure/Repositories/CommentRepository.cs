@@ -7,9 +7,9 @@ namespace Template.Infrastructure.Repositories;
 
 public class CommentRepository(TemplateDbContext dbContext) : ICommentRepository
 {
-    public async Task<List<Comment>> GetCommentsAsync()
+    public async Task<List<Comment>> GetCommentsAsync(int criteriaId)
     {
-        return await dbContext.Comments.ToListAsync();
+        return await dbContext.Comments.Where(comment => comment.CriteriaId == criteriaId).ToListAsync();
     }
 
     public async Task<int> CreateCommentAsync(Comment comment)

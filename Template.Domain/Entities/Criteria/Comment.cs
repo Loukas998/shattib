@@ -8,6 +8,5 @@ public class Comment
     public string Message { get; set; } = default!;
     public string? Attachment { get; set; }
 
-
     public Criteria Criteria { get; set; }
 }

@@ -6,5 +6,5 @@ public interface ICommentRepository
 {
     public Task<int> CreateCommentAsync(Comment comment);
 
-    public Task<List<Comment>> GetCommentsAsync();
+    public Task<List<Comment>> GetCommentsAsync(int criteriaId);
 }
