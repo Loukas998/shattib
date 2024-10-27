@@ -2,7 +2,7 @@
 
 namespace Template.Application.Specifications.Commands.CreateCommand
 {
-    public class CreateSpecificationCommand : IRequest
+    public class CreateSpecificationCommand : IRequest<int>
     {
         public string Name { get; set; } = default!;
     }

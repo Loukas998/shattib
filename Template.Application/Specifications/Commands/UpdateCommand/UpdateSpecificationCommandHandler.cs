@@ -6,7 +6,7 @@ using Template.Domain.Repositories;
 namespace Template.Application.Specifications.Commands.UpdateCommand
 {
 	public class UpdateSpecificationCommandHandler(ILogger<UpdateSpecificationCommandHandler> logger,
-		IMapper mapper, ISpecificationRepository specificationRepository) : IRequestHandler<UpdateSpecificationCommand>
+		ISpecificationRepository specificationRepository) : IRequestHandler<UpdateSpecificationCommand>
 	{
 		public async Task Handle(UpdateSpecificationCommand request, CancellationToken cancellationToken)
 		{

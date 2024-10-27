@@ -10,9 +10,10 @@ namespace Template.Domain.Repositories
 		public Task<IEnumerable<Product>> GetAllAsync();
 		public Task SaveChanges();
 		public Task Delete(Product entity);
-		public Task StoreProductImagesAsync(List<IFormFile> images, int entityId);
-		public Task StoreProductImageAsync(IFormFile images, int entityId);
 		public Task DeleteProductImageAsync(ProductImages image);
 		public Task<ProductImages?> GetProductImageAsync(int imageId);
+		public Task StoreImagePath(List<ProductImages> productImages, int productId);
+		public Task StoreProductImagesAsync(List<IFormFile> images, int entityId);
+		public Task StoreProductImageAsync(IFormFile images, int entityId);
 	}
 }

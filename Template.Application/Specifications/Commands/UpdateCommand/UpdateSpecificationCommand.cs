@@ -2,9 +2,9 @@
 
 namespace Template.Application.Specifications.Commands.UpdateCommand
 {
-	public class UpdateSpecificationCommand(int specificationId) : IRequest
+	public class UpdateSpecificationCommand : IRequest
 	{
-		public int SpecificationId { get; } = specificationId;
+		public int SpecificationId { get; set; }
 		public string Name { get; set; } = default!;
 	}
 }

@@ -4,6 +4,6 @@
 	{
 		public int ProductId { get; set; }
 		public int SpecificationId { get; set; }
-		public string Value { get; set; } = default!;
+		public string? Value { get; set; }
 	}
 }

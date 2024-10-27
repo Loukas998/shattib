@@ -14,8 +14,8 @@ public class ProductRepository(TemplateDbContext dbContext, IWebHostEnvironment 
     public async Task<int> CreateProductAsync(Product entity)
     {
         dbContext.Products.Add(entity);
-        await dbContext.SaveChangesAsync();
-        return entity.Id;
+		await dbContext.SaveChangesAsync();
+		return entity.Id;
     }
 
     public async Task StoreProductImagesAsync(List<IFormFile> images, int entityId)
@@ -46,6 +46,16 @@ public class ProductRepository(TemplateDbContext dbContext, IWebHostEnvironment 
             }
         }
     }
+
+	public async Task StoreImagePath(List<ProductImages> productImages, int productId)
+	{
+        foreach(var productImage in productImages)
+        {
+			productImage.ProductId = productId;
+		}
+		dbContext.ProductImages.AddRange(productImages);
+		await dbContext.SaveChangesAsync();
+	}
 
     public async Task StoreProductImageAsync(IFormFile image, int entityId)
     {
@@ -111,8 +121,9 @@ public class ProductRepository(TemplateDbContext dbContext, IWebHostEnvironment 
 
     public async Task<Product?> GetProductByIdAsync(int id)
     {
+        //var productImages = dbContext.ProductImages.Where(pi => pi.ProductId == id);
         return await dbContext.Products
-            .Include(p => p.Images == null ? null : p.Images)
+            .Include(p => p.Images)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
