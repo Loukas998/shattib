@@ -7,15 +7,13 @@ using Template.Domain.Repositories;
 namespace Template.Application.Specifications.Commands.CreateCommand
 {
     public class CreateSpecificationCommandHandler(ILogger<CreateSpecificationCommandHandler> logger,
-        ISpecificationRepository attributeRepository, IMapper mapper) : IRequestHandler<CreateSpecificationCommand>
+        ISpecificationRepository specificationRepository, IMapper mapper) : IRequestHandler<CreateSpecificationCommand, int>
     {
-        public Task Handle(CreateSpecificationCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(CreateSpecificationCommand request, CancellationToken cancellationToken)
         {
             logger.LogInformation("Creating attribute with name: {Name}", request.Name);
             var specification = mapper.Map<Specification>(request);
-            attributeRepository.AddAttribute(specification);
-
-            return Task.CompletedTask;
+			return await specificationRepository.AddAttribute(specification);
         }
     }
 }

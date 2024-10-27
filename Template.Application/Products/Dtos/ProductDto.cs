@@ -17,6 +17,6 @@ namespace Template.Application.Products.Dtos
 		public bool Deaf { get; set; } = default!;
 		public bool RetrivalAndReplacing { get; set; } = default!;
 		public string? Notes { get; set; }
-		public List<ProductImages> ProductImages { get; set; } = [];
+		public List<ProductImages> Images { get; set; } = [];
 	}
 }

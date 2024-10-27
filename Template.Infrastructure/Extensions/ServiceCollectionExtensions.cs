@@ -7,6 +7,7 @@ using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
 using Template.Infrastructure.Repositories;
 using Template.Infrastructure.Seeders;
+using Template.Infrastructure.Services;
 
 namespace Template.Infrastructure.Extensions;
 
@@ -17,8 +18,7 @@ public static class ServiceCollectionExtensions
         var connectionString = configuration.GetConnectionString("TemplateDb");
         var version = new MySqlServerVersion(new Version(8, 0, 2));
         services.AddDbContext<TemplateDbContext>(
-            options => options.UseMySql(connectionString, version)
-                .EnableSensitiveDataLogging()
+            options => options.UseMySql(connectionString, version).EnableSensitiveDataLogging()
         );
 
         //this for identity and jwt when needed
@@ -34,6 +34,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISpecificationRepository, SpecificationRepository>();
 
         services.AddScoped<ICommentRepository, CommentRepository>();
-        // services.AddTransient<IFileService, FileService>();
+        services.AddScoped<IFileService, FileService>();
     }
 }

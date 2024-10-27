@@ -11,6 +11,7 @@ namespace Template.Application.Specifications.Dtos
 		{
 			CreateMap<CreateSpecificationCommand, Specification>();
 			CreateMap<UpdateSpecificationCommand, Specification>();
+			CreateMap<SpecificationDto, Specification>();
 		}
 	}
 }
