@@ -7,7 +7,6 @@ using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
 using Template.Infrastructure.Repositories;
 using Template.Infrastructure.Seeders;
-using Template.Infrastructure.Services;
 
 namespace Template.Infrastructure.Extensions;
 
@@ -35,6 +34,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISpecificationRepository, SpecificationRepository>();
 
         services.AddScoped<ICommentRepository, CommentRepository>();
-        services.AddTransient<IFileService, FileService>();
+        // services.AddTransient<IFileService, FileService>();
     }
 }

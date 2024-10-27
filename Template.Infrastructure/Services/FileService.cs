@@ -1,17 +1,17 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Template.Domain.Repositories;
 
 namespace Template.Infrastructure.Services;
 
 // Note: This Class Should not be used in any Repository Because It has nothing to do with database operations
-public class FileService(IWebHostEnvironment environment) : IFileService
+public class FileService
 {
     /// <summary>
     ///     Note::
     ///     path: The relative path to Images/{path}
     /// </summary>
-    public async Task<string?> SaveFileAsync(IFormFile file, string path, string[] allowedFileExtensions)
+    public static string? SaveFileAsync(IFormFile file, IWebHostEnvironment environment, string path,
+        string[] allowedFileExtensions)
     {
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
         var prefixedPath = $"Images/{path}";
@@ -24,15 +24,15 @@ public class FileService(IWebHostEnvironment environment) : IFileService
         var fileName = $"{Guid.NewGuid()}-{Path.GetFileName(file.FileName)}";
         var filePath = Path.Combine(environment.ContentRootPath, prefixedPath, fileName);
 
-        await using (var stream = new FileStream(filePath, FileMode.Create))
+        using (var stream = new FileStream(filePath, FileMode.Create))
         {
-            await file.CopyToAsync(stream);
+            file.CopyToAsync(stream);
         }
 
         return Path.Combine(prefixedPath, fileName);
     }
 
-    public void DeleteFile(string path)
+    public static void DeleteFile(string path)
     {
         if (string.IsNullOrEmpty(path)) throw new ArgumentNullException(nameof(path));
 
