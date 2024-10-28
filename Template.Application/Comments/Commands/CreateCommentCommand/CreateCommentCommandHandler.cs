@@ -15,15 +15,7 @@ public class CreateCommentCommandHandler(
     public async Task<int> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating Comment {@Comment}", request);
-
         var comment = mapper.Map<Comment>(request);
-        if (request.AttachmentFile != null)
-        {
-            var filePath =
-                await fileService.SaveFileAsync(request.AttachmentFile, "Comments", [".jpg", ".jpeg", ".png"]);
-            comment.Attachment = filePath;
-        }
-
         var id = await commentRepository.CreateCommentAsync(comment);
         return id;
     }

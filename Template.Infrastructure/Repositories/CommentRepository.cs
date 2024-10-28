@@ -18,4 +18,9 @@ public class CommentRepository(TemplateDbContext dbContext) : ICommentRepository
         await dbContext.SaveChangesAsync();
         return comment.Id;
     }
+
+    public async Task<Comment> GetCommentByIdAsync(int commentId)
+    {
+        return await dbContext.Comments.FindAsync(commentId);
+    }
 }
