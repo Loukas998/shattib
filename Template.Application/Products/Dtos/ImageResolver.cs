@@ -25,8 +25,6 @@ namespace Template.Application.Products.Dtos
 					});
 				}
 			}
-			
-
 			return productImages;
 		}
 	}

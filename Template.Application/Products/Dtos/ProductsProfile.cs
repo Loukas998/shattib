@@ -14,7 +14,7 @@ namespace Template.Application.Products.Dtos
 
 			CreateMap<CreateProductCommand, Product>()
 				.ForMember(dest => dest.Images, opt => opt.MapFrom<ImageResolver>())
-				.ForMember(dest => dest.Specifications, opt => opt.MapFrom<SpecificationsResolver>());
+				.ForMember(dest => dest.Specifications, opt => opt.Ignore());
 
 			CreateMap<UpdateProductCommand, Product>()
 				.ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null));

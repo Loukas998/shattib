@@ -14,7 +14,7 @@ public class ProductRepository(TemplateDbContext dbContext, IWebHostEnvironment 
     public async Task<int> CreateProductAsync(Product entity)
     {
         dbContext.Products.Add(entity);
-		await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
 		return entity.Id;
     }
 
@@ -125,6 +125,7 @@ public class ProductRepository(TemplateDbContext dbContext, IWebHostEnvironment 
         return await dbContext.Products
             .Include(p => p.Images)
             .FirstOrDefaultAsync(x => x.Id == id);
+
     }
 
     public async Task SaveChanges()
