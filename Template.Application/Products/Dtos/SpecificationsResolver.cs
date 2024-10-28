@@ -9,9 +9,9 @@ namespace Template.Application.Products.Dtos
 	{
 		public List<Specification> Resolve(CreateProductCommand source, Product destination, List<Specification> destMember, ResolutionContext context)
 		{
-			if(source.Specifications != null)
+			List<Specification> specifications = [];
+			if (source.Specifications != null)
 			{
-				List<Specification> specifications = [];
 				foreach (var specification in source.Specifications)
 				{
 					specifications.Add(new Specification { Name = specification.Name });
@@ -19,7 +19,7 @@ namespace Template.Application.Products.Dtos
 
 				return specifications;
 			}
-			return null;
+			return specifications;
 		}
 	}
 }

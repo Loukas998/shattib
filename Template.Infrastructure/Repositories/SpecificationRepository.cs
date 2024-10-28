@@ -14,9 +14,9 @@ public class SpecificationRepository(TemplateDbContext dbContext) : ISpecificati
         return entity.Id;
     }
 
-	public async Task AddProductAttribute(List<ProductSpecification> entities)
+	public async Task AddProductAttribute(ProductSpecification entity)
 	{
-		dbContext.Productspecifications.AddRange(entities);
+		dbContext.Productspecifications.Add(entity);
         await dbContext.SaveChangesAsync();
 	}
 
@@ -37,4 +37,16 @@ public class SpecificationRepository(TemplateDbContext dbContext) : ISpecificati
         specification!.Name = newName;
         await dbContext.SaveChangesAsync();
     }
+
+    public async Task<Specification> GetAttributeById(int id)
+    {
+		var specification = await dbContext.Specifications.FirstOrDefaultAsync(x => x.Id == id);
+        return specification;
+	}
+
+	public async Task<Specification> GetAttributeByName(string name)
+	{
+		var specification = await dbContext.Specifications.FirstOrDefaultAsync(x => x.Name == name);
+		return specification;
+	}
 }

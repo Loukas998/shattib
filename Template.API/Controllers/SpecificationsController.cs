@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Template.Application.Specifications.Commands.CreateCommand;
 using Template.Application.Specifications.Commands.UpdateCommand;
 using Template.Application.Specifications.Queries.GetAllSpecifications;
+using Template.Application.Specifications.Queries.GetSpecificationById;
 using Template.Domain.Entities.Products;
 
 namespace Template.API.Controllers
@@ -32,6 +33,13 @@ namespace Template.API.Controllers
 		public async Task<ActionResult<IEnumerable<Specification>>> GetAllSpecifications()
 		{
 			return Ok(await mediator.Send(new GetAllSpecificationsQuery()));
+		}
+
+		[HttpGet]
+		[Route("{specificationId}")]
+		public async Task<ActionResult<Specification>> GetAllSpecifications([FromRoute]int specificationId)
+		{
+			return Ok(await mediator.Send(new GetSpecificationByIdQuery(specificationId)));
 		}
 	}
 }

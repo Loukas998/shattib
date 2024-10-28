@@ -15,5 +15,6 @@ namespace Template.Domain.Repositories
 		public Task StoreImagePath(List<ProductImages> productImages, int productId);
 		public Task StoreProductImagesAsync(List<IFormFile> images, int entityId);
 		public Task StoreProductImageAsync(IFormFile images, int entityId);
+		//don't change anything in the last 3... you will get an error.. leave it to me
 	}
 }

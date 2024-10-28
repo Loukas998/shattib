@@ -20,8 +20,6 @@ public class ImageResolver(IFileService fileService)
                 {
                     ImagePath = path
                 });
-
-
         return productImages;
     }
 }

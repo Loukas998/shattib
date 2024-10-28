@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Template.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Template.Infrastructure.Persistence;
 namespace Template.Infrastructure.Migrations
 {
     [DbContext(typeof(TemplateDbContext))]
-    partial class TemplateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241027171601_FixedManyToManyProductSpecification")]
+    partial class FixedManyToManyProductSpecification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,7 +183,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("CriteriaId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Criteria.Criteria", b =>
@@ -197,7 +200,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Criterias", (string)null);
+                    b.ToTable("Criterias");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Criteria.CriteriaBills", b =>
@@ -222,7 +225,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("CriteriaId");
 
-                    b.ToTable("Invoices", (string)null);
+                    b.ToTable("Invoices");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Criteria.CriteriaImages", b =>
@@ -244,7 +247,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("CriteriaCategoryId");
 
-                    b.ToTable("CriteriaImages", (string)null);
+                    b.ToTable("CriteriaImages");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Criteria.CriteriaItem", b =>
@@ -281,7 +284,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("CriteriaId");
 
-                    b.ToTable("CriteriaItems", (string)null);
+                    b.ToTable("CriteriaItems");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.Category", b =>
@@ -298,7 +301,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.Product", b =>
@@ -359,7 +362,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("SubCategoryId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.ProductImages", b =>
@@ -381,7 +384,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductImages", (string)null);
+                    b.ToTable("ProductImages");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.ProductSpecification", b =>
@@ -399,7 +402,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("SpecificationId");
 
-                    b.ToTable("Productspecifications", (string)null);
+                    b.ToTable("Productspecifications");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.Specification", b =>
@@ -414,14 +417,9 @@ namespace Template.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("SpecificationId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("SpecificationId");
-
-                    b.ToTable("Specifications", (string)null);
+                    b.ToTable("Specifications");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.SubCategory", b =>
@@ -443,7 +441,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Subcategories", (string)null);
+                    b.ToTable("Subcategories");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.User", b =>
@@ -634,23 +632,16 @@ namespace Template.Infrastructure.Migrations
             modelBuilder.Entity("Template.Domain.Entities.Products.ProductSpecification", b =>
                 {
                     b.HasOne("Template.Domain.Entities.Products.Product", null)
-                        .WithMany("ProductSpecifications")
+                        .WithMany("ProductSpecification")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Template.Domain.Entities.Products.Specification", null)
-                        .WithMany("ProductSpecifications")
+                        .WithMany("ProductSpecification")
                         .HasForeignKey("SpecificationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.Products.Specification", b =>
-                {
-                    b.HasOne("Template.Domain.Entities.Products.Specification", null)
-                        .WithMany("Specifications")
-                        .HasForeignKey("SpecificationId");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.SubCategory", b =>
@@ -687,14 +678,12 @@ namespace Template.Infrastructure.Migrations
                 {
                     b.Navigation("Images");
 
-                    b.Navigation("ProductSpecifications");
+                    b.Navigation("ProductSpecification");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.Specification", b =>
                 {
-                    b.Navigation("ProductSpecifications");
-
-                    b.Navigation("Specifications");
+                    b.Navigation("ProductSpecification");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.SubCategory", b =>

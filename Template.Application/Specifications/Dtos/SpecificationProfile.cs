@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Template.Application.Products.Dtos;
 using Template.Application.Specifications.Commands.CreateCommand;
 using Template.Application.Specifications.Commands.UpdateCommand;
 using Template.Domain.Entities.Products;

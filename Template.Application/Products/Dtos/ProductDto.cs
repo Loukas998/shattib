@@ -18,5 +18,6 @@ namespace Template.Application.Products.Dtos
 		public bool RetrivalAndReplacing { get; set; } = default!;
 		public string? Notes { get; set; }
 		public List<ProductImages> Images { get; set; } = [];
+		public List<ProductSpecification> Specifications { get; set; } = [];
 	}
 }
