@@ -11,7 +11,7 @@ public class FileService(IWebHostEnvironment environment) : IFileService
     ///     Note::
     ///     path: The relative path to Images/{path}
     /// </summary>
-    public List<string>? SaveFiles(List<IFormFile> files, string path, string[] allowedFileExtensions)
+    public List<string> SaveFiles(List<IFormFile> files, string path, string[] allowedFileExtensions)
     {
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
         //var prefixedPath = $"Images/{path}";
@@ -42,40 +42,28 @@ public class FileService(IWebHostEnvironment environment) : IFileService
         return filesPaths;
     }
 
-    public string? SaveFile(IFormFile file, string path, string[] allowedFileExtensions)
+    public string SaveFile(IFormFile file, string path, string[] allowedFileExtensions)
     {
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-        var prefixedPath = $"Images/{path}";
+        //var prefixedPath = $"Images/{path}";
+
         if (file == null) throw new ArgumentNullException(nameof(file));
         var extension = Path.GetExtension(file.FileName);
+
         if (!allowedFileExtensions.Contains(extension))
             throw new ArgumentException($"Only {string.Join(",", allowedFileExtensions)} are allowed.");
+
         var fileName = $"{Guid.NewGuid()}-{Path.GetFileName(file.FileName)}";
-        var filePath = Path.Combine(environment.ContentRootPath, prefixedPath, fileName);
+        var filePath = Path.Combine(environment.ContentRootPath, path, fileName);
+
         using (var stream = new FileStream(filePath, FileMode.Create))
         {
             file.CopyToAsync(stream);
         }
 
-        return Path.Combine(prefixedPath, fileName);
-    }
+        var finalfilePaths = Path.Combine(path, fileName);
 
-    public async Task<string>? SaveFileAsync(IFormFile file, string path, string[] allowedFileExtensions)
-    {
-        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-        var prefixedPath = $"Images/{path}";
-        if (file == null) throw new ArgumentNullException(nameof(file));
-        var extension = Path.GetExtension(file.FileName);
-        if (!allowedFileExtensions.Contains(extension))
-            throw new ArgumentException($"Only {string.Join(",", allowedFileExtensions)} are allowed.");
-        var fileName = $"{Guid.NewGuid()}-{Path.GetFileName(file.FileName)}";
-        var filePath = Path.Combine(environment.ContentRootPath, prefixedPath, fileName);
-        await using (var stream = new FileStream(filePath, FileMode.Create))
-        {
-            await file.CopyToAsync(stream);
-        }
-
-        return Path.Combine(prefixedPath, fileName);
+        return finalfilePaths;
     }
 
     public void DeleteFile(string path)

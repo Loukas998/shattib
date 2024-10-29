@@ -1,86 +1,38 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Template.Application.Products.Dtos;
 using Template.Domain.Entities.Products;
 using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
 
 namespace Template.Infrastructure.Repositories;
 
-public class ProductRepository(TemplateDbContext dbContext, IWebHostEnvironment webHostEnvironment) : IProductRepository
+public class ProductRepository(
+    TemplateDbContext dbContext,
+    IWebHostEnvironment webHostEnvironment,
+    IFileService fileService) : IProductRepository
 {
-    private readonly List<string> allowedExtension = [".jpg", ".jpeg", ".png"];
-
+    //private readonly List<string> allowedExtension = [".jpg", ".jpeg", ".png"];
     public async Task<int> CreateProductAsync(Product entity)
     {
         dbContext.Products.Add(entity);
         await dbContext.SaveChangesAsync();
-		return entity.Id;
+        return entity.Id;
     }
-
-    public async Task StoreProductImagesAsync(List<IFormFile> images, int entityId)
-    {
-        foreach (var image in images)
-        {
-            var extension = Path.GetExtension(image.FileName);
-            if (allowedExtension.Contains(extension))
-            {
-                var fileName = $"{Guid.NewGuid()}-{Path.GetFileName(image.FileName)}";
-                var filePath = Path.Combine(webHostEnvironment.ContentRootPath, "Images/Products", fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await image.CopyToAsync(stream);
-                }
-
-                var fullImagePath = Path.Combine("Images/Products", fileName);
-
-                var productImage = new ProductImages
-                {
-                    ProductId = entityId,
-                    ImagePath = fullImagePath
-                };
-
-                dbContext.ProductImages.Add(productImage);
-                await dbContext.SaveChangesAsync();
-            }
-        }
-    }
-
-	public async Task StoreImagePath(List<ProductImages> productImages, int productId)
-	{
-        foreach(var productImage in productImages)
-        {
-			productImage.ProductId = productId;
-		}
-		dbContext.ProductImages.AddRange(productImages);
-		await dbContext.SaveChangesAsync();
-	}
 
     public async Task StoreProductImageAsync(IFormFile image, int entityId)
     {
-        var extension = Path.GetExtension(image.FileName);
-        if (allowedExtension.Contains(extension))
+        var fullImagePath = fileService.SaveFile(image, "Images/Products", [".jpg", ".jpeg", ".png"]);
+
+        var productImage = new ProductImages
         {
-            var fileName = $"{Guid.NewGuid()}-{Path.GetFileName(image.FileName)}";
-            var filePath = Path.Combine(webHostEnvironment.ContentRootPath, "Images/Products", fileName);
+            ProductId = entityId,
+            ImagePath = fullImagePath
+        };
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await image.CopyToAsync(stream);
-            }
-
-            var fullImagePath = Path.Combine("Images/Products", fileName);
-
-            var productImage = new ProductImages
-            {
-                ProductId = entityId,
-                ImagePath = fullImagePath
-            };
-
-            dbContext.ProductImages.Add(productImage);
-            await dbContext.SaveChangesAsync();
-        }
+        dbContext.ProductImages.Add(productImage);
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task DeleteProductImageAsync(ProductImages image)
@@ -121,11 +73,26 @@ public class ProductRepository(TemplateDbContext dbContext, IWebHostEnvironment 
 
     public async Task<Product?> GetProductByIdAsync(int id)
     {
-        //var productImages = dbContext.ProductImages.Where(pi => pi.ProductId == id);
         return await dbContext.Products
+            .Include(p => p.ProductSpecifications)
             .Include(p => p.Images)
             .FirstOrDefaultAsync(x => x.Id == id);
+    }
 
+    public async Task<List<ProductSpecificationDto>>? GetProductSpecificationDtos(int id)
+    {
+        var prodSpec = from ps in dbContext.Productspecifications
+            join s in dbContext.Specifications
+                on ps.SpecificationId equals s.Id
+            join p in dbContext.Products
+                on ps.ProductId equals id
+            where p.Id == id
+            select new ProductSpecificationDto
+            {
+                Name = s.Name,
+                Value = ps.Value
+            };
+        return await prodSpec.ToListAsync();
     }
 
     public async Task SaveChanges()
