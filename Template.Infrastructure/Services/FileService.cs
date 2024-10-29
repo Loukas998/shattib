@@ -11,7 +11,7 @@ public class FileService(IWebHostEnvironment environment) : IFileService
     ///     Note::
     ///     path: The relative path to Images/{path}
     /// </summary>
-    public List<string>? SaveFileAsync(List<IFormFile> files, string path, string[] allowedFileExtensions)
+    public List<string>? SaveFilesAsync(List<IFormFile> files, string path, string[] allowedFileExtensions)
     {
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
         //var prefixedPath = $"Images/{path}";
@@ -41,7 +41,30 @@ public class FileService(IWebHostEnvironment environment) : IFileService
 
 	}
 
-    public void DeleteFile(string path)
+	public string SaveFileAsync(IFormFile file, string path, string[] allowedFileExtensions)
+	{
+		if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+		//var prefixedPath = $"Images/{path}";
+
+		if (file == null) throw new ArgumentNullException(nameof(file));
+		var extension = Path.GetExtension(file.FileName);
+
+		if (!allowedFileExtensions.Contains(extension))
+		throw new ArgumentException($"Only {string.Join(",", allowedFileExtensions)} are allowed.");
+
+		string fileName = $"{Guid.NewGuid()}-{Path.GetFileName(file.FileName)}";
+		string filePath = Path.Combine(environment.ContentRootPath, path, fileName);
+
+		using (var stream = new FileStream(filePath, FileMode.Create))
+		{
+			file.CopyToAsync(stream);
+		}
+		string finalfilePaths = Path.Combine(path, fileName);
+		
+		return finalfilePaths;
+	}
+
+	public void DeleteFile(string path)
     {
         if (string.IsNullOrEmpty(path)) throw new ArgumentNullException(nameof(path));
 

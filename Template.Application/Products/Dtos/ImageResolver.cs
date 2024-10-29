@@ -14,7 +14,7 @@ namespace Template.Application.Products.Dtos
 		{
 			List<ProductImages> productImages = [];
 
-			List<string> paths = fileService.SaveFileAsync(source.Images, "Images/Products", [".jpg", ".png"]);
+			List<string>? paths = fileService.SaveFilesAsync(source.Images, "Images/Products", [".jpg", ".png"]);
 			if(paths != null)
 			{
 				foreach (var path in paths)

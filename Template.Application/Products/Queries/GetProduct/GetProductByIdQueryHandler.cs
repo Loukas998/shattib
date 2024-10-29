@@ -18,8 +18,14 @@ namespace Template.Application.Products.Queries.GetProduct
 			{
 				throw new NotImplementedException();
 			}
-			var result = mapper.Map<ProductDto>(product);
-			return result;
+			var productResult = mapper.Map<ProductDto>(product);
+			var productSpecsDtos = await productRepository.GetProductSpecificationDtos(request.ProductId);
+			if(productSpecsDtos != null)
+			{
+				productResult.ProductSpecifications = productSpecsDtos;
+			}
+			
+			return productResult;
 		}
 	}
 }
