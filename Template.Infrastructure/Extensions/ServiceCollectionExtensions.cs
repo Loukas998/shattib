@@ -24,14 +24,16 @@ public static class ServiceCollectionExtensions
         //this for identity and jwt when needed
         services.AddIdentityCore<User>()
             .AddRoles<IdentityRole>()
-            .AddTokenProvider<DataProtectorTokenProvider<User>>("TemplateTokenProvidor")
+            .AddTokenProvider<DataProtectorTokenProvider<User>>("ShattibTokenProvidor")
             .AddEntityFrameworkStores<TemplateDbContext>()
             .AddDefaultTokenProviders();
 
         services.AddScoped<ISeeder, CategoriesSeeder>();
+        services.AddScoped<ISeeder, RolesSeeder>();
 
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<ISpecificationRepository, SpecificationRepository>();
+        services.AddScoped<IAccountRepository, AccountRepository>();
 
         services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddScoped<IFileService, FileService>();

@@ -4,7 +4,7 @@ namespace Template.Domain.Repositories;
 
 public interface IFileService
 {
-    List<string>? SaveFilesAsync(List<IFormFile> file, string path, string[] allowedFileExtensions);
-	string SaveFileAsync(IFormFile file, string path, string[] allowedFileExtensions);
+    List<string>? SaveFiles(List<IFormFile> file, string path, string[] allowedFileExtensions);
+	string SaveFile(IFormFile file, string path, string[] allowedFileExtensions);
 	void DeleteFile(string fileNameWithExtension);
 }

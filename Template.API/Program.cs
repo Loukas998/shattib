@@ -34,8 +34,9 @@ var app = builder.Build();
 
 var scope = app.Services.CreateScope(); //for seeders
 // example: var govSeeder = scope.ServiceProvider.GetRequiredService<IGovernorateSeeder>();
-var catSeeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
-await catSeeder.Seed();
+var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
+await seeder.Seed();
+await seeder.Seed();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -48,7 +49,7 @@ app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 
-app.MapGroup("api/identity").WithTags("Identity").MapIdentityApi<User>();
+//app.MapGroup("api/identity").WithTags("Identity").MapIdentityApi<User>();
 
 
 app.UseStaticFiles(new StaticFileOptions
