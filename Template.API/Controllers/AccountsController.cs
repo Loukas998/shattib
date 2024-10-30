@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Users;
 using Template.Application.Users.Commands.Login;
+using Template.Application.Users.Commands.Logout;
 using Template.Application.Users.Commands.RefreshToken;
 using Template.Application.Users.Commands.Register;
 using Template.Domain.Entities.AuthClasses;
@@ -56,6 +57,14 @@ namespace Template.API.Controllers
 				return Unauthorized();
 			}
 			return Ok(response);
+		}
+
+		[HttpDelete]
+		[Route("Logout")]
+		public async Task<IActionResult> Logout()
+		{
+			await mediator.Send(new LogoutUserCommand());
+			return NoContent();
 		}
 	}
 }
