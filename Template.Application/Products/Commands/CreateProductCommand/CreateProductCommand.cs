@@ -16,8 +16,8 @@ namespace Template.Application.Products.Commands.CreateProductCommand
 		public string Meaurements { get; set; } = default!;
 		public string ManufacturingCountry { get; set; } = default!;
 		public string Color { get; set; } = default!;
-		public bool Deaf { get; set; } = default!;
-		public bool RetrivalAndReplacing { get; set; } = default!;
+		public string Deaf { get; set; } = default!;
+		public string RetrivalAndReplacing { get; set; } = default!;
 		public string? Notes { get; set; }
 
 		public List<SpecificationDto>? Specifications { get; set; }

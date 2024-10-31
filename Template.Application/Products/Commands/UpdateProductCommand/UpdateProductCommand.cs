@@ -16,8 +16,8 @@ namespace Template.Application.Products.Commands.UpdateProductCommand
 		public string? Meaurements { get; set; }
 		public string? ManufacturingCountry { get; set; }
 		public string? Color { get; set; }
-		public bool? Deaf { get; set; }
-		public bool? RetrivalAndReplacing { get; set; }
+		public string? Deaf { get; set; }
+		public string? RetrivalAndReplacing { get; set; }
 		public string? Notes { get; set; }
 	}
 }

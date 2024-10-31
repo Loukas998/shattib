@@ -66,12 +66,9 @@ public class ProductRepository(
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Product>> GetAllAsync()
-    {
-        return await dbContext.Products.ToListAsync();
-    }
+    public async Task<IEnumerable<Product>> GetAllAsync() => await dbContext.Products.ToListAsync();
 
-    public async Task<Product?> GetProductByIdAsync(int id)
+	public async Task<Product?> GetProductByIdAsync(int id)
     {
         return await dbContext.Products
             .Include(p => p.ProductSpecifications)

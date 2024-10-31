@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Template.Domain.Entities;
 using Template.Domain.Entities.Criteria;
+using Template.Domain.Entities.Orders;
 using Template.Domain.Entities.Products;
 
 namespace Template.Infrastructure.Persistence;
@@ -22,7 +23,8 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
     internal DbSet<Comment> Comments { get; set; }
     internal DbSet<CriteriaBills> Invoices { get; set; }
 
-
+    internal DbSet<Order> Orders { get; set; }
+    internal DbSet<OrderItem> OrderItems { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -82,5 +84,17 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
             .HasOne(i => i.Criteria)
             .WithMany(c => c.Invoices)
             .HasForeignKey(i => i.CriteriaId);
+
+		// Products <-> Orders (Many-to-Many)
+		modelBuilder.Entity<Product>()
+            .HasMany(p => p.Orders)
+            .WithMany(o => o.Products)
+            .UsingEntity<OrderItem>();
+
+        // User -> Orders (One-to-Many)
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Orders)
+            .WithOne()
+            .HasForeignKey(o => o.UserId);
     }
 }
