@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
+using Template.Application.Users;
 
 
 namespace Template.Application.Extensions;
@@ -17,5 +18,7 @@ public static class ServiceCollectionExtensions
 				.AddFluentValidationAutoValidation();
 
 		services.AddAutoMapper(applicationAssembly);
+
+		services.AddScoped<IUserContext, UserContext>();
 	}
 }

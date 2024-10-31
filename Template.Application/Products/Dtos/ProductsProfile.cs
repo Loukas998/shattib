@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Routing.Constraints;
 using Template.Application.Products.Commands.CreateProductCommand;
 using Template.Application.Products.Commands.UpdateProductCommand;
 using Template.Domain.Entities.Products;
