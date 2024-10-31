@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.MSIdentity.Shared;
 using Template.Application.Products.Commands.CreateProductCommand;
 using Template.Application.Products.Commands.DeleteImagesCommand.DeleteImagesCommand;
 using Template.Application.Products.Commands.DeleteProductCommand;
@@ -8,6 +9,7 @@ using Template.Application.Products.Commands.UpdateProductCommand.UpdateImagesCo
 using Template.Application.Products.Dtos;
 using Template.Application.Products.Queries.GetAllProducts;
 using Template.Application.Products.Queries.GetProduct;
+using Template.Application.Products.Queries.GetProductsForHomePage;
 
 namespace Template.API.Controllers;
 
@@ -70,4 +72,13 @@ public class ProductsController(IMediator mediator) : ControllerBase
         await mediator.Send(new DeleteProductImageCommand(imageId));
         return NoContent();
     }
+
+    [HttpGet]
+    [Route("GetProductsForHomePage")]
+    public async Task<ActionResult<IEnumerable<HomePageProductDto>>> GetProductsForHomePage()
+    {
+        var products = await mediator.Send(new GetProductsForHomePageQuery());
+        return Ok(new JsonResponse("GetProductsForHomePage", "200", products));
+		//return Ok(products);
+	}
 }

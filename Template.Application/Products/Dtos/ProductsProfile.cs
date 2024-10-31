@@ -19,6 +19,8 @@ namespace Template.Application.Products.Dtos
 			CreateMap<UpdateProductCommand, Product>()
 				.ForAllMembers(opt => 
 					opt.Condition((src, dst, srcMember) => srcMember != null));
+
+			CreateMap<Product, HomePageProductDto>();
 		}
 	}
 }
