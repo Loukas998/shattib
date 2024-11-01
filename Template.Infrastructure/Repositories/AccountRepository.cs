@@ -92,7 +92,7 @@ namespace Template.Infrastructure.Repositories
 
 			var claims = new List<Claim>
 			{
-				new Claim(JwtRegisteredClaimNames.Sub, _user.UserName!),
+				new Claim(JwtRegisteredClaimNames.Sub, _user.Id!),
 				new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
 				new Claim(JwtRegisteredClaimNames.Email, _user.Email!)
 			}.Union(roles);

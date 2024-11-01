@@ -3,7 +3,7 @@ using Template.Infrastructure.Persistence;
 
 namespace Template.Infrastructure.Seeders;
 
-internal class CategoriesSeeder(TemplateDbContext dbContext) : ISeeder
+internal class CategoriesSeeder(TemplateDbContext dbContext) : ICategoriesSeeder
 {
     public async Task Seed()
     {

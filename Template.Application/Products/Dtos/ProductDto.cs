@@ -14,8 +14,8 @@ namespace Template.Application.Products.Dtos
 		public string Meaurements { get; set; } = default!;
 		public string ManufacturingCountry { get; set; } = default!;
 		public string Color { get; set; } = default!;
-		public bool Deaf { get; set; } = default!;
-		public bool RetrivalAndReplacing { get; set; } = default!;
+		public string Deaf { get; set; } = default!;
+		public string RetrivalAndReplacing { get; set; } = default!;
 		public string? Notes { get; set; }
 		public List<ProductImages> Images { get; set; } = [];
 		public List<ProductSpecificationDto> ProductSpecifications { get; set; } = [];

@@ -20,7 +20,7 @@ namespace Template.Application.Products.Dtos
 				.ForAllMembers(opt => 
 					opt.Condition((src, dst, srcMember) => srcMember != null));
 
-			CreateMap<Product, HomePageProductDto>();
+			CreateMap<Product, MiniProductDto>().ReverseMap();
 		}
 	}
 }

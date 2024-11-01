@@ -75,7 +75,7 @@ public class ProductsController(IMediator mediator) : ControllerBase
 
     [HttpGet]
     [Route("GetProductsForHomePage")]
-    public async Task<ActionResult<IEnumerable<HomePageProductDto>>> GetProductsForHomePage()
+    public async Task<ActionResult<IEnumerable<MiniProductDto>>> GetProductsForHomePage()
     {
         var products = await mediator.Send(new GetProductsForHomePageQuery());
         return Ok(new JsonResponse("GetProductsForHomePage", "200", products));

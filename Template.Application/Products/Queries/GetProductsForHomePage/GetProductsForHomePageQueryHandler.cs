@@ -8,13 +8,13 @@ namespace Template.Application.Products.Queries.GetProductsForHomePage
 {
 	public class GetProductsForHomePageQueryHandler(ILogger<GetProductsForHomePageQueryHandler> logger, IMapper mapper,
 		IProductRepository productRepository)
-		: IRequestHandler<GetProductsForHomePageQuery, IEnumerable<HomePageProductDto>>
+		: IRequestHandler<GetProductsForHomePageQuery, IEnumerable<MiniProductDto>>
 	{
-		public async Task<IEnumerable<HomePageProductDto>> Handle(GetProductsForHomePageQuery request, CancellationToken cancellationToken)
+		public async Task<IEnumerable<MiniProductDto>> Handle(GetProductsForHomePageQuery request, CancellationToken cancellationToken)
 		{
 			logger.LogInformation("Getting minified version of products to home page");
 			var products = await productRepository.GetAllAsync();
-			var results = mapper.Map<IEnumerable<HomePageProductDto>>(products);
+			var results = mapper.Map<IEnumerable<MiniProductDto>>(products);
 			return results;
 		}
 	}
