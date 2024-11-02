@@ -28,12 +28,13 @@ public static class ServiceCollectionExtensions
             .AddEntityFrameworkStores<TemplateDbContext>()
             .AddDefaultTokenProviders();
 
-        services.AddScoped<ISeeder, CategoriesSeeder>();
+        services.AddScoped<ICategoriesSeeder, CategoriesSeeder>();
         services.AddScoped<ISeeder, RolesSeeder>();
 
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<ISpecificationRepository, SpecificationRepository>();
         services.AddScoped<IAccountRepository, AccountRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
 
         services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddScoped<IFileService, FileService>();

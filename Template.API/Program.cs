@@ -36,7 +36,8 @@ var scope = app.Services.CreateScope(); //for seeders
 // example: var govSeeder = scope.ServiceProvider.GetRequiredService<IGovernorateSeeder>();
 var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
 await seeder.Seed();
-await seeder.Seed();
+var catSedder = scope.ServiceProvider.GetRequiredService<ICategoriesSeeder>();
+await catSedder.Seed();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

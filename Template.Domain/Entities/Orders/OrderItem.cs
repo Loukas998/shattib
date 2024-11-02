@@ -4,7 +4,7 @@
 	{
 		public int OrderId { get; set; }
 		public int ProductId { get; set; }
-		public string Quantity { get; set; } = default!;
+		public int Quantity { get; set; }
 		public float Price { get; set; }
 	}
 }
