@@ -40,35 +40,35 @@ namespace Template.API.Controllers
 			return Ok(orders);
 		}
 
-		[HttpGet("kind")]
+		[HttpGet("Kind")]
 		public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrdersByKind([FromQuery]string kind)
 		{
 			var orders = await mediator.Send(new GetOrdersByKindQuery(kind));
 			return Ok(orders);
 		}
 
-		[HttpGet("user/kind")]
+		[HttpGet("UserKind")]
 		public async Task<ActionResult<IEnumerable<OrderDto>>> GetUserOrdersByKind([FromQuery]string kind)
 		{
 			var orders = await mediator.Send(new GetUserOrdersByKindQuery(kind));
 			return Ok(orders);
 		}
 
-		[HttpGet("user")]
+		[HttpGet("User")]
 		public async Task<ActionResult<IEnumerable<OrderDto>>> GetUserOrders()
 		{
 			var orders = await mediator.Send(new GetUserOrdersQuery());
 			return Ok(orders);
 		}
 
-		[HttpGet("user/status")]
+		[HttpGet("UserStatus")]
 		public async Task<ActionResult<IEnumerable<OrderDto>>> GetUserOrdersByStatus([FromQuery]string status)
 		{
 			var orders = await mediator.Send(new GetUserOrdersByStatusQuery(status));
 			return Ok(orders);
 		}
 
-		[HttpGet("status")]
+		[HttpGet("Status")]
 		public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrdersByStatus([FromQuery] string status)
 		{
 			var orders = await mediator.Send(new GetOrdersByStatusQuery(status));
