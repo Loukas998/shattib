@@ -13,7 +13,7 @@ public class ProductRepository(
     IWebHostEnvironment webHostEnvironment,
     IFileService fileService) : IProductRepository
 {
-    //private readonly List<string> allowedExtension = [".jpg", ".jpeg", ".png"];
+    // private readonly List<string> allowedExtension = [".jpg", ".jpeg", ".png"];
     public async Task<int> CreateProductAsync(Product entity)
     {
         dbContext.Products.Add(entity);
@@ -71,7 +71,7 @@ public class ProductRepository(
 		return await dbContext.Products.Include(p => p.Images).ToListAsync();
 	}
 
-	public async Task<Product?> GetProductByIdAsync(int id)
+    public async Task<Product?> GetProductByIdAsync(int id)
     {
         return await dbContext.Products
             .Include(p => p.ProductSpecifications)

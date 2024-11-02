@@ -19,12 +19,13 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 
     internal DbSet<Criteria> Criterias { get; set; }
     internal DbSet<CriteriaItem> CriteriaItems { get; set; }
-    internal DbSet<CriteriaImages> CriteriaImages { get; set; }
+
     internal DbSet<Comment> Comments { get; set; }
     internal DbSet<CriteriaBills> Invoices { get; set; }
 
     internal DbSet<Order> Orders { get; set; }
     internal DbSet<OrderItem> OrderItems { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -67,12 +68,6 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
             .WithOne(ci => ci.Criteria)
             .HasForeignKey(ci => ci.CriteriaId);
 
-        // CriteriaItem -> CriteriaImages (One-to-Many)
-        modelBuilder.Entity<CriteriaItem>()
-            .HasMany(ci => ci.CriteriaImages)
-            .WithOne(cimg => cimg.CriteriaItem)
-            .HasForeignKey(cimg => cimg.CriteriaCategoryId);
-
         // Criteria -> Comments (One-to-Many)
         modelBuilder.Entity<Criteria>()
             .HasMany(c => c.Comments)
@@ -85,8 +80,8 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
             .WithMany(c => c.Invoices)
             .HasForeignKey(i => i.CriteriaId);
 
-		// Products <-> Orders (Many-to-Many)
-		modelBuilder.Entity<Product>()
+        // Products <-> Orders (Many-to-Many)
+        modelBuilder.Entity<Product>()
             .HasMany(p => p.Orders)
             .WithMany(o => o.Products)
             .UsingEntity<OrderItem>();
