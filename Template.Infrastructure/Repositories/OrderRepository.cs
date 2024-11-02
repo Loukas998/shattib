@@ -1,4 +1,7 @@
-﻿using Template.Domain.Entities.Orders;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Net.NetworkInformation;
+using Template.Domain.Entities;
+using Template.Domain.Entities.Orders;
 using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
 
@@ -13,24 +16,82 @@ namespace Template.Infrastructure.Repositories
 			return entity.Id;
 		}
 
-		public Task DeleteOrderAsync(Order entity)
+		public async Task DeleteOrderAsync(Order entity)
 		{
-			throw new NotImplementedException();
+			dbContext.Orders.Remove(entity);
+			await dbContext.SaveChangesAsync();
 		}
 
-		public Task<IEnumerable<Order>> GetAllOrders()
+		public async Task<IEnumerable<Order>> GetAllOrders()
 		{
-			throw new NotImplementedException();
+			var orders = await dbContext.Orders.ToListAsync();
+			return orders;
 		}
 
-		public Task<Order> GetOrderById(int id)
+		public async Task<IEnumerable<Order>> GetOrdersByKind(string kind)
 		{
-			throw new NotImplementedException();
+			return await dbContext.Orders.Where(o => o.Kind == kind).ToListAsync();
 		}
 
-		public Task SaveChangesAsync()
+		public async Task<IEnumerable<Order>> GetUserOrders(string userId)
 		{
-			throw new NotImplementedException();
+			return await dbContext.Orders.Where(o => o.UserId == userId).ToListAsync();
+		}
+
+		public async Task<IEnumerable<Order>> GetUserOrdersByKind(string userId, string kind)
+		{
+			return await dbContext.Orders.Where(o => o.UserId == userId)
+										 .Where(o => o.Kind == kind)
+										 .ToListAsync();
+		}
+
+		public async Task<Order?> GetOrderById(int id)
+		{
+			return await dbContext.Orders.FirstOrDefaultAsync(o => o.Id == id);
+		}
+
+		//used dictionary for easy grouping  
+		public async Task<Dictionary<int, List<DetailedOrderItemDto>>> GetOrderItemsForOrders(List<int> orderIds)
+		{
+			var orderItems = from oi in dbContext.OrderItems
+							 join p in dbContext.Products.Include(p => p.Images)
+								on oi.ProductId equals p.Id
+							 where orderIds.Contains(oi.OrderId)
+							 select new
+							 {
+								 oi.OrderId,
+								 OrderItem = new DetailedOrderItemDto
+								 {
+									 ProductMainImage = p.Images.FirstOrDefault().ImagePath ?? string.Empty,
+									 ProductName = p.Name,
+									 Quantitiy = oi.Quantity,
+									 TotalPriceForThisProduct = oi.Price,
+								 }
+							 };
+			var itemsList = await orderItems.ToListAsync();
+
+			// this to group by OrderId in a dict
+			return itemsList.GroupBy(x => x.OrderId)
+							 .ToDictionary(g => g.Key, g => g.Select(x => x.OrderItem).ToList());
+			//hope you get it
+		}
+
+		public async Task SaveChangesAsync() => await dbContext.SaveChangesAsync();
+
+		public async Task<IEnumerable<Order>> GetOrdersByStatus(string status)
+		{
+			var orders = await dbContext.Orders.Where(o => o.Status == status).ToListAsync();
+			return orders;
+		}
+
+		public async Task<IEnumerable<Order>> GetUserOrdersByStatus(string status, string userId)
+		{
+			var orders = await dbContext.Orders.Where(o => o.Status == status)
+											   .Where(o => o.UserId == userId)
+											   .ToListAsync();
+			return orders;
 		}
 	}
 }
+
+

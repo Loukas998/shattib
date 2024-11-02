@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Template.Application.Products.Dtos;
+using Template.Domain.Entities.Orders;
 using Template.Domain.Entities.Products;
 
 namespace Template.Application.Orders.Dtos
@@ -12,6 +13,10 @@ namespace Template.Application.Orders.Dtos
 		[DataType(DataType.Date)]
 		public DateTime DateOfOrder { get; set; }
 
-		public List<MiniProductDto>? Products { get; set; }
+		[DataType(DataType.Date)]
+		public DateTime? DateOfArrival { get; set; }
+		public string Status { get; set; } = default!;
+
+		public List<DetailedOrderItemDto> OrderItems { get; set; } = [];
 	}
 }

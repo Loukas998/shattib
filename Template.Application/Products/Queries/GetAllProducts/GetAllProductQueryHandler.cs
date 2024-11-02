@@ -13,7 +13,6 @@ namespace Template.Application.Products.Queries.GetAllProducts
 		public async Task<IEnumerable<ProductDto>> Handle(GetAllProductQuery request, CancellationToken cancellationToken)
 		{
 			logger.LogInformation("Getting all products");
-
 			var products = await productRepository.GetAllAsync();
 			var productDtos = mapper.Map<IEnumerable<ProductDto>>(products);
 			return productDtos;
