@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Template.Domain.Entities;
 using Template.Domain.Entities.Criteria;
+using Template.Domain.Entities.EngConsultation;
 using Template.Domain.Entities.Orders;
 using Template.Domain.Entities.Products;
 
@@ -25,6 +26,8 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 
     internal DbSet<Order> Orders { get; set; }
     internal DbSet<OrderItem> OrderItems { get; set; }
+
+    internal DbSet<Consultation> Consultations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

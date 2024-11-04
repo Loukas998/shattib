@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Template.Application.Products.Dtos;
 using Template.Application.Products.Commands.CreateProductCommand;
 using Template.Application.Products.Commands.UpdateProductCommand;
 using Template.Domain.Entities.Products;
@@ -13,7 +14,7 @@ namespace Template.Application.Products.Dtos
 				.ForMember(dest => dest.ProductSpecifications, opt => opt.Ignore());
 
 			CreateMap<CreateProductCommand, Product>()
-				.ForMember(dest => dest.Images, opt => opt.MapFrom<ImageResolver>())
+				.ForMember(dest => dest.Images, opt => opt.MapFrom<ImagesResolver>())
 				.ForMember(dest => dest.Specifications, opt => opt.Ignore());
 
 			CreateMap<UpdateProductCommand, Product>()

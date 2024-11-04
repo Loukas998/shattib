@@ -7,6 +7,7 @@ namespace Template.Domain.Entities.Products
 	{
 		public int Id { get; set; }
 		public int SubCategoryId { get; set; }
+		public string WarehouseCode { get; set; } = default!;
 		public string Name { get; set; } = default!;
 		public string Description { get; set; } = default!;
 		public string Features { get; set; } = default!;
