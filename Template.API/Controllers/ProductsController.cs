@@ -1,13 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.DotNet.MSIdentity.Shared;
 using Template.Application.Products.Commands.CreateProductCommand;
 using Template.Application.Products.Commands.DeleteImagesCommand.DeleteImagesCommand;
 using Template.Application.Products.Commands.DeleteProductCommand;
 using Template.Application.Products.Commands.UpdateProductCommand;
 using Template.Application.Products.Commands.UpdateProductCommand.UpdateImagesCommand;
 using Template.Application.Products.Dtos;
-using Template.Application.Products.Queries.GetAllProducts;
 using Template.Application.Products.Queries.GetProduct;
 using Template.Application.Products.Queries.GetProductsForHomePage;
 
@@ -31,23 +29,23 @@ public class ProductsController(IMediator mediator) : ControllerBase
         return Ok(product);
     }
 
-	[HttpGet]
-	[Route("GetProductsForHomePage")]
-	public async Task<ActionResult<IEnumerable<MiniProductDto>>> GetProductsForHomePage()
-	{
-		var products = await mediator.Send(new GetProductsForHomePageQuery());
-		//return Ok(new JsonResponse("GetProductsForHomePage", "200", products));
-		return Ok(products);
-	}
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<MiniProductDto>>> GetProductsForHomePage(
+        [FromQuery] GetProductsForHomePageQuery query)
+    {
+        var products = await mediator.Send(query);
+        //return Ok(new JsonResponse("GetProductsForHomePage", "200", products));
+        return Ok(products);
+    }
 
-	//[HttpGet]
-	//public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProducts()
-	//{
-	//    var products = await mediator.Send(new GetAllProductQuery());
-	//    return Ok(products);
-	//}
+    //[HttpGet]
+    //public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProducts()
+    //{
+    //    var products = await mediator.Send(new GetAllProductQuery());
+    //    return Ok(products);
+    //}
 
-	[HttpPatch]
+    [HttpPatch]
     [Route("{productId:int}")]
     public async Task<IActionResult> UpdateProduct([FromForm] UpdateProductCommand command, [FromRoute] int productId)
     {
@@ -81,6 +79,4 @@ public class ProductsController(IMediator mediator) : ControllerBase
         await mediator.Send(new DeleteProductImageCommand(imageId));
         return NoContent();
     }
-
-    
 }

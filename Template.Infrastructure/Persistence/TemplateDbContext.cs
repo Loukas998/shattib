@@ -22,7 +22,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
     internal DbSet<CriteriaItem> CriteriaItems { get; set; }
 
     internal DbSet<Comment> Comments { get; set; }
-    internal DbSet<CriteriaBills> Invoices { get; set; }
+    internal DbSet<CriteriaBills> CriteriaBills { get; set; }
 
     internal DbSet<Order> Orders { get; set; }
     internal DbSet<OrderItem> OrderItems { get; set; }
@@ -50,7 +50,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
         // SubCategory -> Products (One-to-Many)
         modelBuilder.Entity<SubCategory>()
             .HasMany(sc => sc.Products)
-            .WithOne()
+            .WithOne(p => p.SubCategory)
             .HasForeignKey(p => p.SubCategoryId);
 
         // Product -> Images (One-to-Many)
@@ -80,7 +80,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
         // Invoice -> Criteria (One-to-Many)
         modelBuilder.Entity<CriteriaBills>()
             .HasOne(i => i.Criteria)
-            .WithMany(c => c.Invoices)
+            .WithMany(c => c.CriteriaBills)
             .HasForeignKey(i => i.CriteriaId);
 
         // Products <-> Orders (Many-to-Many)

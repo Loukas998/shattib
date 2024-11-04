@@ -12,8 +12,8 @@ using Template.Infrastructure.Persistence;
 namespace Template.Infrastructure.Migrations
 {
     [DbContext(typeof(TemplateDbContext))]
-    [Migration("20241028175907_FixedNullabilities")]
-    partial class FixedNullabilities
+    [Migration("20241104212911_Production")]
+    partial class Production
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -194,6 +194,14 @@ namespace Template.Infrastructure.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -221,33 +229,15 @@ namespace Template.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("CriteriaId");
-
-                    b.ToTable("Invoices");
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.Criteria.CriteriaImages", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CriteriaCategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ImagePath")
+                    b.Property<string>("Receipt")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CriteriaCategoryId");
+                    b.HasIndex("CriteriaId");
 
-                    b.ToTable("CriteriaImages");
+                    b.ToTable("CriteriaBills");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Criteria.CriteriaItem", b =>
@@ -267,6 +257,14 @@ namespace Template.Infrastructure.Migrations
                     b.Property<int>("CriteriaId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("MeasurementUnit")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -285,6 +283,111 @@ namespace Template.Infrastructure.Migrations
                     b.HasIndex("CriteriaId");
 
                     b.ToTable("CriteriaItems");
+                });
+
+            modelBuilder.Entity("Template.Domain.Entities.EngConsultation.Consultation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClientName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ConsultationTopic")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("DateOfRequest")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Details")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("EngineerSpecification")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ProjectCategory")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Consultations");
+                });
+
+            modelBuilder.Entity("Template.Domain.Entities.Orders.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DateOfArrival")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DateOfOrder")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<float>("TotalPrice")
+                        .HasColumnType("float");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Template.Domain.Entities.Orders.OrderItem", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.Category", b =>
@@ -316,8 +419,9 @@ namespace Template.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("Deaf")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<string>("Deaf")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -352,11 +456,16 @@ namespace Template.Infrastructure.Migrations
                     b.Property<float>("Price")
                         .HasColumnType("float");
 
-                    b.Property<bool>("RetrivalAndReplacing")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<string>("RetrivalAndReplacing")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<int>("SubCategoryId")
                         .HasColumnType("int");
+
+                    b.Property<string>("WarehouseCode")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -417,12 +526,7 @@ namespace Template.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("SpecificationId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("SpecificationId");
 
                     b.ToTable("Specifications");
                 });
@@ -578,23 +682,12 @@ namespace Template.Infrastructure.Migrations
             modelBuilder.Entity("Template.Domain.Entities.Criteria.CriteriaBills", b =>
                 {
                     b.HasOne("Template.Domain.Entities.Criteria.Criteria", "Criteria")
-                        .WithMany("Invoices")
+                        .WithMany("CriteriaBills")
                         .HasForeignKey("CriteriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Criteria");
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.Criteria.CriteriaImages", b =>
-                {
-                    b.HasOne("Template.Domain.Entities.Criteria.CriteriaItem", "CriteriaItem")
-                        .WithMany("CriteriaImages")
-                        .HasForeignKey("CriteriaCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CriteriaItem");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Criteria.CriteriaItem", b =>
@@ -616,13 +709,39 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("Criteria");
                 });
 
+            modelBuilder.Entity("Template.Domain.Entities.Orders.Order", b =>
+                {
+                    b.HasOne("Template.Domain.Entities.User", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Template.Domain.Entities.Orders.OrderItem", b =>
+                {
+                    b.HasOne("Template.Domain.Entities.Orders.Order", null)
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Template.Domain.Entities.Products.Product", null)
+                        .WithMany("OrderItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Template.Domain.Entities.Products.Product", b =>
                 {
-                    b.HasOne("Template.Domain.Entities.Products.SubCategory", null)
+                    b.HasOne("Template.Domain.Entities.Products.SubCategory", "SubCategory")
                         .WithMany("Products")
                         .HasForeignKey("SubCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("SubCategory");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.ProductImages", b =>
@@ -649,13 +768,6 @@ namespace Template.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Products.Specification", b =>
-                {
-                    b.HasOne("Template.Domain.Entities.Products.Specification", null)
-                        .WithMany("Specifications")
-                        .HasForeignKey("SpecificationId");
-                });
-
             modelBuilder.Entity("Template.Domain.Entities.Products.SubCategory", b =>
                 {
                     b.HasOne("Template.Domain.Entities.Products.Category", null)
@@ -669,14 +781,14 @@ namespace Template.Infrastructure.Migrations
                 {
                     b.Navigation("Comments");
 
-                    b.Navigation("CriteriaItems");
+                    b.Navigation("CriteriaBills");
 
-                    b.Navigation("Invoices");
+                    b.Navigation("CriteriaItems");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Criteria.CriteriaItem", b =>
+            modelBuilder.Entity("Template.Domain.Entities.Orders.Order", b =>
                 {
-                    b.Navigation("CriteriaImages");
+                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.Category", b =>
@@ -690,19 +802,24 @@ namespace Template.Infrastructure.Migrations
                 {
                     b.Navigation("Images");
 
+                    b.Navigation("OrderItems");
+
                     b.Navigation("ProductSpecifications");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.Specification", b =>
                 {
                     b.Navigation("ProductSpecifications");
-
-                    b.Navigation("Specifications");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.SubCategory", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Template.Domain.Entities.User", b =>
+                {
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

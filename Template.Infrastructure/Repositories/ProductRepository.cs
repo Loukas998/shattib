@@ -66,10 +66,42 @@ public class ProductRepository(
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Product>> GetAllAsync() 
+    public async Task<IEnumerable<Product>> GetAllAsync(int? categoryId, int? subcategoryId, string? color,
+        float minPrice,
+        float? maxPrice, string? searchTerm, string? sortOrder)
     {
-		return await dbContext.Products.Include(p => p.Images).ToListAsync();
-	}
+        // return await dbContext.Products.Include(p => p.Images).ToListAsync();
+        var query = dbContext.Products.Include(p => p.Images).AsQueryable();
+        if (categoryId != null)
+            query = query.Where(p => p.SubCategory.CategoryId == categoryId);
+
+        if (subcategoryId != null)
+            query = query.Where(p => p.SubCategoryId == subcategoryId);
+
+        if (!string.IsNullOrEmpty(color))
+            query = query.Where(p => p.Color == color);
+
+        query = query.Where(p => p.Price >= minPrice);
+
+        if (maxPrice != null)
+            query = query.Where(p => p.Price <= maxPrice);
+
+        if (!string.IsNullOrEmpty(searchTerm))
+            query = query.Where(p =>
+                p.Name.Contains(searchTerm) ||
+                p.Description.Contains(searchTerm) ||
+                p.WarehouseCode.Contains(searchTerm));
+
+        // Apply sorting
+        query = sortOrder switch
+        {
+            "priceAsc" => query.OrderBy(p => p.Price),
+            "priceDesc" => query.OrderByDescending(p => p.Price),
+            _ => query.OrderBy(p => p.Id)
+        };
+
+        return await query.ToListAsync();
+    }
 
     public async Task<Product?> GetProductByIdAsync(int id)
     {

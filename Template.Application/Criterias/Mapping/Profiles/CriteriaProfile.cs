@@ -21,7 +21,7 @@ public class CriteriaProfile : Profile
         CreateMap<Criteria, CriteriaDto>()
             .ForMember(dest => dest.CriteriaItems, opt => opt.MapFrom(src => src.CriteriaItems))
             .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments))
-            .ForMember(dest => dest.Invoices, opt => opt.MapFrom(src => src.Invoices));
+            .ForMember(dest => dest.Invoices, opt => opt.MapFrom(src => src.CriteriaBills));
 
         CreateMap<CriteriaItem, GetCriteriaItemDto>()
             .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));

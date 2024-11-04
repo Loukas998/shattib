@@ -191,6 +191,10 @@ namespace Template.Infrastructure.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -222,11 +226,15 @@ namespace Template.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Receipt")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CriteriaId");
 
-                    b.ToTable("Invoices");
+                    b.ToTable("CriteriaBills");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Criteria.CriteriaItem", b =>
@@ -671,7 +679,7 @@ namespace Template.Infrastructure.Migrations
             modelBuilder.Entity("Template.Domain.Entities.Criteria.CriteriaBills", b =>
                 {
                     b.HasOne("Template.Domain.Entities.Criteria.Criteria", "Criteria")
-                        .WithMany("Invoices")
+                        .WithMany("CriteriaBills")
                         .HasForeignKey("CriteriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -724,11 +732,13 @@ namespace Template.Infrastructure.Migrations
 
             modelBuilder.Entity("Template.Domain.Entities.Products.Product", b =>
                 {
-                    b.HasOne("Template.Domain.Entities.Products.SubCategory", null)
+                    b.HasOne("Template.Domain.Entities.Products.SubCategory", "SubCategory")
                         .WithMany("Products")
                         .HasForeignKey("SubCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("SubCategory");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.ProductImages", b =>
@@ -768,9 +778,9 @@ namespace Template.Infrastructure.Migrations
                 {
                     b.Navigation("Comments");
 
-                    b.Navigation("CriteriaItems");
+                    b.Navigation("CriteriaBills");
 
-                    b.Navigation("Invoices");
+                    b.Navigation("CriteriaItems");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Orders.Order", b =>
