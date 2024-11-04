@@ -31,14 +31,23 @@ public class ProductsController(IMediator mediator) : ControllerBase
         return Ok(product);
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProducts()
-    {
-        var products = await mediator.Send(new GetAllProductQuery());
-        return Ok(products);
-    }
+	[HttpGet]
+	[Route("GetProductsForHomePage")]
+	public async Task<ActionResult<IEnumerable<MiniProductDto>>> GetProductsForHomePage()
+	{
+		var products = await mediator.Send(new GetProductsForHomePageQuery());
+		//return Ok(new JsonResponse("GetProductsForHomePage", "200", products));
+		return Ok(products);
+	}
 
-    [HttpPatch]
+	//[HttpGet]
+	//public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProducts()
+	//{
+	//    var products = await mediator.Send(new GetAllProductQuery());
+	//    return Ok(products);
+	//}
+
+	[HttpPatch]
     [Route("{productId:int}")]
     public async Task<IActionResult> UpdateProduct([FromForm] UpdateProductCommand command, [FromRoute] int productId)
     {
@@ -73,12 +82,5 @@ public class ProductsController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
-    [HttpGet]
-    [Route("GetProductsForHomePage")]
-    public async Task<ActionResult<IEnumerable<MiniProductDto>>> GetProductsForHomePage()
-    {
-        var products = await mediator.Send(new GetProductsForHomePageQuery());
-        return Ok(new JsonResponse("GetProductsForHomePage", "200", products));
-		//return Ok(products);
-	}
+    
 }

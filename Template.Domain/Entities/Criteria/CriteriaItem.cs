@@ -11,7 +11,7 @@ public class CriteriaItem
     public string Description { get; set; } = default!;
     public bool State { get; set; }
     public float Amount { get; set; }
-    public string MeasurementUnit { get; set; } = default;
+    public string MeasurementUnit { get; set; } = default!;
     public string Image { get; set; } = default!;
 
     public Criteria Criteria { get; set; }

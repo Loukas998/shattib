@@ -66,10 +66,10 @@ public class ProductRepository(
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Product>> GetAllAsync()
+    public async Task<IEnumerable<Product>> GetAllAsync() 
     {
-        return await dbContext.Products.ToListAsync();
-    }
+		return await dbContext.Products.Include(p => p.Images).ToListAsync();
+	}
 
     public async Task<Product?> GetProductByIdAsync(int id)
     {
