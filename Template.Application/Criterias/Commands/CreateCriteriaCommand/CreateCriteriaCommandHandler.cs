@@ -14,6 +14,7 @@ public class CreateCriteriaCommandHandler(
     public async Task<int> Handle(CreateCriteriaCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating new Criteria {@Criteria}", request);
+
         var criteria = mapper.Map<Criteria>(request);
         return await criteriaRepository.CreateCriteriaAsync(criteria);
     }

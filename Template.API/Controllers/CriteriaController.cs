@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Criterias.Commands.CreateCriteriaCommand;
+using Template.Application.Criterias.Queries.GetCriteriaByIdQuery;
 
 namespace Template.API.Controllers;
 
@@ -16,8 +17,9 @@ public class CriteriaController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public Task<IActionResult> GetCriteriaById(int id)
+    public async Task<IActionResult> GetCriteriaById(int id)
     {
-        throw new NotImplementedException();
+        var criteria = await mediator.Send(new GetCriteriaByIdQuery(id));
+        return Ok(criteria);
     }
 }

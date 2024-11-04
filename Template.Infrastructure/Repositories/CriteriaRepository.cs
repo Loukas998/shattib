@@ -10,12 +10,16 @@ public class CriteriaRepository(TemplateDbContext dbContext) : ICriteriaReposito
     public async Task<IEnumerable<Criteria>> GetAllAsync()
     {
         return await dbContext.Criterias.Include(criteria => criteria.CriteriaItems)
-            .ThenInclude(criteriaItem => criteriaItem.Category).ToListAsync();
+            .ThenInclude(criteriaItem => criteriaItem.Category)
+            .ToListAsync();
     }
 
     public async Task<Criteria?> GetByIdAsync(int id)
     {
-        return await dbContext.Criterias.FirstOrDefaultAsync(criteria => criteria.Id == id);
+        return await dbContext.Criterias.Include(criteria => criteria.CriteriaItems)
+            .ThenInclude(criteriaItem => criteriaItem.Category).Include(criteria => criteria.Comments)
+            .Include(criteria => criteria.Invoices)
+            .FirstOrDefaultAsync(criteria => criteria.Id == id);
     }
 
     public async Task<int> CreateCriteriaAsync(Criteria criteria)
