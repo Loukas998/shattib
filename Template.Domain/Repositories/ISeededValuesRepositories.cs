@@ -8,5 +8,6 @@ namespace Template.Domain.Repositories
 		public Task<List<Category>> GetAllCategories();
 		public List<string> GetOrderKinds();
 		public List<string> GetOrderStatuses();
+		public List<string> GetConsultationStatuses();
 	}	
 }

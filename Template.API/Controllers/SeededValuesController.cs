@@ -7,31 +7,38 @@ namespace Template.API.Controllers
 	[Route("api/SeededValues")]
 	public class SeededValuesController(ISeededValuesRepository seededValuesRepository) : ControllerBase
 	{
-		[HttpGet("subcategories")]
+		[HttpGet("SubCategories")]
 		public async Task<IActionResult> GetSubCategories()
 		{
 			var subCategories = await seededValuesRepository.GetAllSubCategories();
 			return Ok(subCategories);
 		}
 
-		[HttpGet("categories")]
+		[HttpGet("Categories")]
 		public async Task<IActionResult> GetCategories()
 		{
 			var categories = await seededValuesRepository.GetAllCategories();
 			return Ok(categories);
 		}
 
-		[HttpGet("orderstatuses")]
+		[HttpGet("OrderStatuses")]
 		public IActionResult GetOrderStatuses()
 		{
 			var orderStatuses = seededValuesRepository.GetOrderStatuses();
 			return Ok(orderStatuses);
 		}
 
-		[HttpGet("orderkinds")]
+		[HttpGet("OrderKinds")]
 		public IActionResult GetOrderKinds()
 		{
 			var orderKinds = seededValuesRepository.GetOrderKinds();
+			return Ok(orderKinds);
+		}
+
+		[HttpGet("ConsultationStatuses")]
+		public IActionResult GetConsultationStatuses()
+		{
+			var orderKinds = seededValuesRepository.GetConsultationStatuses();
 			return Ok(orderKinds);
 		}
 	}

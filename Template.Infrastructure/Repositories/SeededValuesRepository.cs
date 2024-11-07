@@ -20,8 +20,14 @@ namespace Template.Infrastructure.Repositories
 
 		public List<string> GetOrderStatuses()
 		{
-			List<string> orderStatuses = [OrderConstants.Pending, OrderConstants.Accepted, OrderConstants.Rejected];
+			List<string> orderStatuses = [OrderConstants.Pending, OrderConstants.Accepted, OrderConstants.Rejected, OrderConstants.Shipped];
 			return orderStatuses;
+		}
+
+		public List<string> GetConsultationStatuses()
+		{
+			List<string> consultationStatuses = [ConsultationConstants.Pending, ConsultationConstants.Completed];
+			return consultationStatuses;
 		}
 
 	}

@@ -2,7 +2,7 @@
 {
 	public class ConsultationConstants
 	{
-		public const string Processed = "Processed";
+		public const string Completed = "Completed";
 		public const string Pending = "Pending";
 	}
 }

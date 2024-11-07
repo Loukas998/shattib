@@ -24,6 +24,7 @@ public class GetProductsForHomePageQueryHandler(
             request.maxPrice,
             request.searchTerm,
             request.sortOrder);
+
         var results = products.Select(product => new MiniProductDto
         {
             Id = product.Id,
