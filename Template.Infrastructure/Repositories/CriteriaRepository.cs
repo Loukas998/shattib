@@ -51,4 +51,11 @@ public class CriteriaRepository(TemplateDbContext dbContext) : ICriteriaReposito
         await dbContext.SaveChangesAsync();
         return criteria;
     }
+
+    public async Task<Criteria> UpdateCriteriaAsync(Criteria criteria)
+    {
+        dbContext.Criterias.Update(criteria);
+        await dbContext.SaveChangesAsync();
+        return criteria;
+    }
 }

@@ -10,5 +10,5 @@ public class Criteria
     public string Status { get; set; } = CriteriaStatus.Pending.ToString();
     public List<CriteriaItem> CriteriaItems { get; set; } = new();
     public List<Comment> Comments { get; set; } = new();
-    public List<CriteriaBills> CriteriaBills { get; set; } = new();
+    public List<CriteriaBill> CriteriaBills { get; set; } = new();
 }

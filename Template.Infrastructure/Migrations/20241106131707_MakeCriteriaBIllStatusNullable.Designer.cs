@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Template.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Template.Infrastructure.Persistence;
 namespace Template.Infrastructure.Migrations
 {
     [DbContext(typeof(TemplateDbContext))]
-    partial class TemplateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241106131707_MakeCriteriaBIllStatusNullable")]
+    partial class MakeCriteriaBIllStatusNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -227,6 +230,7 @@ namespace Template.Infrastructure.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Receipt")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");

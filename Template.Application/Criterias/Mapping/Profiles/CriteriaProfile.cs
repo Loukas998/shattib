@@ -26,6 +26,6 @@ public class CriteriaProfile : Profile
         CreateMap<CriteriaItem, GetCriteriaItemDto>()
             .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
         CreateMap<Comment, CommentDto>();
-        CreateMap<CriteriaBills, CriteriaBillsDto>();
+        CreateMap<CriteriaBill, CreateCriteriaBillsDto>();
     }
 }

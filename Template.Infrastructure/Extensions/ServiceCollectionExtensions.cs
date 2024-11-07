@@ -40,6 +40,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddScoped<ICriteriaRepository, CriteriaRepository>();
+        services.AddScoped<ICriteriaBillsRepository, CriteriaBillsRepository>();
         services.AddScoped<IFileService, FileService>();
     }
 }
