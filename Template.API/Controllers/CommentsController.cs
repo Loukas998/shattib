@@ -9,7 +9,7 @@ namespace Template.API.Controllers;
 
 [ApiController]
 [Route("api/Criterias/{criteriaId:int}/[controller]")]
-public class CommentController(IMediator mediator) : ControllerBase
+public class CommentsController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult> CreateComment([FromRoute] int criteriaId, [FromForm] CreateCommentCommand command)
@@ -19,7 +19,9 @@ public class CommentController(IMediator mediator) : ControllerBase
         return CreatedAtAction(nameof(GetCommentById), new { id }, null);
     }
 
-    [HttpGet("{id:int}")]
+    // Note:: Added the absolute path to prevent having to add CriteriaId
+    //          because it's not needed for this route
+    [HttpGet("/api/Comments/{id:int}")]
     public async Task<ActionResult<CommentDto>> GetCommentById([FromRoute] int id)
     {
         var comment = await mediator.Send(new GetCommentByIdQuery(id));
@@ -27,9 +29,14 @@ public class CommentController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult> GetAllForCriteria([FromRoute] int criteriaId, GetAllCommentsForCriteriaQuery query)
+    public async Task<ActionResult> GetAllForCriteria([FromRoute] int criteriaId,
+        [FromQuery] int lastCommentId)
     {
-        query.CriteriaId = criteriaId;
+        var query = new GetAllCommentsForCriteriaQuery
+        {
+            LastCommentId = lastCommentId,
+            CriteriaId = criteriaId
+        };
         var comments = await mediator.Send(query);
         return Ok(comments);
     }
