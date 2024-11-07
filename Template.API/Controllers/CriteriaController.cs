@@ -1,7 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Criterias.Commands.CreateCriteriaCommand;
+using Template.Application.Criterias.Commands.UpdateCriteriaStatusCommand;
 using Template.Application.Criterias.Queries.GetCriteriaByIdQuery;
+using Template.Application.Criterias.Queries.GetCriteriasForUserQuery;
 
 namespace Template.API.Controllers;
 
@@ -21,5 +23,20 @@ public class CriteriaController(IMediator mediator) : ControllerBase
     {
         var criteria = await mediator.Send(new GetCriteriaByIdQuery(id));
         return Ok(criteria);
+    }
+
+    [HttpGet("mine")]
+    public async Task<IActionResult> GetCriteriasForUser()
+    {
+        var criterias = await mediator.Send(new GetCriteriasForUserQuery());
+        return Ok(criterias);
+    }
+
+    [HttpPatch("{id:int}/Status")]
+    public async Task<IActionResult> UpdateCriteriaStatus(int id, [FromBody] UpdateCriteriaStatusCommand command)
+    {
+        command.Id = id;
+        await mediator.Send(command);
+        return NoContent();
     }
 }

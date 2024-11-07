@@ -66,6 +66,29 @@ public class FileService(IWebHostEnvironment environment) : IFileService
         return finalfilePaths;
     }
 
+    public async Task<string> SaveFileAsync(IFormFile file, string path, string[] allowedFileExtensions)
+    {
+        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+
+        if (file == null) throw new ArgumentNullException(nameof(file));
+        var extension = Path.GetExtension(file.FileName);
+
+        if (!allowedFileExtensions.Contains(extension))
+            throw new ArgumentException($"Only {string.Join(",", allowedFileExtensions)} are allowed.");
+
+        var fileName = $"{Guid.NewGuid()}-{Path.GetFileName(file.FileName)}";
+        var filePath = Path.Combine(environment.ContentRootPath, path, fileName);
+
+        // Open a file stream and copy the contents asynchronously
+        await using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        var finalFilePath = Path.Combine(path, fileName);
+        return finalFilePath;
+    }
+
     public void DeleteFile(string path)
     {
         if (string.IsNullOrEmpty(path)) throw new ArgumentNullException(nameof(path));

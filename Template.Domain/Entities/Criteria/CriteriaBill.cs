@@ -1,12 +1,12 @@
 namespace Template.Domain.Entities.Criteria;
 
-public class CriteriaBills
+public class CriteriaBill
 {
     public int Id { get; set; }
     public string Image { get; set; } = default!;
-    public string Receipt { get; set; } = default!;
+    public string? Receipt { get; set; }
     public int CriteriaId { get; set; } = default!;
-    public bool Accepted { get; set; }
+    public bool? Accepted { get; set; }
 
     public Criteria Criteria { get; set; }
 }

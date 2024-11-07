@@ -11,4 +11,5 @@ public interface ICriteriaRepository
     public Task<int> CreateCriteriaAsync(Criteria criteria);
     public Task<List<Criteria>> GetAllByUserId(string userId);
     public Task<Criteria?> UpdateCriteriaStatusAsync(int id, string status);
+    public Task<Criteria> UpdateCriteriaAsync(Criteria criteria);
 }

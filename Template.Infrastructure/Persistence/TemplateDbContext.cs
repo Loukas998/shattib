@@ -22,7 +22,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
     internal DbSet<CriteriaItem> CriteriaItems { get; set; }
 
     internal DbSet<Comment> Comments { get; set; }
-    internal DbSet<CriteriaBills> CriteriaBills { get; set; }
+    internal DbSet<CriteriaBill> CriteriaBills { get; set; }
 
     internal DbSet<Order> Orders { get; set; }
     internal DbSet<OrderItem> OrderItems { get; set; }
@@ -78,7 +78,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
             .HasForeignKey(comment => comment.CriteriaId);
 
         // Invoice -> Criteria (One-to-Many)
-        modelBuilder.Entity<CriteriaBills>()
+        modelBuilder.Entity<CriteriaBill>()
             .HasOne(i => i.Criteria)
             .WithMany(c => c.CriteriaBills)
             .HasForeignKey(i => i.CriteriaId);
