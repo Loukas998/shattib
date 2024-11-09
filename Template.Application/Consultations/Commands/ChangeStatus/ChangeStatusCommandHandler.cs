@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Template.Domain.Entities.EngConsultation;
+using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Consultations.Commands.ChangeStatus
@@ -12,11 +14,12 @@ namespace Template.Application.Consultations.Commands.ChangeStatus
 		{
 			logger.LogInformation("Changing the status of consultation with id: {ConsultationId}: ", request.ConsultationId);
 			var consultation = await consultationRepository.GetConsultationByIdAsync(request.ConsultationId);
-			if (consultation != null)
+			if (consultation == null)
 			{
-				consultation.Status = request.NewStatus;
-				await consultationRepository.SaveChangesAsync();
+				throw new NotFoundException(nameof(Consultation), request.ConsultationId.ToString());
 			}
+			consultation.Status = request.NewStatus;
+			await consultationRepository.SaveChangesAsync();
 		}
 	}
 }
