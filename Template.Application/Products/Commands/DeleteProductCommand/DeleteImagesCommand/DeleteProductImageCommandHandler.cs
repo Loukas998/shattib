@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
+using Template.Domain.Entities.Products;
+using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Products.Commands.DeleteImagesCommand.DeleteImagesCommand
@@ -14,10 +16,11 @@ namespace Template.Application.Products.Commands.DeleteImagesCommand.DeleteImage
 			logger.LogInformation("Deleting product\'s image with id: {ImageId}", request.ImageId);
 
 			var image = await productRepository.GetProductImageAsync(request.ImageId);
-			if (image != null)
+			if (image == null)
 			{
-				await productRepository.DeleteProductImageAsync(image);
+				throw new NotFoundException(nameof(ProductImages), request.ImageId.ToString());
 			}
+			await productRepository.DeleteProductImageAsync(image);
 		}
 	}
 }

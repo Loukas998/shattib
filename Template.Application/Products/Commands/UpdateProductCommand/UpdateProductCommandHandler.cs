@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Template.Application.Products.Commands.CreateProductCommand;
 using Template.Domain.Entities.Products;
+using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Products.Commands.UpdateProductCommand
@@ -18,7 +19,7 @@ namespace Template.Application.Products.Commands.UpdateProductCommand
 			var product = await productRepository.GetProductByIdAsync(request.ProductId);
 			if (product == null)
 			{
-				throw new NotImplementedException();
+				throw new NotFoundException(nameof(Product), request.ProductId.ToString());
 			}
 			mapper.Map<UpdateProductCommand, Product>(request, product);
 			await productRepository.SaveChanges();

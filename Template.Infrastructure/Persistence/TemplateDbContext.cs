@@ -94,5 +94,11 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
             .HasMany(u => u.Orders)
             .WithOne()
             .HasForeignKey(o => o.UserId);
-    }
+
+        // User -> Consultations (One-to-Many)
+		modelBuilder.Entity<User>()
+			.HasMany(u => u.Consultations)
+			.WithOne(c => c.User)
+			.HasForeignKey(c => c.UserId);
+	}
 }

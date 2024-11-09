@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Template.Application.Consultations.Commands.ChangeStatus;
 using Template.Application.Consultations.Commands.CreateConsultation;
 using Template.Application.Consultations.Dtos;
+using Template.Application.Consultations.Queries.GetAllConsultations;
 
 namespace Template.API.Controllers
 {
@@ -28,7 +29,7 @@ namespace Template.API.Controllers
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<ConsultationDto>>> GetAllConsultations()
 		{
-			var consultations = await mediator.Send(GetAllConsultations());
+			var consultations = await mediator.Send(new GetAllConsultationsQuery());
 			return Ok(consultations);
 		}
 

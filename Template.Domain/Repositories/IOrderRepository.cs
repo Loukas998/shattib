@@ -15,5 +15,6 @@ namespace Template.Domain.Repositories
 		public Task SaveChangesAsync();
 		public Task DeleteOrderAsync(Order entity);
 		public Task<Dictionary<int, List<DetailedOrderItemDto>>> GetOrderItemsForOrders(List<int> orderIds);
+		public Task<DetailedOrderItemDto?> GetItemsForOrder(int orderId);
 	}
 }

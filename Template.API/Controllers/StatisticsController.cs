@@ -2,15 +2,16 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections;
-using Template.Application.Statistics;
+using Template.Application.Statistics.Dtos;
 using Template.Application.Statistics.Queries.GetNumberOfBusinesses;
 using Template.Application.Statistics.Queries.GetNumberOfClients;
 using Template.Application.Statistics.Queries.GetNumberOfOrders;
 using Template.Application.Statistics.Queries.GetNumberOfProducts;
+using Template.Application.Statistics.Queries.GetProfitsByDate;
 
 namespace Template.API.Controllers
 {
-	[ApiController]
+    [ApiController]
 	[Route("api/[controller]")]
 	public class StatisticsController(IMediator mediator) : ControllerBase
 	{
@@ -44,6 +45,12 @@ namespace Template.API.Controllers
 			return Ok(numberOfProducts);
 		}
 
+		[HttpGet("GetProfits")]
+		public async Task<ActionResult<ProfitsDto>> GetProfitsByDate([FromQuery] GetProfitsByDateQuery query)
+		{
+			var profits = await mediator.Send(query);
+			return Ok(profits);
+		}
 
 	}
 }

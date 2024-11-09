@@ -1,5 +1,8 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Template.Domain.Entities.Orders;
+using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Orders.Commands.CancelOrder
@@ -11,10 +14,11 @@ namespace Template.Application.Orders.Commands.CancelOrder
 		{
 			logger.LogInformation("Deleting order with id: {OrderId}", request.OrderId);
 			var order = await orderRepository.GetOrderById(request.OrderId);
-			if (order != null)
+			if (order == null)
 			{
-				await orderRepository.DeleteOrderAsync(order);
+				throw new NotFoundException(nameof(Order), request.OrderId.ToString());
 			}
+			await orderRepository.DeleteOrderAsync(order);
 		}
 	}
 }

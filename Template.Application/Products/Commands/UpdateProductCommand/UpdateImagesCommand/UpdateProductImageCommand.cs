@@ -7,6 +7,6 @@ namespace Template.Application.Products.Commands.UpdateProductCommand.UpdateImag
 	{
 		public int ProductId { get; set; }
 		public int OldImageId { get; set; }
-		public IFormFile? NewImage { get; set; } = default;
+		public IFormFile NewImage { get; set; } = default;
 	}
 }

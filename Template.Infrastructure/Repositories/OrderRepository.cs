@@ -47,7 +47,24 @@ namespace Template.Infrastructure.Repositories
 
 		public async Task<Order?> GetOrderById(int id)
 		{
-			return await dbContext.Orders.FirstOrDefaultAsync(o => o.Id == id);
+			var order = await dbContext.Orders.FirstOrDefaultAsync(o => o.Id == id);
+			return order;
+		}
+
+		public async Task<DetailedOrderItemDto?> GetItemsForOrder(int orderId)
+		{
+			var orderItems = from oi in dbContext.OrderItems
+							 join p in dbContext.Products.Include(p => p.Images)
+								on oi.ProductId equals p.Id
+							 where oi.OrderId == orderId
+							 select new DetailedOrderItemDto
+							 {
+								 ProductMainImage = p.Images.FirstOrDefault().ImagePath ?? string.Empty,
+								 ProductName = p.Name,
+								 Quantitiy = oi.Quantity,
+								 TotalPriceForThisProduct = oi.Price,
+							 };
+			return await orderItems.SingleOrDefaultAsync();
 		}
 
 		//used dictionary for easy grouping  

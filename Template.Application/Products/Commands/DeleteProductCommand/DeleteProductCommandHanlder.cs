@@ -2,6 +2,8 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Template.Application.Products.Commands.CreateProductCommand;
+using Template.Domain.Entities.Products;
+using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Products.Commands.DeleteProductCommand
@@ -15,7 +17,7 @@ namespace Template.Application.Products.Commands.DeleteProductCommand
 			var product = await productRepository.GetProductByIdAsync(request.ProductId);
 			if (product == null)
 			{
-				throw new NotImplementedException();
+				throw new NotFoundException(nameof(Product), request.ProductId.ToString());
 			}
 			await productRepository.Delete(product);
 		}

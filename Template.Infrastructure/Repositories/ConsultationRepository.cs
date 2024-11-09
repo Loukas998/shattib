@@ -22,7 +22,8 @@ namespace Template.Infrastructure.Repositories
 
 		public async Task<IEnumerable<Consultation>> GetAllConsultationsAsync()
 		{
-			return await dbContext.Consultations.ToListAsync();
+			var consultations = await dbContext.Consultations.ToListAsync();
+			return consultations;
 		}
 
 		public async Task<Consultation> GetConsultationByIdAsync(int id)
