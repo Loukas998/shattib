@@ -7,6 +7,8 @@ public class CriteriaDto
     public int Id { get; set; }
     public string Title { get; set; } = default!;
     public string Status { get; set; } = default!;
+    public string UserName { get; set; } = default!;
+    public string PhoneNumber { get; set; } = default!;
     public List<GetCriteriaItemDto> CriteriaItems { get; set; }
 
     public List<CommentDto> Comments { get; set; }

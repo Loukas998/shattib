@@ -1,6 +1,6 @@
 using Template.Domain.Constants;
 
-namespace Template.Domain.Entities.Criteria;
+namespace Template.Domain.Entities.Criterias;
 
 public class Criteria
 {
@@ -11,4 +11,6 @@ public class Criteria
     public List<CriteriaItem> CriteriaItems { get; set; } = new();
     public List<Comment> Comments { get; set; } = new();
     public List<CriteriaBill> CriteriaBills { get; set; } = new();
+    public User User { get; set; } = default!;
+    
 }

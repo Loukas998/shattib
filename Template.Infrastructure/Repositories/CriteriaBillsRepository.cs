@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Template.Domain.Entities.Criteria;
+using Template.Domain.Entities.Criterias;
 using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Template.Domain.Entities;
-using Template.Domain.Entities.Criteria;
+using Template.Domain.Entities.Criterias;
 using Template.Domain.Entities.EngConsultation;
 using Template.Domain.Entities.Orders;
 using Template.Domain.Entities.Products;
@@ -65,7 +65,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
             .WithMany(s => s.Products)
             .UsingEntity<ProductSpecification>();
 
-        // Criteria -> CriteriaItem (One-to-Many)
+        // Criteria -> CriteriaItem (One-0oto-Many)
         modelBuilder.Entity<Criteria>()
             .HasMany(c => c.CriteriaItems)
             .WithOne(ci => ci.Criteria)
@@ -100,5 +100,11 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 			.HasMany(u => u.Consultations)
 			.WithOne(c => c.User)
 			.HasForeignKey(c => c.UserId);
+
+        // User -> Criterias (One-to-Many)
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Criterias)
+            .WithOne(c => c.User)
+            .HasForeignKey(c => c.UserId);
 	}
 }

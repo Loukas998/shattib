@@ -1,7 +1,7 @@
 using AutoMapper;
 using Template.Application.Comments.Commands.CreateCommentCommand;
 using Template.Application.Shared.Mapping.Resolvers;
-using Template.Domain.Entities.Criteria;
+using Template.Domain.Entities.Criterias;
 
 namespace Template.Application.Comments.Dtos;
 

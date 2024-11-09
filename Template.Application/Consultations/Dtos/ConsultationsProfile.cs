@@ -13,7 +13,8 @@ namespace Template.Application.Consultations.Dtos
 		{
 			CreateMap<CreateConsultationCommand, Consultation>();
 
-			CreateMap<Consultation, ConsultationDto>();
+			CreateMap<Consultation, ConsultationDto>()
+				.ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName));
 
 			CreateMap<UpdateConsultationCommand, Consultation>()
 			.ForAllMembers(opt =>

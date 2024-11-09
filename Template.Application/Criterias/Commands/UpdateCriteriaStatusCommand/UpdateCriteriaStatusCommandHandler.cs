@@ -1,7 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Template.Domain.Entities.Criteria;
+using Template.Domain.Entities.Criterias;
 using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 

@@ -2,7 +2,7 @@ using AutoMapper;
 using Template.Application.CriteriaBills.Commands.CreateCriteriaBillCommand;
 using Template.Application.CriteriaBills.Dtos;
 using Template.Application.CriteriaBills.Mapping.Resolvers;
-using Template.Domain.Entities.Criteria;
+using Template.Domain.Entities.Criterias;
 
 namespace Template.Application.CriteriaBills.Mapping.Profiles;
 

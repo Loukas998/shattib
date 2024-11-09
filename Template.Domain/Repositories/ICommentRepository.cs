@@ -1,5 +1,5 @@
 using System.Runtime.InteropServices;
-using Template.Domain.Entities.Criteria;
+using Template.Domain.Entities.Criterias;
 
 namespace Template.Domain.Repositories;
 

@@ -8,6 +8,7 @@ namespace Template.Application.Consultations.Dtos
 		public int Id { get; set; }
 		public string UserId { get; set; } = default!;
 		public string PhoneNumber { get; set; } = default!;
+		public string UserName { get; set; } = default!;
 		public string ConsultationTopic { get; set; } = default!;
 		public string EngineerSpecification { get; set; } = default!;
 		public string ProjectCategory { get; set; } = default!;

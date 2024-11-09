@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Template.Domain.Entities.Criteria;
+using Template.Domain.Entities.Criterias;
 using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
 
@@ -12,7 +12,8 @@ public class CriteriaRepository(TemplateDbContext dbContext) : ICriteriaReposito
         return await dbContext.Criterias
             .Include(criteria => criteria.CriteriaItems)
             .ThenInclude(criteriaItem => criteriaItem.Category)
-            .ToListAsync();
+			.Include(c => c.User)
+			.ToListAsync();
     }
 
     public async Task<Criteria?> GetByIdAsync(int id)
@@ -22,6 +23,7 @@ public class CriteriaRepository(TemplateDbContext dbContext) : ICriteriaReposito
             .ThenInclude(criteriaItem => criteriaItem.Category)
             .Include(criteria => criteria.Comments)
             .Include(criteria => criteria.CriteriaBills)
+            .Include(c => c.User)
             .FirstOrDefaultAsync(criteria => criteria.Id == id);
     }
 

@@ -1,4 +1,4 @@
-namespace Template.Domain.Entities.Criteria;
+namespace Template.Domain.Entities.Criterias;
 
 public class CriteriaBill
 {

@@ -4,6 +4,7 @@ using Template.Application.Consultations.Commands.ChangeStatus;
 using Template.Application.Consultations.Commands.CreateConsultation;
 using Template.Application.Consultations.Dtos;
 using Template.Application.Consultations.Queries.GetAllConsultations;
+using Template.Application.Consultations.Queries.GetConsultationById;
 
 namespace Template.API.Controllers
 {
@@ -22,7 +23,7 @@ namespace Template.API.Controllers
 		[Route("{consultationId}")]
 		public async Task<ActionResult<ConsultationDto>> GetConsultationById([FromRoute] int consultationId)
 		{
-			var consultation = await mediator.Send(GetConsultationById(consultationId));
+			var consultation = await mediator.Send(new GetConsultationByIdQuery(consultationId));
 			return Ok(consultation);
 		}
 

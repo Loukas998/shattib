@@ -12,8 +12,8 @@ using Template.Infrastructure.Persistence;
 namespace Template.Infrastructure.Migrations
 {
     [DbContext(typeof(TemplateDbContext))]
-    [Migration("20241106131707_MakeCriteriaBIllStatusNullable")]
-    partial class MakeCriteriaBIllStatusNullable
+    [Migration("20241109183011_AddedOneToManyUserCriteria")]
+    partial class AddedOneToManyUserCriteria
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -204,14 +204,16 @@ namespace Template.Infrastructure.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Criterias");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Criterias.CriteriaBills", b =>
+            modelBuilder.Entity("Template.Domain.Entities.Criterias.CriteriaBill", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -230,7 +232,6 @@ namespace Template.Infrastructure.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Receipt")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -293,10 +294,6 @@ namespace Template.Infrastructure.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ClientName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("ConsultationTopic")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -305,10 +302,6 @@ namespace Template.Infrastructure.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Details")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -328,7 +321,13 @@ namespace Template.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Consultations");
                 });
@@ -679,7 +678,18 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("Criteria");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Criterias.CriteriaBills", b =>
+            modelBuilder.Entity("Template.Domain.Entities.Criterias.Criteria", b =>
+                {
+                    b.HasOne("Template.Domain.Entities.User", "User")
+                        .WithMany("Criterias")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Template.Domain.Entities.Criterias.CriteriaBill", b =>
                 {
                     b.HasOne("Template.Domain.Entities.Criterias.Criteria", "Criteria")
                         .WithMany("CriteriaBills")
@@ -707,6 +717,17 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Criteria");
+                });
+
+            modelBuilder.Entity("Template.Domain.Entities.EngConsultation.Consultation", b =>
+                {
+                    b.HasOne("Template.Domain.Entities.User", "User")
+                        .WithMany("Consultations")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Orders.Order", b =>
@@ -819,6 +840,10 @@ namespace Template.Infrastructure.Migrations
 
             modelBuilder.Entity("Template.Domain.Entities.User", b =>
                 {
+                    b.Navigation("Consultations");
+
+                    b.Navigation("Criterias");
+
                     b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618

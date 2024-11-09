@@ -15,6 +15,6 @@ namespace Template.Domain.Entities.EngConsultation
 		[DataType(DataType.Date)]
 		public DateTime DateOfRequest { get; set; } = default!;
 		public string Status { get; set; } = ConsultationConstants.Pending;
-		public User? User { get; set; }
+		public User User { get; set; } = default!;
 	}
 }

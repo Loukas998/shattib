@@ -1,6 +1,6 @@
 using AutoMapper;
 using Template.Application.Criterias.Dtos;
-using Template.Domain.Entities.Criteria;
+using Template.Domain.Entities.Criterias;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Criterias.Mapping.Resolvers;

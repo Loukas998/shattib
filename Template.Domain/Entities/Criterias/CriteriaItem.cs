@@ -1,6 +1,6 @@
 using Template.Domain.Entities.Products;
 
-namespace Template.Domain.Entities.Criteria;
+namespace Template.Domain.Entities.Criterias;
 
 public class CriteriaItem
 {

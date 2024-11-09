@@ -157,7 +157,7 @@ namespace Template.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Criteria.Comment", b =>
+            modelBuilder.Entity("Template.Domain.Entities.Criterias.Comment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -186,7 +186,7 @@ namespace Template.Infrastructure.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Criteria.Criteria", b =>
+            modelBuilder.Entity("Template.Domain.Entities.Criterias.Criteria", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -211,7 +211,7 @@ namespace Template.Infrastructure.Migrations
                     b.ToTable("Criterias");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Criteria.CriteriaBills", b =>
+            modelBuilder.Entity("Template.Domain.Entities.Criterias.CriteriaBills", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -240,7 +240,7 @@ namespace Template.Infrastructure.Migrations
                     b.ToTable("CriteriaBills");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Criteria.CriteriaItem", b =>
+            modelBuilder.Entity("Template.Domain.Entities.Criterias.CriteriaItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -668,9 +668,9 @@ namespace Template.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Criteria.Comment", b =>
+            modelBuilder.Entity("Template.Domain.Entities.Criterias.Comment", b =>
                 {
-                    b.HasOne("Template.Domain.Entities.Criteria.Criteria", "Criteria")
+                    b.HasOne("Template.Domain.Entities.Criterias.Criteria", "Criteria")
                         .WithMany("Comments")
                         .HasForeignKey("CriteriaId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -679,9 +679,9 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("Criteria");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Criteria.CriteriaBills", b =>
+            modelBuilder.Entity("Template.Domain.Entities.Criterias.CriteriaBills", b =>
                 {
-                    b.HasOne("Template.Domain.Entities.Criteria.Criteria", "Criteria")
+                    b.HasOne("Template.Domain.Entities.Criterias.Criteria", "Criteria")
                         .WithMany("CriteriaBills")
                         .HasForeignKey("CriteriaId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -690,7 +690,7 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("Criteria");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Criteria.CriteriaItem", b =>
+            modelBuilder.Entity("Template.Domain.Entities.Criterias.CriteriaItem", b =>
                 {
                     b.HasOne("Template.Domain.Entities.Products.Category", "Category")
                         .WithMany("CriteriaItems")
@@ -698,7 +698,7 @@ namespace Template.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Template.Domain.Entities.Criteria.Criteria", "Criteria")
+                    b.HasOne("Template.Domain.Entities.Criterias.Criteria", "Criteria")
                         .WithMany("CriteriaItems")
                         .HasForeignKey("CriteriaId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -777,7 +777,7 @@ namespace Template.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Criteria.Criteria", b =>
+            modelBuilder.Entity("Template.Domain.Entities.Criterias.Criteria", b =>
                 {
                     b.Navigation("Comments");
 

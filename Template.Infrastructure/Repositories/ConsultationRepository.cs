@@ -22,13 +22,13 @@ namespace Template.Infrastructure.Repositories
 
 		public async Task<IEnumerable<Consultation>> GetAllConsultationsAsync()
 		{
-			var consultations = await dbContext.Consultations.ToListAsync();
+			var consultations = await dbContext.Consultations.Include(c => c.User).ToListAsync();
 			return consultations;
 		}
 
-		public async Task<Consultation> GetConsultationByIdAsync(int id)
+		public async Task<Consultation?> GetConsultationByIdAsync(int id)
 		{
-			return await dbContext.Consultations.FirstOrDefaultAsync(x => x.Id == id);
+			return await dbContext.Consultations.Include(c => c.User).FirstOrDefaultAsync(x => x.Id == id);
 		}
 
 		public async Task SaveChangesAsync() => await SaveChangesAsync();
