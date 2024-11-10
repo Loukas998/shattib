@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Template.Domain.Constants;
 using Template.Domain.Entities;
 using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
@@ -20,6 +21,7 @@ public static class ServiceCollectionExtensions
         services.AddDbContext<TemplateDbContext>(
             options => options.UseMySql(connectionString, version).EnableSensitiveDataLogging()
         );
+        services.Configure<AzureBlobSettings>(configuration.GetSection("AzureBlobSettings"));
 
         //this for identity and jwt when needed
         services.AddIdentityCore<User>()
@@ -53,6 +55,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddScoped<ICriteriaRepository, CriteriaRepository>();
         services.AddScoped<ICriteriaBillsRepository, CriteriaBillsRepository>();
-        services.AddScoped<IFileService, FileService>();
+        services.AddScoped<IFileService, BlobStorageFileService>();
     }
 }
