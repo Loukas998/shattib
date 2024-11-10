@@ -30,7 +30,6 @@ public class CriteriaRepository(TemplateDbContext dbContext) : ICriteriaReposito
     public async Task<int> CreateCriteriaAsync(Criteria criteria)
     {
         dbContext.Criterias.Add(criteria);
-        dbContext.Criterias.AddAsync(criteria);
         await dbContext.SaveChangesAsync();
         return criteria.Id;
     }
