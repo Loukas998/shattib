@@ -3,6 +3,8 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Template.Application.Products.Dtos;
 using Template.Application.Products.Queries.GetAllProducts;
+using Template.Domain.Entities.Products;
+using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Products.Queries.GetProduct
@@ -16,7 +18,7 @@ namespace Template.Application.Products.Queries.GetProduct
 			var product = await productRepository.GetProductByIdAsync(request.ProductId);
 			if (product == null)
 			{
-				throw new NotImplementedException();
+				throw new NotFoundException(nameof(Product), request.ProductId.ToString());
 			}
 			var productResult = mapper.Map<ProductDto>(product);
 			var productSpecsDtos = await productRepository.GetProductSpecificationDtos(request.ProductId);

@@ -2,6 +2,8 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Template.Application.Orders.Dtos;
+using Template.Domain.Entities.Orders;
+using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Orders.Queries.GetOrderById
@@ -15,7 +17,7 @@ namespace Template.Application.Orders.Queries.GetOrderById
 			var order = await orderRepository.GetOrderById(request.OrderId);
 			if (order == null)
 			{
-				throw new NotImplementedException();
+				throw new NotFoundException(nameof(Order), request.OrderId.ToString());
 			}
 			var result = mapper.Map<OrderDto>(order);
 			result.OrderItems.Add(await orderRepository.GetItemsForOrder(request.OrderId));

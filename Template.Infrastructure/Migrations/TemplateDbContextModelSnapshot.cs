@@ -180,7 +180,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("CriteriaId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Criterias.Criteria", b =>
@@ -207,7 +207,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Criterias");
+                    b.ToTable("Criterias", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Criterias.CriteriaBill", b =>
@@ -235,7 +235,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("CriteriaId");
 
-                    b.ToTable("CriteriaBills");
+                    b.ToTable("CriteriaBills", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Criterias.CriteriaItem", b =>
@@ -280,7 +280,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("CriteriaId");
 
-                    b.ToTable("CriteriaItems");
+                    b.ToTable("CriteriaItems", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.EngConsultation.Consultation", b =>
@@ -326,7 +326,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Consultations");
+                    b.ToTable("Consultations", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Orders.Order", b =>
@@ -362,7 +362,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Orders.OrderItem", b =>
@@ -383,7 +383,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.Category", b =>
@@ -400,7 +400,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.Product", b =>
@@ -467,7 +467,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("SubCategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.ProductImages", b =>
@@ -489,7 +489,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductImages");
+                    b.ToTable("ProductImages", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.ProductSpecification", b =>
@@ -507,7 +507,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("SpecificationId");
 
-                    b.ToTable("Productspecifications");
+                    b.ToTable("Productspecifications", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.Specification", b =>
@@ -524,7 +524,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Specifications");
+                    b.ToTable("Specifications", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Products.SubCategory", b =>
@@ -546,7 +546,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Subcategories");
+                    b.ToTable("Subcategories", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.User", b =>

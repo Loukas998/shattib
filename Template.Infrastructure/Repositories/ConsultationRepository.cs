@@ -31,6 +31,11 @@ namespace Template.Infrastructure.Repositories
 			return await dbContext.Consultations.Include(c => c.User).FirstOrDefaultAsync(x => x.Id == id);
 		}
 
+		public async Task<IEnumerable<Consultation>> GetUserConsultations(string userId)
+		{
+			return await dbContext.Consultations.Where(c => c.UserId == userId).ToListAsync();
+		}
+
 		public async Task SaveChangesAsync() => await SaveChangesAsync();
 	}
 }

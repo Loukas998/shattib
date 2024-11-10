@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 using Template.Domain.Entities.Criterias;
 using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
@@ -30,8 +31,8 @@ public class CriteriaRepository(TemplateDbContext dbContext) : ICriteriaReposito
     public async Task<int> CreateCriteriaAsync(Criteria criteria)
     {
         dbContext.Criterias.Add(criteria);
-        await dbContext.SaveChangesAsync();
-        return criteria.Id;
+        await dbContext.Criterias.AddAsync(criteria);
+		return criteria.Id;
     }
 
     public async Task<List<Criteria>> GetAllByUserId(string userId)

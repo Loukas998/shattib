@@ -2,6 +2,8 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Template.Application.CriteriaBills.Dtos;
+using Template.Domain.Entities.Criterias;
+using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
 namespace Template.Application.CriteriaBills.Queries.GetCriteriaBillByIdQuery;
@@ -15,8 +17,8 @@ public class GetCriteriaBillByIdQueryHandler(
     {
         logger.LogInformation("Getting Bill with ID: {CriteriaBillId}", request.Id);
         var bill = await criteriaBillsRepository.GetBillByIdAsync(request.Id);
-        if (bill == null) throw new NotImplementedException();
-        var billDto = mapper.Map<CriteriaBillDto>(bill);
+        if (bill == null) throw new NotFoundException(nameof(CriteriaBill), request.Id.ToString());
+		var billDto = mapper.Map<CriteriaBillDto>(bill);
         return billDto;
     }
 }

@@ -9,5 +9,5 @@ public class CreateCriteriaItemDto
     public string Description { get; set; } = default!;
     public int Amount { get; set; } = default!;
     public string MeasurementUnit { get; set; } = default!;
-    public IFormFile Image { get; set; } = default!;
+    public IFormFile? Image { get; set; }
 }

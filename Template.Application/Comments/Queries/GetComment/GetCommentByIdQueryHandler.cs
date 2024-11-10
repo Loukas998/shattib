@@ -2,6 +2,8 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Template.Application.Comments.Dtos;
+using Template.Domain.Entities.Criterias;
+using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Comments.Queries.GetComment;
@@ -15,7 +17,7 @@ public class GetCommentByIdQueryHandler(
     {
         logger.LogInformation("Getting comment by id: {Id}", request.Id);
         var comment = await commentRepository.GetCommentByIdAsync(request.Id);
-        if (comment == null) throw new NotImplementedException();
-        return mapper.Map<CommentDto>(comment);
+        if (comment == null) throw new NotFoundException(nameof(Comment), request.Id.ToString());
+		return mapper.Map<CommentDto>(comment);
     }
 }

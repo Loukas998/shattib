@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Template.Application.Criterias.Dtos;
 
 namespace Template.Application.Criterias.Commands.CreateCriteriaCommand;

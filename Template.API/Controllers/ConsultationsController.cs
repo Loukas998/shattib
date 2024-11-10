@@ -5,6 +5,7 @@ using Template.Application.Consultations.Commands.CreateConsultation;
 using Template.Application.Consultations.Dtos;
 using Template.Application.Consultations.Queries.GetAllConsultations;
 using Template.Application.Consultations.Queries.GetConsultationById;
+using Template.Application.Consultations.Queries.GetUserConsultations;
 
 namespace Template.API.Controllers
 {
@@ -32,6 +33,13 @@ namespace Template.API.Controllers
 		{
 			var consultations = await mediator.Send(new GetAllConsultationsQuery());
 			return Ok(consultations);
+		}
+
+		[HttpGet("GetUserConsultations")]
+		public async Task<ActionResult<IEnumerable<ConsultationDto>>> GetUserConsultations()
+		{
+			var userConsultations = await mediator.Send(new GetUserConsultationsQuery());
+			return Ok(userConsultations);
 		}
 
 		[HttpPatch]
