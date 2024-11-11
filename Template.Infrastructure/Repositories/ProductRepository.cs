@@ -52,15 +52,15 @@ public class ProductRepository(
 
     public async Task Delete(Product entity)
     {
-        var productImages = dbContext.ProductImages.Where(i => i.ProductId == entity.Id);
+        //var productImages = dbContext.ProductImages.Where(i => i.ProductId == entity.Id);
 
-        foreach (var productImage in productImages)
-        {
-            dbContext.ProductImages.Remove(productImage);
+        //foreach (var productImage in productImages)
+        //{
+        //    dbContext.ProductImages.Remove(productImage);
 
-            var fullPath = Path.Combine(webHostEnvironment.ContentRootPath, productImage.ImagePath);
-            File.Delete(fullPath);
-        }
+        //    var fullPath = Path.Combine(webHostEnvironment.ContentRootPath, productImage.ImagePath);
+        //    File.Delete(fullPath);
+        //}
 
         dbContext.Products.Remove(entity);
         await dbContext.SaveChangesAsync();
@@ -71,7 +71,7 @@ public class ProductRepository(
         float? maxPrice, string? searchTerm, string? sortOrder)
     {
         // return await dbContext.Products.Include(p => p.Images).ToListAsync();
-        var query = dbContext.Products.Include(p => p.Images).AsQueryable();
+        var query = dbContext.Products.Include(p => p.Images).Include(p => p.SubCategory).AsQueryable();
         if (categoryId != null)
             query = query.Where(p => p.SubCategory.CategoryId == categoryId);
 

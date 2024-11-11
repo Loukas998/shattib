@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Statistics.Dtos;
 using Template.Application.Statistics.Queries.GetNumberOfBusinesses;
@@ -6,11 +7,13 @@ using Template.Application.Statistics.Queries.GetNumberOfClients;
 using Template.Application.Statistics.Queries.GetNumberOfOrders;
 using Template.Application.Statistics.Queries.GetNumberOfProducts;
 using Template.Application.Statistics.Queries.GetProfitsByDate;
+using Template.Domain.Constants;
 
 namespace Template.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+//[Authorize(Roles = UserRoles.Administrator)]
 public class StatisticsController(IMediator mediator) : ControllerBase
 {
     [HttpGet("GetClients")]

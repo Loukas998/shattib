@@ -6,6 +6,6 @@ public class MiniProductDto
     public string Name { get; set; } = default!;
     public float Price { get; set; }
     public string MainImagePath { get; set; } = default!;
-
-    public string WarehouseCode { get; set; }
+    public string SubCategoryName { get; set; } = default!;
+    public string WarehouseCode { get; set; } = default!;
 }

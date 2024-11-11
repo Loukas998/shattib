@@ -2,7 +2,8 @@
 {
 	public class UserRoles
 	{
-		public static string Client = "Client";
-		public static string Business = "Business";
+		public const string Client = "Client";
+		public const string Business = "Business";
+		public const string Administrator = "Administrator";
 	}
 }

@@ -13,7 +13,7 @@ namespace Template.Application.Criterias.Queries.GetAllCriterias
 		{
 			logger.LogInformation("Getting all criterias");
 
-			var criterias = await criteriaRepository.GetAllAsync();
+			var criterias = await criteriaRepository.GetAllAsync(request.Status);
 			var results = mapper.Map<IEnumerable<CriteriaDto>>(criterias);
 			return results;
 		}

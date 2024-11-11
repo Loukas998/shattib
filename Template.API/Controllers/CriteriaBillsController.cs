@@ -1,14 +1,18 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.CriteriaBills.Commands.AddReceiptCommand;
 using Template.Application.CriteriaBills.Commands.CreateCriteriaBillCommand;
 using Template.Application.CriteriaBills.Commands.UpdateCriteriaBillAcceptedCommand;
 using Template.Application.CriteriaBills.Queries.GetCriteriaBillByIdQuery;
+using Template.Domain.Constants;
 
 namespace Template.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+//[Authorize(Roles = UserRoles.Administrator)]
+//[Authorize(Roles = UserRoles.Business)]
 public class CriteriaBillsController(IMediator mediator) : ControllerBase
 {
     [HttpPost]

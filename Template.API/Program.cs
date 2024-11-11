@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Diagnostics;
 using Serilog;
 using Template.API.Extensions;
+using Template.API.Middlewares;
 using Template.Application.Extensions;
 using Template.Infrastructure.Extensions;
 using Template.Infrastructure.Seeders;
@@ -39,9 +41,11 @@ try
     await seeder.Seed();
     var catSedder = scope.ServiceProvider.GetRequiredService<ICategoriesSeeder>();
     await catSedder.Seed();
-
-    // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
+    app.UseMiddleware<ErrorHandlerMiddleware>();
+    app.UseMiddleware<TimeLoggingMiddleware>();
+    app.UseMiddleware<TranslationMiddleware>();
+	// Configure the HTTP request pipeline.
+	if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
         app.UseSwaggerUI();

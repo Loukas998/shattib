@@ -7,13 +7,20 @@ namespace Template.Infrastructure.Repositories;
 
 public class CriteriaRepository(TemplateDbContext dbContext) : ICriteriaRepository
 {
-    public async Task<IEnumerable<Criteria>> GetAllAsync()
+    public async Task<IEnumerable<Criteria>> GetAllAsync(string status)
     {
-        return await dbContext.Criterias
+        var query = dbContext.Criterias
             .Include(criteria => criteria.CriteriaItems)
             .ThenInclude(criteriaItem => criteriaItem.Category)
             .Include(c => c.User)
-            .ToListAsync();
+            .AsQueryable();
+
+        if (string.IsNullOrEmpty(status))
+        {
+            return await query.ToListAsync();
+        }
+
+        return await query.Where(c => c.Status == status).ToListAsync();
     }
 
     public async Task<Criteria?> GetByIdAsync(int id)

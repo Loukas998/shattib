@@ -1,14 +1,18 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Comments.Commands.CreateCommentCommand;
 using Template.Application.Comments.Dtos;
 using Template.Application.Comments.Queries.GetAllForCriteria;
 using Template.Application.Comments.Queries.GetComment;
+using Template.Domain.Constants;
 
 namespace Template.API.Controllers;
 
 [ApiController]
 [Route("api/Criterias/{criteriaId:int}/[controller]")]
+//[Authorize(Roles = UserRoles.Business)]
+//[Authorize(Roles = UserRoles.Administrator)]
 public class CommentsController(IMediator mediator) : ControllerBase
 {
     [HttpPost]

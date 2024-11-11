@@ -40,11 +40,14 @@ namespace Template.Infrastructure.Repositories
 			var isValidRefreshToken = await userManager.VerifyUserTokenAsync(_user, _loginProvidor, _refreshToken, refreshTokenRequest.RefreshToken);
 			if (isValidRefreshToken)
 			{
+				var roles = await userManager.GetRolesAsync(_user);
+				string role = roles.FirstOrDefault()!;
 				return new AuthResponseDto
 				{
 					AccessToken = await GenerateAccessToken(_user),
 					RefreshToken = await CreateRefreshToken(),
-					DurationInMinutes = _expiresInMinutes
+					DurationInMinutes = _expiresInMinutes,
+					Role = role
 				};
 			}
 			return null;
@@ -60,11 +63,14 @@ namespace Template.Infrastructure.Repositories
 
 			if(await userManager.CheckPasswordAsync(_user, password))
 			{
+				var roles = await userManager.GetRolesAsync(_user);
+				string role = roles.FirstOrDefault()!;
 				return new AuthResponseDto
 				{
 					AccessToken = await GenerateAccessToken(_user),
 					RefreshToken = await CreateRefreshToken(),
-					DurationInMinutes = _expiresInMinutes
+					DurationInMinutes = _expiresInMinutes,
+					Role = role
 				};
 			}
 			return null;
@@ -72,7 +78,15 @@ namespace Template.Infrastructure.Repositories
 
 		public async Task<IEnumerable<IdentityError>> Register(User user, string password, string role)
 		{
-			_user = user;
+			var existingUser = await userManager.FindByEmailAsync(user.Email!);
+			if (existingUser != null)
+			{
+				return new List<IdentityError>
+						{
+							new IdentityError { Description = "This email already exists." }
+						};
+			}
+			user.UserName = user.Email;
 			var result = await userManager.CreateAsync(user, password);
 			if(result.Succeeded)
 			{

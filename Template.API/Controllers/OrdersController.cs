@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Orders.Commands.CancelOrder;
 using Template.Application.Orders.Commands.CreateOrder;
@@ -11,11 +12,14 @@ using Template.Application.Orders.Queries.GetOrdersByStatus;
 using Template.Application.Orders.Queries.GetUserOrders;
 using Template.Application.Orders.Queries.GetUserOrdersByKind;
 using Template.Application.Orders.Queries.GetUserOrdersByStatus;
+using Template.Domain.Constants;
 
 namespace Template.API.Controllers
 {
 	[ApiController]
 	[Route("api/[controller]")]
+	//[Authorize(Roles = UserRoles.Administrator)]
+	//[Authorize(Roles = UserRoles.Client)]
 	public class OrdersController(IMediator mediator) : ControllerBase
 	{
 		[HttpPost]

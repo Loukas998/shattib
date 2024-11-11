@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Consultations.Commands.ChangeStatus;
 using Template.Application.Consultations.Commands.CreateConsultation;
@@ -6,11 +7,14 @@ using Template.Application.Consultations.Dtos;
 using Template.Application.Consultations.Queries.GetAllConsultations;
 using Template.Application.Consultations.Queries.GetConsultationById;
 using Template.Application.Consultations.Queries.GetUserConsultations;
+using Template.Domain.Constants;
 
 namespace Template.API.Controllers
 {
 	[ApiController]
 	[Route("api/[controller]")]
+	//[Authorize(Roles = UserRoles.Client)]
+	//[Authorize(Roles = UserRoles.Administrator)]
 	public class ConsultationsController(IMediator mediator) : ControllerBase
 	{
 		[HttpPost]

@@ -7,7 +7,9 @@ public class ProductDto
     public int Id { get; set; }
     public int SubCategoryId { get; set; }
     public string Name { get; set; } = default!;
-    public string Description { get; set; } = default!;
+	public string WarehouseCode { get; set; } = default!;
+
+	public string Description { get; set; } = default!;
     public string Features { get; set; } = default!;
     public float Price { get; set; }
     public string MeasurementUnit { get; set; } = default!;

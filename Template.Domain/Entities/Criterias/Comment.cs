@@ -9,4 +9,5 @@ public class Comment
     public string? Attachment { get; set; }
 
     public Criteria Criteria { get; set; }
+    public User user { get; set; }
 }
