@@ -31,6 +31,8 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.UseStaticFiles();
+
 var scope = app.Services.CreateScope(); //for seeders
 // example: var govSeeder = scope.ServiceProvider.GetRequiredService<IGovernorateSeeder>();
 var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
@@ -65,5 +67,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapFallbackToFile("index.html");
 
 app.Run();
