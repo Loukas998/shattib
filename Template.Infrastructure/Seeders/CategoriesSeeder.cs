@@ -1,4 +1,5 @@
-﻿using Template.Domain.Entities.Products;
+﻿using Microsoft.EntityFrameworkCore;
+using Template.Domain.Entities.Products;
 using Template.Infrastructure.Persistence;
 
 namespace Template.Infrastructure.Seeders;
@@ -7,6 +8,10 @@ internal class CategoriesSeeder(TemplateDbContext dbContext) : ICategoriesSeeder
 {
     public async Task Seed()
     {
+        if (dbContext.Database.GetPendingMigrations().Any())
+        {
+            await dbContext.Database.MigrateAsync();
+        }
         if (!dbContext.Categories.Any())
         {
             var categories = GetCategories();

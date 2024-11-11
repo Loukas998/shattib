@@ -366,3 +366,6 @@ FodyWeavers.xsd
 *.jpg
 *.png
 *.jpeg
+/Template.API/appsettings.Development.json
+/Template.API/appsettings.json
+/Template.API/appsettings.Development.json

@@ -1,13 +1,19 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Template.Infrastructure.Persistence;
 
 namespace Template.Infrastructure.Seeders
 {
 	internal class RolesSeeder(TemplateDbContext dbContext) : ISeeder
 	{
+
 		public async Task Seed()
 		{
-			if(!dbContext.Roles.Any())
+			if (dbContext.Database.GetPendingMigrations().Any())
+			{
+				await dbContext.Database.MigrateAsync();
+			}
+			if (!dbContext.Roles.Any())
 			{
 				var roles = GetRoles();
 				dbContext.Roles.AddRange(roles);

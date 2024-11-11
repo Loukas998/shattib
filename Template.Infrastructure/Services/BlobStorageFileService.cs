@@ -2,8 +2,8 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using Template.Domain.Constants;
 using Template.Domain.Repositories;
+using Template.Infrastructure.Configuration;
 
 namespace Template.Infrastructure.Services;
 
