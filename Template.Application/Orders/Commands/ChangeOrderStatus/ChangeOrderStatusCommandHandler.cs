@@ -19,6 +19,10 @@ namespace Template.Application.Orders.Commands.ChangeOrderStatus
 				throw new NotFoundException(nameof(order), request.OrderId.ToString());
 			}
 			order.Status = request.NewStatus;
+			if(request.DateOfArrival != null)
+			{
+				order.DateOfArrival = request.DateOfArrival;
+			}
 			await orderRepository.SaveChangesAsync();
 		}
 	}

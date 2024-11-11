@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Products.Commands.CreateProductCommand;
 using Template.Application.Products.Commands.DeleteImagesCommand.DeleteImagesCommand;
@@ -8,21 +9,26 @@ using Template.Application.Products.Commands.UpdateProductCommand.UpdateImagesCo
 using Template.Application.Products.Dtos;
 using Template.Application.Products.Queries.GetProduct;
 using Template.Application.Products.Queries.GetProductsForHomePage;
+using Template.Domain.Constants;
 
 namespace Template.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+//[Authorize]
+
 public class ProductsController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreateProduct([FromForm] CreateProductCommand command)
+	//[Authorize(Roles = UserRoles.Administrator)]
+	public async Task<IActionResult> CreateProduct([FromForm] CreateProductCommand command)
     {
         var id = await mediator.Send(command);
         return CreatedAtAction(nameof(GetProductById), new { productId = id }, null);
     }
 
     [HttpGet("{productId:int}")]
+    //[AllowAnonymous]
     public async Task<ActionResult<ProductDto>> GetProductById([FromRoute] int productId)
     {
         var product = await mediator.Send(new GetProductByIdQuery(productId));
@@ -30,6 +36,7 @@ public class ProductsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet]
+    //[AllowAnonymous]
     public async Task<ActionResult<IEnumerable<MiniProductDto>>> GetProductsForHomePage(
         [FromQuery] GetProductsForHomePageQuery query)
     {
@@ -47,7 +54,8 @@ public class ProductsController(IMediator mediator) : ControllerBase
 
     [HttpPatch]
     [Route("{productId:int}")]
-    public async Task<IActionResult> UpdateProduct([FromForm] UpdateProductCommand command, [FromRoute] int productId)
+	//[Authorize(Roles = UserRoles.Administrator)]
+	public async Task<IActionResult> UpdateProduct([FromForm] UpdateProductCommand command, [FromRoute] int productId)
     {
         command.ProductId = productId;
         await mediator.Send(command);
@@ -56,7 +64,8 @@ public class ProductsController(IMediator mediator) : ControllerBase
 
     [HttpPatch]
     [Route("{productId}/images/{imageId}")]
-    public async Task<IActionResult> UpdateProductImage([FromForm] UpdateProductImageCommand command,
+	//[Authorize(Roles = UserRoles.Administrator)]
+	public async Task<IActionResult> UpdateProductImage([FromForm] UpdateProductImageCommand command,
         [FromRoute] int imageId,
         [FromRoute] int productId)
     {
@@ -67,14 +76,16 @@ public class ProductsController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{productId:int}")]
-    public async Task<IActionResult> DeleteProduct([FromRoute] int productId)
+	//[Authorize(Roles = UserRoles.Administrator)]
+	public async Task<IActionResult> DeleteProduct([FromRoute] int productId)
     {
         await mediator.Send(new DeleteProductCommand(productId));
         return NoContent();
     }
 
     [HttpDelete("Images/{imageId:int}")]
-    public async Task<IActionResult> DeleteProductImage([FromRoute] int imageId)
+	//[Authorize(Roles = UserRoles.Administrator)]
+	public async Task<IActionResult> DeleteProductImage([FromRoute] int imageId)
     {
         await mediator.Send(new DeleteProductImageCommand(imageId));
         return NoContent();

@@ -4,7 +4,7 @@ namespace Template.Domain.Repositories;
 
 public interface ICriteriaRepository
 {
-    public Task<IEnumerable<Criteria>> GetAllAsync();
+    public Task<IEnumerable<Criteria>> GetAllAsync(string status);
 
     public Task<Criteria?> GetByIdAsync(int id);
 

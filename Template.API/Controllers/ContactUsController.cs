@@ -18,14 +18,14 @@ namespace Template.API.Controllers
 			return CreatedAtAction(nameof(GetContactUsById), new { id }, null);
 		}
 
-		[HttpGet]
+		[HttpGet("GetById")]
 		public async Task<ActionResult<ContactUs>> GetContactUsById([FromRoute] int id)
 		{
 			var contactForm = await mediator.Send(new GetByIdQuery(id));
 			return Ok(contactForm);
 		}
 
-		[HttpGet]
+		[HttpGet("GetAll")]
 		public async Task<ActionResult<IEnumerable<ContactUs>>> GetAllContacts()
 		{
 			var contactForms = await mediator.Send(new GetAllQuery());

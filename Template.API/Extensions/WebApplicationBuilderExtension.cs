@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Azure.AI.Translation.Text;
+using Azure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Template.Domain.Entities;
@@ -7,6 +9,8 @@ namespace Template.API.Extensions
 {
 	public static class WebApplicationBuilderExtension
 	{
+		private static readonly string _key = "3vrYzUZug6ZgqqTqRvj7mBzmT9lDHLVo610awGq9LaFXnj9yflapJQQJ99AKACF24PCXJ3w3AAAbACOGQnwA";
+		private static readonly string _endpoint = "https://api.cognitive.microsofttranslator.com/";
 		public static void AddPresentation(this WebApplicationBuilder builder)
 		{
 			builder.Services.AddAuthentication(options =>
@@ -28,6 +32,7 @@ namespace Template.API.Extensions
 				};
 			}
 			);
+			builder.Services.AddSingleton(new TextTranslationClient(new AzureKeyCredential(_key), new Uri(_endpoint)));
 
 			builder.Services.AddControllers();
 			builder.Services.AddSwaggerGen(c =>

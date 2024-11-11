@@ -23,7 +23,7 @@ public class CriteriaProfile : Profile
             .ForMember(dest => dest.CriteriaItems, opt => opt.MapFrom(src => src.CriteriaItems))
             .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments))
             .ForMember(dest => dest.Invoices, opt => opt.MapFrom(src => src.CriteriaBills))
-			.ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+			.ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.User.DisplayName))
 			.ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber));
 
         CreateMap<CriteriaItem, GetCriteriaItemDto>()

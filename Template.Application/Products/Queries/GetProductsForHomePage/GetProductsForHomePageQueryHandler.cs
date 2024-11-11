@@ -30,7 +30,9 @@ public class GetProductsForHomePageQueryHandler(
             Id = product.Id,
             Name = product.Name,
             Price = product.Price,
-            MainImagePath = product.Images.FirstOrDefault()?.ImagePath ?? string.Empty
+            MainImagePath = product.Images.FirstOrDefault()?.ImagePath ?? string.Empty,
+            WarehouseCode = product.WarehouseCode,
+            SubCategoryName = product.SubCategory.Name
         }).ToList();
 
         return results;

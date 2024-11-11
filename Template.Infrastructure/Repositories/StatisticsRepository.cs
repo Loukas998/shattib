@@ -47,7 +47,7 @@ namespace Template.Infrastructure.Repositories
 
 		public async Task<List<MiniProfitsDto>> GetProfitsByDate(int? year, int? month, int? day)
 		{
-			var query = dbContext.Orders.AsQueryable();
+			var query = dbContext.Orders.Where(o => o.Status == OrderConstants.Shipped).AsQueryable();
 			if (year.HasValue)
 			{
 				query = query.Where(o => o.DateOfOrder.HasValue && o.DateOfOrder.Value.Year == year.Value);
