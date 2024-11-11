@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Template.Domain.Constants;
 using Template.Domain.Entities;
 using Template.Domain.Repositories;
+using Template.Infrastructure.Configuration;
 using Template.Infrastructure.Persistence;
 using Template.Infrastructure.Repositories;
 using Template.Infrastructure.Seeders;
@@ -16,12 +17,16 @@ public static class ServiceCollectionExtensions
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("TemplateDb");
-        var version = new MySqlServerVersion(new Version(8, 0, 2));
-        services.AddDbContext<TemplateDbContext>(
-            options => options.UseMySql(connectionString, version).EnableSensitiveDataLogging()
-        );
-        services.Configure<AzureBlobSettings>(configuration.GetSection("AzureBlobSettings"));
+        //var connectionString = configuration.GetConnectionString("TemplateDb");
+        //var version = new MySqlServerVersion(new Version(8, 0, 2));
+        //services.AddDbContext<TemplateDbContext>(
+        //    options => options.UseMySql(connectionString, version).EnableSensitiveDataLogging()
+        //);
+
+		var connectionString = configuration.GetConnectionString("TemplateDb");
+		services.AddDbContext<TemplateDbContext>(options => options.UseSqlServer(connectionString));
+
+		services.Configure<AzureBlobSettings>(configuration.GetSection("AzureBlobSettings"));
 
         //this for identity and jwt when needed
         services.AddIdentityCore<User>()
@@ -51,6 +56,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISeededValuesRepository, SeededValuesRepository>();
         services.AddScoped<IConsultationRepository, ConsultationRepository>();
         services.AddScoped<IStatisticsRepository, StatisticsRepository>();
+        services.AddScoped<IContactUsRepository, ContactUsRepository>();
 
         services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddScoped<ICriteriaRepository, CriteriaRepository>();

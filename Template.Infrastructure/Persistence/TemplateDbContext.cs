@@ -28,6 +28,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
     internal DbSet<OrderItem> OrderItems { get; set; }
 
     internal DbSet<Consultation> Consultations { get; set; }
+    internal DbSet<ContactUs> Contacts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
