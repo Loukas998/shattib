@@ -30,5 +30,10 @@ namespace Template.Infrastructure.Repositories
 			return consultationStatuses;
 		}
 
+		public async Task<List<SubCategory>> GetSubCategoriesByCategoryId(int categoryId)
+		{
+			var subCategories = await dbContext.Subcategories.Where(sb => sb.CategoryId == categoryId).ToListAsync();
+			return subCategories;
+		}
 	}
 }

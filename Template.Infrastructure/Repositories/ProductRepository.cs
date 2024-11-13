@@ -131,4 +131,16 @@ public class ProductRepository(
     {
         await dbContext.SaveChangesAsync();
     }
+
+	public async Task<IEnumerable<Category>> GetCategoriesWithSubWithProductsAsync(int categoryId)
+	{
+        var categories = dbContext.Categories.AsQueryable();
+        if(categoryId != 0)
+        {
+           categories = categories.Where(c => c.Id == categoryId);
+        }
+
+        return await categories.Include(c => c.SubCategories)
+                                .ThenInclude(sb => sb.Products).ToListAsync();
+	}
 }

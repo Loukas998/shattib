@@ -14,6 +14,13 @@ namespace Template.API.Controllers
 			return Ok(subCategories);
 		}
 
+		[HttpGet("Categories/{categoryId}/SubCategories")]
+		public async Task<IActionResult> GetSubCategories([FromRoute]int categoryId)
+		{
+			var subCategories = await seededValuesRepository.GetSubCategoriesByCategoryId(categoryId);
+			return Ok(subCategories);
+		}
+
 		[HttpGet("Categories")]
 		public async Task<IActionResult> GetCategories()
 		{

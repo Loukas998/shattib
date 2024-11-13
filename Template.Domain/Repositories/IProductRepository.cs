@@ -20,4 +20,6 @@ public interface IProductRepository
 
     public Task StoreProductImageAsync(IFormFile images, int entityId);
     //don't change anything in the last 3... you will get an error.. leave it to me
+
+    public Task<IEnumerable<Category>> GetCategoriesWithSubWithProductsAsync(int categoryId);
 }
