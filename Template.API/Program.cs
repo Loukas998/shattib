@@ -21,6 +21,7 @@ try
     builder.AddPresentation();
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
+    
 
     builder.Host.UseSerilog(
         (context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
@@ -41,9 +42,11 @@ try
     await seeder.Seed();
     var catSedder = scope.ServiceProvider.GetRequiredService<ICategoriesSeeder>();
     await catSedder.Seed();
-    app.UseMiddleware<ErrorHandlerMiddleware>();
-    app.UseMiddleware<TimeLoggingMiddleware>();
-    app.UseMiddleware<TranslationMiddleware>();
+	//app.UseMiddleware<ErrorHandlerMiddleware>();
+	//app.UseMiddleware<TimeLoggingMiddleware>();
+	//app.UseMiddleware<TranslationMiddleware>();
+
+	
 	// Configure the HTTP request pipeline.
 	if (app.Environment.IsDevelopment())
     {
@@ -66,14 +69,17 @@ try
 
     app.UseStaticFiles();
     app.UseCors("AllowAll");
-    app.UseAuthentication();
+
+	//app.UseMiddleware<TranslationMiddleware>();
+
+	app.UseAuthentication();
 
     app.UseAuthorization();
-
-    app.MapControllers();
+	
+	app.MapControllers();
     app.MapFallbackToFile("index.html");
-
-    app.Run();
+	
+	app.Run();
 }
 catch (Exception ex)
 {

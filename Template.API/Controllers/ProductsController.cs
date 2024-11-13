@@ -7,9 +7,11 @@ using Template.Application.Products.Commands.DeleteProductCommand;
 using Template.Application.Products.Commands.UpdateProductCommand;
 using Template.Application.Products.Commands.UpdateProductCommand.UpdateImagesCommand;
 using Template.Application.Products.Dtos;
+using Template.Application.Products.Queries.GetCatSubCatProducts;
 using Template.Application.Products.Queries.GetProduct;
 using Template.Application.Products.Queries.GetProductsForHomePage;
 using Template.Domain.Constants;
+using Template.Domain.Entities.Products;
 
 namespace Template.API.Controllers;
 
@@ -89,5 +91,12 @@ public class ProductsController(IMediator mediator) : ControllerBase
     {
         await mediator.Send(new DeleteProductImageCommand(imageId));
         return NoContent();
+    }
+
+    [HttpGet("CatsSubCatsProducts")]
+    public async Task<ActionResult<IEnumerable<CatSubCatProductsDto>>> GetCatSubCatProducts([FromQuery]int categoryId)
+    {
+        var result = await mediator.Send(new GetCatSubCatProductsQuery(categoryId));
+        return Ok(result);
     }
 }

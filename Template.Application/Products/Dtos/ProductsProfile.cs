@@ -21,5 +21,11 @@ public class ProductsProfile : Profile
                 opt.Condition((src, dst, srcMember) => srcMember != null));
 
         CreateMap<Product, MiniProductDto>().ReverseMap();
+
+        CreateMap<Category, CatSubCatProductsDto>()
+            .ForMember(dest => dest.SubCategories, opt => opt.MapFrom(sb => sb.SubCategories));
+
+        CreateMap<SubCategory, SubCategoryDto>()
+            .ForMember(dest => dest.Products, opt => opt.MapFrom(p => p.Products));
     }
 }

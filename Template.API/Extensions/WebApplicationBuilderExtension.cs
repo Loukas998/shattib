@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Template.Domain.Entities;
+using Template.API.Middlewares;
 
 namespace Template.API.Extensions
 {
@@ -32,8 +33,12 @@ namespace Template.API.Extensions
 				};
 			}
 			);
+
+
+
 			builder.Services.AddSingleton(new TextTranslationClient(new AzureKeyCredential(_key), new Uri(_endpoint)));
 
+			
 			builder.Services.AddControllers();
 			builder.Services.AddSwaggerGen(c =>
 			{
