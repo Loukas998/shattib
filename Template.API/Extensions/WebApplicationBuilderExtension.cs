@@ -10,7 +10,7 @@ namespace Template.API.Extensions
 {
 	public static class WebApplicationBuilderExtension
 	{
-		private static readonly string _key = "3vrYzUZug6ZgqqTqRvj7mBzmT9lDHLVo610awGq9LaFXnj9yflapJQQJ99AKACF24PCXJ3w3AAAbACOGQnwA";
+		private static readonly string _key = "FqyfAN1ywtRSCX0QB42HgCDMLzUuIUpq0EH9WiAf1wxqpUBuoFp0JQQJ99AKACF24PCXJ3w3AAAbACOGGFpp";
 		private static readonly string _endpoint = "https://api.cognitive.microsofttranslator.com/";
 		public static void AddPresentation(this WebApplicationBuilder builder)
 		{
@@ -34,11 +34,13 @@ namespace Template.API.Extensions
 			}
 			);
 
-
-
-			builder.Services.AddSingleton(new TextTranslationClient(new AzureKeyCredential(_key), new Uri(_endpoint)));
-
 			
+
+			//builder.Services.AddSingleton
+			//	(new TextTranslationClient(new AzureKeyCredential(_key),
+			//		new Uri(_endpoint), "uaenorth"));
+
+
 			builder.Services.AddControllers();
 			builder.Services.AddSwaggerGen(c =>
 			{

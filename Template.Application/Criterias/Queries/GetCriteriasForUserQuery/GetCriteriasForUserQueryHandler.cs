@@ -17,7 +17,7 @@ public class GetCriteriasForUserQueryHandler(
         CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting Criterias for User");
-        var criterias = await criteriaRepository.GetAllByUserId(userContext.GetCurrentUser()!.Id);
+        var criterias = await criteriaRepository.GetAllByUserId(userContext.GetCurrentUser()!.Id, request.Status);
         return mapper.Map<IEnumerable<CriteriaDto>>(criterias);
     }
 }

@@ -9,7 +9,7 @@ public interface ICriteriaRepository
     public Task<Criteria?> GetByIdAsync(int id);
 
     public Task<int> CreateCriteriaAsync(Criteria criteria);
-    public Task<List<Criteria>> GetAllByUserId(string userId);
+    public Task<List<Criteria>> GetAllByUserId(string userId, string status);
     public Task<Criteria?> UpdateCriteriaStatusAsync(int id, string status);
     public Task<Criteria> UpdateCriteriaAsync(Criteria criteria);
 }
