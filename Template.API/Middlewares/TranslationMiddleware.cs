@@ -1,32 +1,20 @@
-﻿using Azure.AI.Translation.Text;
-using Microsoft.AspNetCore.Http;
+﻿using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-public class TranslationMiddleware : IMiddleware
+public class TranslationMiddleware(ILogger<TranslationMiddleware> logger) : IMiddleware
 {
-	private readonly TextTranslationClient _translatorClient;
-	private readonly ILogger<TranslationMiddleware> _logger;
-
-	public TranslationMiddleware(TextTranslationClient translatorClient, ILogger<TranslationMiddleware> logger)
-	{
-
-		_translatorClient = translatorClient;
-		
-		_logger = logger;
-	}
-
 	public async Task InvokeAsync(HttpContext context, RequestDelegate next)
 	{
-		_logger.LogInformation("TranslationMiddleware invoked.");
+		logger.LogInformation("TranslationMiddleware invoked.");
 
 		// Capture the language from the request header
 		var targetLanguage = context.Request.Headers["Accept-Language"].ToString();
-		_logger.LogInformation($"Accept-Language: {targetLanguage}");
+		logger.LogInformation($"Accept-Language: {targetLanguage}");
 
 		if (!string.IsNullOrWhiteSpace(targetLanguage))
 		{
-			_logger.LogInformation("Proceeding with translation logic.");
+			logger.LogInformation("Proceeding with translation logic.");
 
 			// Capture the response body
 			var originalBody = context.Response.Body;
@@ -59,42 +47,63 @@ public class TranslationMiddleware : IMiddleware
 		}
 		else
 		{
-			_logger.LogInformation("No language header found. Passing request through.");
+			logger.LogInformation("No language header found. Passing request through.");
 			await next(context);
 		}
 	}
 
-	private bool IsJsonResponse(HttpResponse response)
-	{
-		// Check if the response is likely to be JSON by examining the content type
-		return response.ContentType != null && (
-		   response.ContentType.Contains("application/json") ||
-		   response.ContentType.Contains("text/html") ||
-		   response.ContentType.Contains("text/plain") ||
-		   response.ContentType.Contains("application/xml")
-	   );
-	}
+	//private bool IsJsonResponse(HttpResponse response)
+	//{
+	//	// Check if the response is likely to be JSON by examining the content type
+	//	return response.ContentType != null && (
+	//	   response.ContentType.Contains("application/json") ||
+	//	   response.ContentType.Contains("text/html") ||
+	//	   response.ContentType.Contains("text/plain") ||
+	//	   response.ContentType.Contains("application/xml")
+	//   );
+	//}
 
 	private async Task<string> TranslateTextAsync(string text, string targetLanguage)
 	{
-		_logger.LogInformation($"Translating text to {targetLanguage}");
+		string endpoint = "https://api.cognitive.microsofttranslator.com";
+		string route = $"/translate?api-version=3.0&to={targetLanguage}";
+		using (var client = new HttpClient())
+		using (var request = new HttpRequestMessage())
+		{
+			// Build the request.
+			request.Method = HttpMethod.Post;
+			request.RequestUri = new Uri(endpoint + route);
+			request.Content = new StringContent(text, Encoding.UTF8, "application/json");
+			request.Headers.Add("Ocp-Apim-Subscription-Key", "FqyfAN1ywtRSCX0QB42HgCDMLzUuIUpq0EH9WiAf1wxqpUBuoFp0JQQJ99AKACF24PCXJ3w3AAAbACOGGFpp");
+			// location required if you're using a multi-service or regional (not global) resource.
+			request.Headers.Add("Ocp-Apim-Subscription-Region", "uaenorth");
 
-		try
-		{
-			var response = await _translatorClient.TranslateAsync(targetLanguage, new[] { text });
-			return response.Value[0].Translations[0].Text;
+			// Send the request and get response.
+			HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
+			// Read response as a string.
+			string result = await response.Content.ReadAsStringAsync();
+			return result;
 		}
-		catch (Exception ex)
-		{
-			_logger.LogError(ex, "Error during translation.");
+
+
+		//logger.LogInformation($"Translating text to {targetLanguage}");
+
+		//try
+		//{
+		//	var response = await _translatorClient.TranslateAsync(targetLanguage, new[] { text });
+		//	return response.Value[0].Translations[0].Text;
+		//}
+		//catch (Exception ex)
+		//{
+		//	logger.LogError(ex, "Error during translation.");
 			
-			return "Translation failed.";
-		}
+		//	return "Translation failed.";
+		//}
 	}
 
 	private async Task<string> TranslateJsonResponse(string jsonResponse, string targetLanguage)
 	{
-		_logger.LogInformation($"Translating JSON response to {targetLanguage}");
+		logger.LogInformation($"Translating JSON response to {targetLanguage}");
 
 		// Deserialize the JSON response into a dictionary
 		var jsonObject = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonResponse);
@@ -107,7 +116,7 @@ public class TranslationMiddleware : IMiddleware
 				var value = jsonObject[key];
 
 				// Log the value type to understand what is being processed
-				_logger.LogInformation($"Processing key '{key}' with value '{value}' of type");
+				logger.LogInformation($"Processing key '{key}' with value '{value}' of type");
 
 				// Handle strings: Translate if it's a non-null, non-empty string
 				if (value is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.String)
@@ -116,13 +125,13 @@ public class TranslationMiddleware : IMiddleware
 					if (!string.IsNullOrEmpty(textValue))
 					{
 						// Log before translation
-						_logger.LogInformation($"Translating text for key '{key}' with value: {textValue}");
+						logger.LogInformation($"Translating text for key '{key}' with value: {textValue}");
 
 						// Call the translation function
 						var translatedText = await TranslateTextAsync(textValue, targetLanguage);
 
 						// Log the translated text
-						_logger.LogInformation($"Translated text for key '{key}': {translatedText}");
+						logger.LogInformation($"Translated text for key '{key}': {translatedText}");
 
 						// Replace the original text with the translated text
 						jsonObject[key] = translatedText;
@@ -145,7 +154,7 @@ public class TranslationMiddleware : IMiddleware
 						{
 							// Log translation for array elements
 							var translatedItem = await TranslateTextAsync(item.ToString(), targetLanguage);
-							_logger.LogInformation($"Translating array item: {item} to {translatedItem}");
+							logger.LogInformation($"Translating array item: {item} to {translatedItem}");
 							translatedArray.Add(translatedItem);
 						}
 						else
@@ -158,7 +167,7 @@ public class TranslationMiddleware : IMiddleware
 				// Handle null or non-translatable types: Leave them unchanged
 				else
 				{
-					_logger.LogInformation($"Skipping translation for key '{key}'");
+					logger.LogInformation($"Skipping translation for key '{key}'");
 				}
 			}
 		}
@@ -202,25 +211,25 @@ public class TranslationMiddleware : IMiddleware
 //	public class TranslationMiddleware : IMiddleware
 //	{
 //		private readonly TextTranslationClient _translatorClient;
-//		private readonly ILogger<TranslationMiddleware> _logger;
+//		private readonly ILogger<TranslationMiddleware> logger;
 
 //		public TranslationMiddleware(TextTranslationClient translatorClient, ILogger<TranslationMiddleware> logger)
 //		{
 //			_translatorClient = translatorClient;
-//			_logger = logger;
+//			logger = logger;
 //		}
 
 //		public async Task InvokeAsync(HttpContext context, RequestDelegate next)
 //		{
-//			_logger.LogInformation("TranslationMiddleware invoked.");
+//			logger.LogInformation("TranslationMiddleware invoked.");
 
 //			// Capture the language from the request header
 //			var targetLanguage = context.Request.Headers["Accept-Language"].ToString();
-//			_logger.LogInformation($"Accept-Language: {targetLanguage}");
+//			logger.LogInformation($"Accept-Language: {targetLanguage}");
 
 //			if (!string.IsNullOrWhiteSpace(targetLanguage))
 //			{
-//				_logger.LogInformation("Proceeding with translation logic.");
+//				logger.LogInformation("Proceeding with translation logic.");
 
 //				// Capture the response body
 //				var originalBody = context.Response.Body;
@@ -254,14 +263,14 @@ public class TranslationMiddleware : IMiddleware
 //			}
 //			else
 //			{
-//				_logger.LogInformation("No language header found. Passing request through.");
+//				logger.LogInformation("No language header found. Passing request through.");
 //				await next(context);
 //			}
 //		}
 
 //		private async Task<string> TranslateTextAsync(string text, string targetLanguage)
 //		{
-//			_logger.LogInformation($"Translating text to {targetLanguage}");
+//			logger.LogInformation($"Translating text to {targetLanguage}");
 
 //			try
 //			{
@@ -271,7 +280,7 @@ public class TranslationMiddleware : IMiddleware
 //			}
 //			catch (Exception ex)
 //			{
-//				_logger.LogError(ex, "Error during translation.");
+//				logger.LogError(ex, "Error during translation.");
 //				return "Translation failed.";
 //			}
 //		}

@@ -18,8 +18,8 @@ namespace Template.API.Controllers
 {
 	[ApiController]
 	[Route("api/[controller]")]
-	//[Authorize(Roles = UserRoles.Administrator)]
-	//[Authorize(Roles = UserRoles.Client)]
+	[Authorize(Roles = UserRoles.Administrator)]
+	[Authorize(Roles = UserRoles.Client)]
 	public class OrdersController(IMediator mediator) : ControllerBase
 	{
 		[HttpPost]
@@ -73,7 +73,7 @@ namespace Template.API.Controllers
 		}
 
 		[HttpGet("Status")]
-		public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrdersByStatus([FromQuery] string status)
+		public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrdersByStatus([FromQuery]string status)
 		{
 			var orders = await mediator.Send(new GetOrdersByStatusQuery(status));
 			return Ok(orders);

@@ -32,7 +32,7 @@ public class CriteriaController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("mine")]
-    public async Task<IActionResult> GetCriteriasForUser([FromQuery] string status)
+    public async Task<IActionResult> GetCriteriasForUser([FromQuery] string? status)
     {
         var criterias = await mediator.Send(new GetCriteriasForUserQuery(status));
         return Ok(criterias);

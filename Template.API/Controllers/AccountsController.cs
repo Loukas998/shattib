@@ -6,6 +6,7 @@ using Template.Application.Users.Commands.Login;
 using Template.Application.Users.Commands.Logout;
 using Template.Application.Users.Commands.RefreshToken;
 using Template.Application.Users.Commands.Register;
+using Template.Application.Users.Commands.SendSMS;
 using Template.Domain.Entities.AuthClasses;
 
 namespace Template.API.Controllers;
@@ -53,6 +54,14 @@ public class AccountsController(IMediator mediator, IUserContext userContext) : 
     public async Task<IActionResult> Logout()
     {
         await mediator.Send(new LogoutUserCommand());
+        return NoContent();
+    }
+
+    [HttpPost]
+    [Route("OTP/sms")]
+    public async Task<IActionResult> SendSMSOtp([FromBody] SendSMSCommand command)
+    {
+        await mediator.Send(command);
         return NoContent();
     }
 }
