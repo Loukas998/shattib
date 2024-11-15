@@ -62,5 +62,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICriteriaRepository, CriteriaRepository>();
         services.AddScoped<ICriteriaBillsRepository, CriteriaBillsRepository>();
         services.AddScoped<IFileService, BlobStorageFileService>();
+        services.AddScoped<IVonageService, VonageService>();
     }
 }

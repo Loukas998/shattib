@@ -10,8 +10,8 @@ namespace Template.API.Extensions
 {
 	public static class WebApplicationBuilderExtension
 	{
-		private static readonly string _key = "FqyfAN1ywtRSCX0QB42HgCDMLzUuIUpq0EH9WiAf1wxqpUBuoFp0JQQJ99AKACF24PCXJ3w3AAAbACOGGFpp";
-		private static readonly string _endpoint = "https://api.cognitive.microsofttranslator.com/";
+		//private static readonly string _key = "FqyfAN1ywtRSCX0QB42HgCDMLzUuIUpq0EH9WiAf1wxqpUBuoFp0JQQJ99AKACF24PCXJ3w3AAAbACOGGFpp";
+		//private static readonly string _endpoint = "https://api.cognitive.microsofttranslator.com/";
 		public static void AddPresentation(this WebApplicationBuilder builder)
 		{
 			builder.Services.AddAuthentication(options =>

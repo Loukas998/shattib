@@ -34,10 +34,11 @@ try
                 .AllowAnyMethod());
     });
 
-	//builder.Services.AddTransient<TranslationMiddleware>();
+	
 	builder.Services.AddTransient<ErrorHandlerMiddleware>();
-    
-    //builder.Services.AddTransient<TokenValidationMiddleware>();
+	builder.Services.AddTransient<TranslationMiddleware>();
+
+	//builder.Services.AddTransient<TokenValidationMiddleware>();
 
 	var app = builder.Build();
 
@@ -61,7 +62,7 @@ try
     app.UseSerilogRequestLogging();
 
 	app.UseMiddleware<ErrorHandlerMiddleware>();
-    //app.UseMiddleware<TranslationMiddleware>();
+    app.UseMiddleware<TranslationMiddleware>();
     //app.UseMiddleware<TokenValidationMiddleware>();
 
 	app.UseHttpsRedirection();

@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -52,17 +54,6 @@ public class TranslationMiddleware(ILogger<TranslationMiddleware> logger) : IMid
 		}
 	}
 
-	//private bool IsJsonResponse(HttpResponse response)
-	//{
-	//	// Check if the response is likely to be JSON by examining the content type
-	//	return response.ContentType != null && (
-	//	   response.ContentType.Contains("application/json") ||
-	//	   response.ContentType.Contains("text/html") ||
-	//	   response.ContentType.Contains("text/plain") ||
-	//	   response.ContentType.Contains("application/xml")
-	//   );
-	//}
-
 	private async Task<string> TranslateTextAsync(string text, string targetLanguage)
 	{
 		string endpoint = "https://api.cognitive.microsofttranslator.com";
@@ -73,7 +64,11 @@ public class TranslationMiddleware(ILogger<TranslationMiddleware> logger) : IMid
 			// Build the request.
 			request.Method = HttpMethod.Post;
 			request.RequestUri = new Uri(endpoint + route);
-			request.Content = new StringContent(text, Encoding.UTF8, "application/json");
+
+			object[] body = new object[] { new { Text = text } };
+			var requestBody = JsonConvert.SerializeObject(body);
+
+			request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
 			request.Headers.Add("Ocp-Apim-Subscription-Key", "FqyfAN1ywtRSCX0QB42HgCDMLzUuIUpq0EH9WiAf1wxqpUBuoFp0JQQJ99AKACF24PCXJ3w3AAAbACOGGFpp");
 			// location required if you're using a multi-service or regional (not global) resource.
 			request.Headers.Add("Ocp-Apim-Subscription-Region", "uaenorth");
@@ -84,73 +79,73 @@ public class TranslationMiddleware(ILogger<TranslationMiddleware> logger) : IMid
 			string result = await response.Content.ReadAsStringAsync();
 			return result;
 		}
-
-
-		//logger.LogInformation($"Translating text to {targetLanguage}");
-
-		//try
-		//{
-		//	var response = await _translatorClient.TranslateAsync(targetLanguage, new[] { text });
-		//	return response.Value[0].Translations[0].Text;
-		//}
-		//catch (Exception ex)
-		//{
-		//	logger.LogError(ex, "Error during translation.");
-			
-		//	return "Translation failed.";
-		//}
 	}
 
 	private async Task<string> TranslateJsonResponse(string jsonResponse, string targetLanguage)
 	{
 		logger.LogInformation($"Translating JSON response to {targetLanguage}");
 
-		// Deserialize the JSON response into a dictionary
-		var jsonObject = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonResponse);
+		// Deserialize the JSON response using Newtonsoft.Json
+		var jsonObject = JsonConvert.DeserializeObject<JObject>(jsonResponse);
 
 		if (jsonObject != null)
 		{
-			// Iterate over each key-value pair in the dictionary
-			foreach (var key in jsonObject.Keys.ToList())
+			// Iterate over each key-value pair in the JObject
+			foreach (var property in jsonObject.Properties().ToList())
 			{
-				var value = jsonObject[key];
+				var value = property.Value;
 
 				// Log the value type to understand what is being processed
-				logger.LogInformation($"Processing key '{key}' with value '{value}' of type");
+				logger.LogInformation($"Processing key '{property.Name}' with value '{value}' of type {value.Type}");
 
 				// Handle strings: Translate if it's a non-null, non-empty string
-				if (value is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.String)
+				if (value.Type == JTokenType.String)
 				{
-					var textValue = jsonElement.GetString();
+					var textValue = value.ToString();
 					if (!string.IsNullOrEmpty(textValue))
 					{
 						// Log before translation
-						logger.LogInformation($"Translating text for key '{key}' with value: {textValue}");
+						logger.LogInformation($"Translating text for key '{property.Name}' with value: {textValue}");
 
 						// Call the translation function
 						var translatedText = await TranslateTextAsync(textValue, targetLanguage);
 
-						// Log the translated text
-						logger.LogInformation($"Translated text for key '{key}': {translatedText}");
 
-						// Replace the original text with the translated text
-						jsonObject[key] = translatedText;
+						//"[{\"detectedLanguage\":{\"language\":\"en\",\"score\":0.91},\"translations\":[{\"text\":\"اختبر\",\"to\":\"ar\"}]}]"
+
+						// Log the translated text
+						logger.LogInformation($"Translated text for key '{property.Name}': {translatedText}");
+
+						// Replace the original text with the translated text (ensure it's parsed into the correct format)
+						var translatedTextArray = JsonConvert.DeserializeObject<JArray>(translatedText);
+						if (translatedTextArray != null && translatedTextArray.Count > 0)
+						{
+							var translations = translatedTextArray[0]["translations"];
+							if (translations != null)
+							{
+								var translatedTextValue = translations?.FirstOrDefault()?["text"]?.ToString();
+								if (translatedTextValue != null)
+								{
+									property.Value = translatedTextValue;
+								}
+							}
+						}
 					}
 				}
-				// Handle nested objects (JsonElement): Recursively translate nested objects
-				else if (value is JsonElement nestedObject && nestedObject.ValueKind == JsonValueKind.Object)
+				// Handle nested objects (JObject): Recursively translate nested objects
+				else if (value.Type == JTokenType.Object)
 				{
-					var nestedJson = nestedObject.GetRawText();
+					var nestedJson = value.ToString();
 					var translatedNestedJson = await TranslateJsonResponse(nestedJson, targetLanguage);
-					jsonObject[key] = JsonSerializer.Deserialize<object>(translatedNestedJson);
+					property.Value = JsonConvert.DeserializeObject<JObject>(translatedNestedJson);
 				}
-				// Handle arrays (JsonArray): Translate string elements in arrays
-				else if (value is JsonArray jsonArray)
+				// Handle arrays (JArray): Translate string elements in arrays
+				else if (value.Type == JTokenType.Array)
 				{
-					var translatedArray = new List<object>();
-					foreach (var item in jsonArray)
+					var translatedArray = new JArray();
+					foreach (var item in value)
 					{
-						if (item.GetValueKind() == JsonValueKind.String)
+						if (item.Type == JTokenType.String)
 						{
 							// Log translation for array elements
 							var translatedItem = await TranslateTextAsync(item.ToString(), targetLanguage);
@@ -162,23 +157,19 @@ public class TranslationMiddleware(ILogger<TranslationMiddleware> logger) : IMid
 							translatedArray.Add(item);  // Non-string items are left as they are
 						}
 					}
-					jsonObject[key] = translatedArray;
+					property.Value = translatedArray;
 				}
 				// Handle null or non-translatable types: Leave them unchanged
 				else
 				{
-					logger.LogInformation($"Skipping translation for key '{key}'");
+					logger.LogInformation($"Skipping translation for key '{property.Name}'");
 				}
 			}
 		}
 
-		// Serialize the updated JSON object back into a string
-		return JsonSerializer.Serialize(jsonObject);
+		// Serialize the updated JSON object back into a string using Newtonsoft.Json
+		return JsonConvert.SerializeObject(jsonObject);
 	}
-
-
-
-
 }
 
 
@@ -191,7 +182,19 @@ public class TranslationMiddleware(ILogger<TranslationMiddleware> logger) : IMid
 
 
 
+//logger.LogInformation($"Translating text to {targetLanguage}");
 
+//try
+//{
+//	var response = await _translatorClient.TranslateAsync(targetLanguage, new[] { text });
+//	return response.Value[0].Translations[0].Text;
+//}
+//catch (Exception ex)
+//{
+//	logger.LogError(ex, "Error during translation.");
+
+//	return "Translation failed.";
+//}
 
 
 
@@ -286,4 +289,16 @@ public class TranslationMiddleware(ILogger<TranslationMiddleware> logger) : IMid
 //		}
 
 //	}
+//}
+
+
+//private bool IsJsonResponse(HttpResponse response)
+//{
+//	// Check if the response is likely to be JSON by examining the content type
+//	return response.ContentType != null && (
+//	   response.ContentType.Contains("application/json") ||
+//	   response.ContentType.Contains("text/html") ||
+//	   response.ContentType.Contains("text/plain") ||
+//	   response.ContentType.Contains("application/xml")
+//   );
 //}
