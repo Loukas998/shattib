@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.MSIdentity.Shared;
 using Template.Application.Products.Commands.CreateProductCommand;
 using Template.Application.Products.Commands.DeleteImagesCommand.DeleteImagesCommand;
 using Template.Application.Products.Commands.DeleteProductCommand;

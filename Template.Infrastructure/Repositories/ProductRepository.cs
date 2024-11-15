@@ -72,10 +72,10 @@ public class ProductRepository(
     {
         // return await dbContext.Products.Include(p => p.Images).ToListAsync();
         var query = dbContext.Products.Include(p => p.Images).Include(p => p.SubCategory).AsQueryable();
-        if (categoryId != null)
+        if (categoryId > 0)
             query = query.Where(p => p.SubCategory.CategoryId == categoryId);
 
-        if (subcategoryId != null)
+        if (subcategoryId > 0)
             query = query.Where(p => p.SubCategoryId == subcategoryId);
 
         if (!string.IsNullOrEmpty(color))
@@ -83,7 +83,7 @@ public class ProductRepository(
 
         query = query.Where(p => p.Price >= minPrice);
 
-        if (maxPrice != null)
+        if (maxPrice > 0)
             query = query.Where(p => p.Price <= maxPrice);
 
         if (!string.IsNullOrEmpty(searchTerm))

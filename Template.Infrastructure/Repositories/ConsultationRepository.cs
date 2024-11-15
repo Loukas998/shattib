@@ -36,6 +36,6 @@ namespace Template.Infrastructure.Repositories
 			return await dbContext.Consultations.Where(c => c.UserId == userId).ToListAsync();
 		}
 
-		public async Task SaveChangesAsync() => await SaveChangesAsync();
+		public async Task SaveChangesAsync() => await dbContext.SaveChangesAsync();
 	}
 }

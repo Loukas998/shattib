@@ -41,15 +41,21 @@ public class CriteriaRepository(TemplateDbContext dbContext) : ICriteriaReposito
         return criteria.Id;
     }
 
-    public async Task<List<Criteria>> GetAllByUserId(string userId)
+    public async Task<List<Criteria>> GetAllByUserId(string userId, string status)
     {
-        return await dbContext.Criterias
+        var criterias = dbContext.Criterias.AsQueryable()
             .Include(criteria => criteria.CriteriaItems)
-            .ThenInclude(criteriaItem => criteriaItem.Category)
-            .Include(criteria => criteria.Comments)
-            .Include(criteria => criteria.CriteriaBills)
-            .Where(criteria => criteria.UserId == userId)
-            .ToListAsync();
+			.ThenInclude(criteriaItem => criteriaItem.Category)
+			.Include(criteria => criteria.Comments)
+			.Include(criteria => criteria.CriteriaBills)
+			.Where(criteria => criteria.UserId == userId);
+
+        if (string.IsNullOrEmpty(status))
+        {
+            return await criterias.ToListAsync();
+        }
+        criterias = criterias.Where(c => c.Status == status);
+        return await criterias.ToListAsync();
     }
 
     public async Task<Criteria?> UpdateCriteriaStatusAsync(int id, string status)

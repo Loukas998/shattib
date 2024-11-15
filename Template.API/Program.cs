@@ -34,18 +34,22 @@ try
                 .AllowAnyMethod());
     });
 
-    var app = builder.Build();
+	//builder.Services.AddTransient<TranslationMiddleware>();
+	builder.Services.AddTransient<ErrorHandlerMiddleware>();
+    
+    //builder.Services.AddTransient<TokenValidationMiddleware>();
 
-    var scope = app.Services.CreateScope(); //for seeders
+	var app = builder.Build();
+
+	var scope = app.Services.CreateScope(); //for seeders
     // example: var govSeeder = scope.ServiceProvider.GetRequiredService<IGovernorateSeeder>();
     var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
     await seeder.Seed();
     var catSedder = scope.ServiceProvider.GetRequiredService<ICategoriesSeeder>();
     await catSedder.Seed();
-	//app.UseMiddleware<ErrorHandlerMiddleware>();
-	//app.UseMiddleware<TimeLoggingMiddleware>();
-	//app.UseMiddleware<TranslationMiddleware>();
-
+    //await catSedder.SetSubCategoriesImages();
+    //await catSedder.SetCategoriesImages();
+	
 	
 	// Configure the HTTP request pipeline.
 	if (app.Environment.IsDevelopment())
@@ -56,7 +60,11 @@ try
 
     app.UseSerilogRequestLogging();
 
-    app.UseHttpsRedirection();
+	app.UseMiddleware<ErrorHandlerMiddleware>();
+    //app.UseMiddleware<TranslationMiddleware>();
+    //app.UseMiddleware<TokenValidationMiddleware>();
+
+	app.UseHttpsRedirection();
 
     //app.MapGroup("api/identity").WithTags("Identity").MapIdentityApi<User>();
 
@@ -70,7 +78,7 @@ try
     app.UseStaticFiles();
     app.UseCors("AllowAll");
 
-	//app.UseMiddleware<TranslationMiddleware>();
+	
 
 	app.UseAuthentication();
 

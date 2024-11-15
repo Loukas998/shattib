@@ -2,9 +2,9 @@
 
 namespace Template.Application.Consultations.Commands.ChangeStatus
 {
-	public class ChangeStatusCommand(int consultationId) : IRequest
+	public class ChangeStatusCommand() : IRequest
 	{
-		public int ConsultationId { get; } = consultationId;
+		public int ConsultationId { get; set; }
 		public string NewStatus { get; set; } = default!;
 	}
 }

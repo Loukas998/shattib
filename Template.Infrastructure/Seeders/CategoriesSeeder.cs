@@ -27,7 +27,154 @@ internal class CategoriesSeeder(TemplateDbContext dbContext) : ICategoriesSeeder
         }
     }
 
-    private IEnumerable<SubCategory> GetSubCategories()
+    public async Task SetCategoriesImages()
+    {
+        for(int i = 1; i <= 16; i++)
+        {
+            var category = await dbContext.Categories.FirstOrDefaultAsync(c => c.Id == i);
+            category!.ImagePath = $"https://shattibsadev.blob.core.windows.net/static-images/categories/category-{i}.jpg";
+        }
+        await dbContext.SaveChangesAsync();
+    }
+
+	public async Task SetSubCategoriesImages()
+	{
+        int i = 1;
+        int j = 1;
+		for(i = 1; i <= 5; i++)
+        {
+            var subcategory = await dbContext.Subcategories.FirstOrDefaultAsync(sb => sb.Id == i);
+            subcategory!.ImagePath = $"https://shattibsadev.blob.core.windows.net/static-images/rkham/rkham0{j}.jpg";
+            j++;
+        }
+        j = 1;
+
+		for (i = 6; i <= 9; i++)
+		{
+			var subcategory = await dbContext.Subcategories.FirstOrDefaultAsync(sb => sb.Id == i);
+			subcategory!.ImagePath = $"https://shattibsadev.blob.core.windows.net/static-images/porsalen/porsalen0{j}.jpg";
+			j++;
+		}
+		j = 1;
+
+		for (i = 10; i <= 13; i++)
+		{
+			var subcategory = await dbContext.Subcategories.FirstOrDefaultAsync(sb => sb.Id == i);
+			subcategory!.ImagePath = $"https://shattibsadev.blob.core.windows.net/static-images/siramik/siramik0{j}.jpg";
+			j++;
+		}
+		j = 1;
+
+		for (i = 14; i <= 16; i++)
+		{
+			var subcategory = await dbContext.Subcategories.FirstOrDefaultAsync(sb => sb.Id == i);
+			subcategory!.ImagePath = $"https://shattibsadev.blob.core.windows.net/static-images/parkeh/parkeh0{j}.jpg";
+			j++;
+		}
+		j = 1;
+
+		for (i = 17; i <= 20; i++)
+		{
+			var subcategory = await dbContext.Subcategories.FirstOrDefaultAsync(sb => sb.Id == i);
+			subcategory!.ImagePath = $"https://shattibsadev.blob.core.windows.net/static-images/nwafez/nwafez0{j}.jpg";
+			j++;
+		}
+		j = 1;
+
+		for (i = 21; i <= 21; i++)
+		{
+			var subcategory = await dbContext.Subcategories.FirstOrDefaultAsync(sb => sb.Id == i);
+			subcategory!.ImagePath = $"https://shattibsadev.blob.core.windows.net/static-images/decors/decors01.jpg";
+			j++;
+		}
+		j = 1;
+
+		for (i = 22; i <= 24; i++)
+		{
+			var subcategory = await dbContext.Subcategories.FirstOrDefaultAsync(sb => sb.Id == i);
+			subcategory!.ImagePath = $"https://shattibsadev.blob.core.windows.net/static-images/doors/doors0{j}.jpg";
+			j++;
+		}
+		j = 1;
+
+		for (i = 25; i <= 28; i++)
+		{
+			var subcategory = await dbContext.Subcategories.FirstOrDefaultAsync(sb => sb.Id == i);
+			subcategory!.ImagePath = $"https://shattibsadev.blob.core.windows.net/static-images/panels/panels0{j}.jpg";
+			j++;
+		}
+		j = 1;
+
+		for (i = 29; i <= 30; i++)
+		{
+			var subcategory = await dbContext.Subcategories.FirstOrDefaultAsync(sb => sb.Id == i);
+			subcategory!.ImagePath = $"https://shattibsadev.blob.core.windows.net/static-images/gypsum/gypsum0{j}.jpg";
+			j++;
+		}
+		j = 1;
+
+		for (i = 31; i <= 33; i++)
+		{
+			var subcategory = await dbContext.Subcategories.FirstOrDefaultAsync(sb => sb.Id == i);
+			subcategory!.ImagePath = $"https://shattibsadev.blob.core.windows.net/static-images/stone/stone0{j}.jpg";
+			j++;
+		}
+		j = 1;
+
+		for (i = 34; i <= 37; i++)
+		{
+			var subcategory = await dbContext.Subcategories.FirstOrDefaultAsync(sb => sb.Id == i);
+			subcategory!.ImagePath = $"https://shattibsadev.blob.core.windows.net/static-images/paints/paints0{j}.jpg";
+			j++;
+		}
+		j = 1;
+
+		for (i = 38; i <= 40; i++)
+		{
+			var subcategory = await dbContext.Subcategories.FirstOrDefaultAsync(sb => sb.Id == i);
+			subcategory!.ImagePath = $"https://shattibsadev.blob.core.windows.net/static-images/insulation/insulation0{j}.jpg";
+			j++;
+		}
+		j = 1;
+
+		for (i = 41; i <= 43; i++)
+		{
+			var subcategory = await dbContext.Subcategories.FirstOrDefaultAsync(sb => sb.Id == i);
+			subcategory!.ImagePath = $"https://shattibsadev.blob.core.windows.net/static-images/edoors/edoors0{j}.jpg";
+			j++;
+		}
+		j = 1;
+
+		for (i = 44; i <= 60; i++)
+		{
+			var subcategory = await dbContext.Subcategories.FirstOrDefaultAsync(sb => sb.Id == i);
+			subcategory!.ImagePath = $"https://shattibsadev.blob.core.windows.net/static-images/switches/switches0{j}.jpg";
+			j++;
+		}
+		j = 1;
+
+		for (i = 61; i <= 72; i++)
+		{
+			var subcategory = await dbContext.Subcategories.FirstOrDefaultAsync(sb => sb.Id == i);
+			subcategory!.ImagePath = $"https://shattibsadev.blob.core.windows.net/static-images/bathroom/bathroom0{j}.jpg";
+			j++;
+		}
+		j = 1;
+
+		for (i = 73; i <= 76; i++)
+		{
+			var subcategory = await dbContext.Subcategories.FirstOrDefaultAsync(sb => sb.Id == i);
+			subcategory!.ImagePath = $"https://shattibsadev.blob.core.windows.net/static-images/ac/ac0{j}.jpg";
+            j++;
+		}
+		j = 1;
+
+		await dbContext.SaveChangesAsync();
+	}
+
+
+
+	private IEnumerable<SubCategory> GetSubCategories()
     {
         List<SubCategory> subCategories =
         [
@@ -259,173 +406,173 @@ internal class CategoriesSeeder(TemplateDbContext dbContext) : ICategoriesSeeder
                 CategoryId = 13
             },
 
-            new()
+			new()
+			{
+				Name = "مفتاح تسكيره",
+				CategoryId = 14
+			},
+			new()
+			{
+				Name = "مفتاح أحادي",
+				CategoryId = 14
+			},
+			new()
+			{
+				Name = "مفتاح ثنائي",
+				CategoryId = 14
+			},
+			new()
+			{
+				Name = "مفتاح ثلاثي",
+				CategoryId = 14
+			},
+			new()
+			{
+				Name = "مفتاح رباعي",
+				CategoryId = 14
+			},
+			new()
+			{
+				Name = "مفتاح مكيف",
+				CategoryId = 14
+			},
+			new()
+			{
+				Name = "مفتاح سخان",
+				CategoryId = 14
+			},
+			new()
+			{
+				Name = "مفتاح ستارة",
+				CategoryId = 14
+			},
+			new()
+			{
+				Name = "مفتاح دايمر",
+				CategoryId = 14
+			},
+			new()
+			{
+				Name = "مفتاح جرس",
+				CategoryId = 14
+			},
+			new()
+			{
+				Name = "فيش ثلاثي",
+				CategoryId = 14
+			},
+			new()
+			{
+				Name = "USB, USBc فيش",
+				CategoryId = 14
+			},
+			new()
+			{
+				Name = "مجرى أفياش",
+				CategoryId = 14
+			},
+			new()
+			{
+				Name = "أفياش للمجرى",
+				CategoryId = 14
+			},
+			new()
+			{
+				Name = "فيش تليفون",
+				CategoryId = 14
+			},
+			new()
+			{
+				Name = "فيش دش",
+				CategoryId = 14
+			},
+			new()
+			{
+				Name = "فيش إيثرنت",
+				CategoryId = 14
+			},
+
+			new()
+			{
+				Name = "الخلاطات",
+				CategoryId = 15
+			},
+			new()
+			{
+				Name = "كراسي الحمامات والسيفونات",
+				CategoryId = 15
+			},
+			new()
+			{
+				Name = "السخانات",
+				CategoryId = 15
+			},
+			new()
+			{
+				Name = "أحواض الاستحمام",
+				CategoryId = 15
+			},
+			new()
+			{
+				Name = "أنظمة الدش",
+				CategoryId = 15
+			},
+			new()
+			{
+				Name = "مخارج مياه للدش",
+				CategoryId = 15
+			},
+			new()
+			{
+				Name = "الشطافات",
+				CategoryId = 15
+			},
+			new()
+			{
+				Name = "لوازم السباكة",
+				CategoryId = 15
+			},
+			new()
+			{
+				Name = "صفايات",
+				CategoryId = 15
+			},
+			new()
+			{
+				Name = "مغاسل الحمام",
+				CategoryId = 15
+			},
+			new()
+			{
+				Name = "خزانات المياه",
+				CategoryId = 15
+			},
+			new()
+			{
+				Name = "ملحقات الحمام",
+				CategoryId = 15
+			},
+
+			new()
             {
                 Name = "مكيفات سبليت",
-                CategoryId = 14
+                CategoryId = 16
             },
             new()
             {
                 Name = "مكيفات النافذة",
-                CategoryId = 14
+                CategoryId = 16
             },
             new()
             {
                 Name = "مكيفات مركزية",
-                CategoryId = 14
+                CategoryId = 16
             },
             new()
             {
                 Name = "مكيفات الكاسيت",
-                CategoryId = 14
-            },
-
-            new()
-            {
-                Name = "مفتاح تسكيره",
-                CategoryId = 15
-            },
-            new()
-            {
-                Name = "مفتاح أحادي",
-                CategoryId = 15
-            },
-            new()
-            {
-                Name = "مفتاح ثنائي",
-                CategoryId = 15
-            },
-            new()
-            {
-                Name = "مفتاح ثلاثي",
-                CategoryId = 15
-            },
-            new()
-            {
-                Name = "مفتاح رباعي",
-                CategoryId = 15
-            },
-            new()
-            {
-                Name = "مفتاح مكيف",
-                CategoryId = 15
-            },
-            new()
-            {
-                Name = "مفتاح سخان",
-                CategoryId = 15
-            },
-            new()
-            {
-                Name = "مفتاح ستارة",
-                CategoryId = 15
-            },
-            new()
-            {
-                Name = "مفتاح دايمر",
-                CategoryId = 15
-            },
-            new()
-            {
-                Name = "مفتاح جرس",
-                CategoryId = 15
-            },
-            new()
-            {
-                Name = "فيش ثلاثي",
-                CategoryId = 15
-            },
-            new()
-            {
-                Name = "USB, USBc فيش",
-                CategoryId = 15
-            },
-            new()
-            {
-                Name = "مجرى أفياش",
-                CategoryId = 15
-            },
-            new()
-            {
-                Name = "أفياش للمجرى",
-                CategoryId = 15
-            },
-            new()
-            {
-                Name = "فيش تليفون",
-                CategoryId = 15
-            },
-            new()
-            {
-                Name = "فيش دش",
-                CategoryId = 15
-            },
-            new()
-            {
-                Name = "فيش إيثرنت",
-                CategoryId = 15
-            },
-
-            new()
-            {
-                Name = "الخلاطات",
                 CategoryId = 16
-            },
-            new()
-            {
-                Name = "كراسي الحمامات والسيفونات",
-                CategoryId = 16
-            },
-            new()
-            {
-                Name = "السخانات",
-                CategoryId = 16
-            },
-            new()
-            {
-                Name = "أحواض الاستحمام",
-                CategoryId = 16
-            },
-            new()
-            {
-                Name = "أنظمة الدش",
-                CategoryId = 16
-            },
-            new()
-            {
-                Name = "مخارج مياه للدش",
-                CategoryId = 16
-            },
-            new()
-            {
-                Name = "الشطافات",
-                CategoryId = 16
-            },
-            new()
-            {
-                Name = "لوازم السباكة",
-                CategoryId = 16
-            },
-            new()
-            {
-                Name = "صفايات",
-                CategoryId = 16
-            },
-            new()
-            {
-                Name = "مغاسل الحمام",
-                CategoryId = 16
-            },
-            new()
-            {
-                Name = "خزانات المياه",
-                CategoryId = 16
-            },
-            new()
-            {
-                Name = "ملحقات الحمام",
-                CategoryId = 16
-            }
+            },  
         ];
         return subCategories;
     }
@@ -498,11 +645,9 @@ internal class CategoriesSeeder(TemplateDbContext dbContext) : ICategoriesSeeder
             {
                 Name = "التكييف"
             },
-            new()
-            {
-                Name = "الإنارة"
-            }
         ];
         return categories;
     }
+
+	
 }

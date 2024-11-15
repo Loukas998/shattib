@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Consultations.Commands.ChangeStatus;
 using Template.Application.Consultations.Commands.CreateConsultation;
+using Template.Application.Consultations.Commands.UpdateConsultation;
 using Template.Application.Consultations.Dtos;
 using Template.Application.Consultations.Queries.GetAllConsultations;
 using Template.Application.Consultations.Queries.GetConsultationById;
@@ -47,10 +48,21 @@ namespace Template.API.Controllers
 		}
 
 		[HttpPatch]
-		[Route("{consultationId}")]
-		public async Task<ActionResult<ConsultationDto>> ChangeConsultationStatus([FromRoute] int consultationId, ChangeStatusCommand command)
+		[Route("ChangeStatus/{consultationId}")]
+		public async Task<IActionResult> ChangeConsultationStatus([FromRoute] int consultationId, [FromBody]ChangeStatusCommand command)
 		{
-			await mediator.Send(new ChangeStatusCommand(consultationId));
+			command.ConsultationId = consultationId;
+			await mediator.Send(command);
+			return NoContent();
+		}
+
+		[HttpPatch]
+		[Route("{consultationId}")]
+		public async Task<IActionResult> UpdateConsultation([FromRoute] int consultationId,
+			[FromBody] UpdateConsultationCommand command)
+		{
+			command.ConsultationId = consultationId;
+			await mediator.Send(command);
 			return NoContent();
 		}
 	}
