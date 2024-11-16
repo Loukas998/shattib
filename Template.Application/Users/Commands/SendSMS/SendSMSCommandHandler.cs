@@ -6,13 +6,13 @@ using Template.Domain.Repositories;
 
 namespace Template.Application.Users.Commands.SendSMS
 {
-	public class SendSMSCommandHandler(ILogger<SendSMSCommandHandler> logger, IVonageService vonageService)
-		: IRequestHandler<SendSMSCommand>
+	public class SendSMSCommandHandler(ILogger<SendSMSCommandHandler> logger, IVonageService vonageService,
+		IAccountRepository accountRepository) : IRequestHandler<SendSMSCommand>
 	{
 		public async Task Handle(SendSMSCommand request, CancellationToken cancellationToken)
 		{
 			logger.LogInformation("Sending sms message");
-			var otpCode = new Random().Next(100000, 999999).ToString();
+			string otpCode = await accountRepository.GenerateOTP(request.DestinationPhoneNumber);
 			await vonageService.SendSMSAsync(request.DestinationPhoneNumber, otpCode);
 		}
 	}

@@ -30,6 +30,8 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
     internal DbSet<Consultation> Consultations { get; set; }
     internal DbSet<ContactUs> Contacts { get; set; }
 
+    internal DbSet<OneTimePassword> OneTimePasswords { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

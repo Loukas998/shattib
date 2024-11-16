@@ -15,11 +15,11 @@ namespace Template.Infrastructure.Services
 					configuration["Vonage:ApiSecret"]
 				));
 
-			var response = await vonageClient.SmsClient.SendAnSmsAsync(new Vonage.Messaging.SendSmsRequest()
+			await vonageClient.SmsClient.SendAnSmsAsync(new Vonage.Messaging.SendSmsRequest()
 			{
 				To = phoneNumber,
-				From = "Vonage APIs",
-				Text = "A text message sent using the Vonage SMS API"
+				From = configuration["Vonage:PhoneNumber"],
+				Text = otp
 			});
 		}
 	}

@@ -7,6 +7,7 @@ using Template.Application.Users.Commands.Logout;
 using Template.Application.Users.Commands.RefreshToken;
 using Template.Application.Users.Commands.Register;
 using Template.Application.Users.Commands.SendSMS;
+using Template.Application.Users.Commands.Verify;
 using Template.Domain.Entities.AuthClasses;
 
 namespace Template.API.Controllers;
@@ -64,4 +65,13 @@ public class AccountsController(IMediator mediator, IUserContext userContext) : 
         await mediator.Send(command);
         return NoContent();
     }
+
+    [HttpPost]
+    [Route("VerifyAccount")]
+    public async Task<IActionResult> VerifyAccount([FromBody] VerifyAccountCommand command)
+    {
+        bool result = await mediator.Send(command);
+        if(result) return Ok("Account verified successfully");
+		return BadRequest("Couldn't verify your account");
+	}
 }

@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-public class TranslationMiddleware(ILogger<TranslationMiddleware> logger) : IMiddleware
+public class TranslationMiddleware(ILogger<TranslationMiddleware> logger, IConfiguration configuration) : IMiddleware
 {
 	public async Task InvokeAsync(HttpContext context, RequestDelegate next)
 	{
@@ -56,7 +56,7 @@ public class TranslationMiddleware(ILogger<TranslationMiddleware> logger) : IMid
 
 	private async Task<string> TranslateTextAsync(string text, string targetLanguage)
 	{
-		string endpoint = "https://api.cognitive.microsofttranslator.com";
+		string endpoint = configuration["AzureAiTranslator:AzureTranslatorEndpoint"]!;
 		string route = $"/translate?api-version=3.0&to={targetLanguage}";
 		using (var client = new HttpClient())
 		using (var request = new HttpRequestMessage())
@@ -69,9 +69,9 @@ public class TranslationMiddleware(ILogger<TranslationMiddleware> logger) : IMid
 			var requestBody = JsonConvert.SerializeObject(body);
 
 			request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
-			request.Headers.Add("Ocp-Apim-Subscription-Key", "FqyfAN1ywtRSCX0QB42HgCDMLzUuIUpq0EH9WiAf1wxqpUBuoFp0JQQJ99AKACF24PCXJ3w3AAAbACOGGFpp");
+			request.Headers.Add("Ocp-Apim-Subscription-Key", configuration["AzureAiTranslator:AzureTranslatorApiKey"]);
 			// location required if you're using a multi-service or regional (not global) resource.
-			request.Headers.Add("Ocp-Apim-Subscription-Region", "uaenorth");
+			request.Headers.Add("Ocp-Apim-Subscription-Region", configuration["AzureAiTranslator:Location"]);
 
 			// Send the request and get response.
 			HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
