@@ -19,7 +19,7 @@ namespace Template.Infrastructure.Services
 			{
 				To = phoneNumber,
 				From = configuration["Vonage:PhoneNumber"],
-				Text = otp
+				Text = $"Your account verification code at Shattib: {otp}"
 			});
 		}
 	}

@@ -36,6 +36,7 @@ try
 
 	
 	builder.Services.AddTransient<ErrorHandlerMiddleware>();
+    builder.Services.AddTransient<TimeLoggingMiddleware>();
 	builder.Services.AddTransient<TranslationMiddleware>();
 
 	//builder.Services.AddTransient<TokenValidationMiddleware>();
@@ -62,6 +63,7 @@ try
     app.UseSerilogRequestLogging();
 
 	app.UseMiddleware<ErrorHandlerMiddleware>();
+    app.UseMiddleware<TimeLoggingMiddleware>();
     app.UseMiddleware<TranslationMiddleware>();
     //app.UseMiddleware<TokenValidationMiddleware>();
 
