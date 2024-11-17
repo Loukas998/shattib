@@ -108,6 +108,8 @@ public class ProductRepository(
         return await dbContext.Products
             .Include(p => p.ProductSpecifications)
             .Include(p => p.Images)
+            .Include(p => p.SubCategory)
+            .ThenInclude(sb => sb.Category)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 

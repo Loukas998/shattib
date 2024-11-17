@@ -139,7 +139,7 @@ namespace Template.Infrastructure.Repositories
 		{
 			string otpCode = new Random().Next(100000, 999999).ToString();
 			var dbOtp = await dbContext.OneTimePasswords.FirstOrDefaultAsync(o => o.Code == otpCode);
-			while(dbOtp.Code ==  otpCode)
+			while(dbOtp != null && dbOtp.Code == otpCode)
 			{
 				otpCode = new Random().Next(100000, 999999).ToString();
 			}
@@ -172,6 +172,17 @@ namespace Template.Infrastructure.Repositories
 				return false;
 			}
 			return false;
+		}
+
+		public async Task DeActivateOTPAsync(string otpCode)
+		{
+			var otp = await dbContext.OneTimePasswords.FirstOrDefaultAsync(o => o.Code == otpCode);
+			if (otp != null)
+			{
+				otp.IsActive = false;
+				dbContext.Remove(otp);
+			}
+			await dbContext.SaveChangesAsync();
 		}
 	}
 }

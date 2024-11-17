@@ -41,7 +41,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
         // Category -> SubCategory (One-to-Many)
         modelBuilder.Entity<Category>()
             .HasMany(c => c.SubCategories)
-            .WithOne()
+            .WithOne(sb => sb.Category)
             .HasForeignKey(sc => sc.CategoryId);
 
         // Category -> CriteriaItem (One-to-Many)

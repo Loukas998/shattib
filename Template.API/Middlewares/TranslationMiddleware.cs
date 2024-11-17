@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Nodes;
+using JsonException = Newtonsoft.Json.JsonException;
 
 public class TranslationMiddleware(ILogger<TranslationMiddleware> logger, IConfiguration configuration) : IMiddleware
 {
@@ -14,7 +13,7 @@ public class TranslationMiddleware(ILogger<TranslationMiddleware> logger, IConfi
 		var targetLanguage = context.Request.Headers["Accept-Language"].ToString();
 		logger.LogInformation($"Accept-Language: {targetLanguage}");
 
-		if (!string.IsNullOrWhiteSpace(targetLanguage))
+		if (!string.IsNullOrEmpty(targetLanguage))
 		{
 			logger.LogInformation("Proceeding with translation logic.");
 
@@ -85,90 +84,101 @@ public class TranslationMiddleware(ILogger<TranslationMiddleware> logger, IConfi
 	{
 		logger.LogInformation($"Translating JSON response to {targetLanguage}");
 
-		// Deserialize the JSON response using Newtonsoft.Json
-		var jsonObject = JsonConvert.DeserializeObject<JObject>(jsonResponse);
+		// Deserialize the JSON response
+		JToken jsonObject;
+		try
+		{
+			jsonObject = JToken.Parse(jsonResponse);
+		}
+		catch (JsonException ex)
+		{
+			logger.LogError($"Failed to parse JSON: {ex.Message}");
+			return jsonResponse;  // Return original response in case of error
+		}
 
 		if (jsonObject != null)
 		{
-			// Iterate over each key-value pair in the JObject
-			foreach (var property in jsonObject.Properties().ToList())
+			// If the root element is an array, process each item
+			if (jsonObject.Type == JTokenType.Array)
 			{
-				var value = property.Value;
-
-				// Log the value type to understand what is being processed
-				logger.LogInformation($"Processing key '{property.Name}' with value '{value}' of type {value.Type}");
-
-				// Handle strings: Translate if it's a non-null, non-empty string
-				if (value.Type == JTokenType.String)
+				var translatedArray = new JArray();
+				foreach (var item in jsonObject)
 				{
-					var textValue = value.ToString();
-					if (!string.IsNullOrEmpty(textValue))
-					{
-						// Log before translation
-						logger.LogInformation($"Translating text for key '{property.Name}' with value: {textValue}");
-
-						// Call the translation function
-						var translatedText = await TranslateTextAsync(textValue, targetLanguage);
-
-
-						//"[{\"detectedLanguage\":{\"language\":\"en\",\"score\":0.91},\"translations\":[{\"text\":\"اختبر\",\"to\":\"ar\"}]}]"
-
-						// Log the translated text
-						logger.LogInformation($"Translated text for key '{property.Name}': {translatedText}");
-
-						// Replace the original text with the translated text (ensure it's parsed into the correct format)
-						var translatedTextArray = JsonConvert.DeserializeObject<JArray>(translatedText);
-						if (translatedTextArray != null && translatedTextArray.Count > 0)
-						{
-							var translations = translatedTextArray[0]["translations"];
-							if (translations != null)
-							{
-								var translatedTextValue = translations?.FirstOrDefault()?["text"]?.ToString();
-								if (translatedTextValue != null)
-								{
-									property.Value = translatedTextValue;
-								}
-							}
-						}
-					}
+					var translatedItem = await TranslateJsonObject(item, targetLanguage);
+					translatedArray.Add(translatedItem);  // Add the translated item to the array
 				}
-				// Handle nested objects (JObject): Recursively translate nested objects
-				else if (value.Type == JTokenType.Object)
-				{
-					var nestedJson = value.ToString();
-					var translatedNestedJson = await TranslateJsonResponse(nestedJson, targetLanguage);
-					property.Value = JsonConvert.DeserializeObject<JObject>(translatedNestedJson);
-				}
-				// Handle arrays (JArray): Translate string elements in arrays
-				else if (value.Type == JTokenType.Array)
-				{
-					var translatedArray = new JArray();
-					foreach (var item in value)
-					{
-						if (item.Type == JTokenType.String)
-						{
-							// Log translation for array elements
-							var translatedItem = await TranslateTextAsync(item.ToString(), targetLanguage);
-							logger.LogInformation($"Translating array item: {item} to {translatedItem}");
-							translatedArray.Add(translatedItem);
-						}
-						else
-						{
-							translatedArray.Add(item);  // Non-string items are left as they are
-						}
-					}
-					property.Value = translatedArray;
-				}
-				// Handle null or non-translatable types: Leave them unchanged
-				else
-				{
-					logger.LogInformation($"Skipping translation for key '{property.Name}'");
-				}
+				return JsonConvert.SerializeObject(translatedArray);  // Serialize and return the translated array
+			}
+			else
+			{
+				// If it's a single object, process it directly
+				var translatedObject = await TranslateJsonObject(jsonObject, targetLanguage);
+				return JsonConvert.SerializeObject(translatedObject);  // Serialize and return the translated object
 			}
 		}
 
-		// Serialize the updated JSON object back into a string using Newtonsoft.Json
-		return JsonConvert.SerializeObject(jsonObject);
+		return jsonResponse;  // Return original response if JSON parsing fails
+	}
+
+	private async Task<JToken> TranslateJsonObject(JToken jsonObject, string targetLanguage)
+	{
+		// If it's an object, process each property
+		if (jsonObject.Type == JTokenType.Object)
+		{
+			var translatedObject = new JObject();
+			foreach (var property in jsonObject.Children<JProperty>())
+			{
+				var translatedValue = await TranslateJsonValue(property.Value, targetLanguage);
+				translatedObject.Add(property.Name, translatedValue);  // Add translated value to new JObject
+			}
+			return translatedObject;  // Return translated object
+		}
+
+		// If it's not an object, return it as-is
+		return jsonObject;
+	}
+
+	private async Task<JToken> TranslateJsonValue(JToken value, string targetLanguage)
+	{
+		if (value.Type == JTokenType.String)
+		{
+			// Translate string values
+			var textValue = value.ToString();
+			if (!string.IsNullOrEmpty(textValue))
+			{
+				// Call your TranslateTextAsync method to get the translated value
+				var translatedText = await TranslateTextAsync(textValue, targetLanguage);
+
+				// Extract the "text" value from the translation response
+				var translationResponse = JArray.Parse(translatedText); // Parse the translation response
+				var translatedTextValue = translationResponse[0]["translations"]?[0]["text"]?.ToString(); // Extract the translated "text"
+
+				// Log the translation process
+				logger.LogInformation($"Translated text for value '{textValue}' to: {translatedTextValue}");
+
+				// Return the translated text if found
+				return translatedTextValue != null ? JToken.FromObject(translatedTextValue) : value;
+			}
+		}
+		else if (value.Type == JTokenType.Array)
+		{
+			// If it's an array, recursively process each item
+			var translatedArray = new JArray();
+			foreach (var item in value)
+			{
+				var translatedItem = await TranslateJsonValue(item, targetLanguage);
+				translatedArray.Add(translatedItem);  // Add translated item to the array
+			}
+			return translatedArray;  // Return translated array
+		}
+		else if (value.Type == JTokenType.Object)
+		{
+			// If it's an object, recursively process each property
+			return await TranslateJsonObject(value, targetLanguage);
+		}
+
+		// If it's not a string, array, or object (e.g., numbers, booleans), return the value as-is
+		return value;
 	}
 }
 

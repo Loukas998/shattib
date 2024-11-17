@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Users;
+using Template.Application.Users.Commands.DeActivateCode;
 using Template.Application.Users.Commands.Login;
 using Template.Application.Users.Commands.Logout;
 using Template.Application.Users.Commands.RefreshToken;
@@ -73,5 +74,13 @@ public class AccountsController(IMediator mediator, IUserContext userContext) : 
         bool result = await mediator.Send(command);
         if(result) return Ok("Account verified successfully");
 		return BadRequest("Couldn't verify your account");
+	}
+
+	[HttpPatch]
+	[Route("Deactivate code")]
+	public async Task<IActionResult> DeactivateCode([FromBody] DeActivateCodeCommand command)
+	{
+		await mediator.Send(command);
+		return Ok("Code deactivated");
 	}
 }
