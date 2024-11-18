@@ -14,8 +14,7 @@ namespace Template.API.Controllers
 {
 	[ApiController]
 	[Route("api/[controller]")]
-	//[Authorize(Roles = UserRoles.Client)]
-	//[Authorize(Roles = UserRoles.Administrator)]
+	[Authorize(Roles = $"{UserRoles.Administrator},{UserRoles.Client}")]
 	public class ConsultationsController(IMediator mediator) : ControllerBase
 	{
 		[HttpPost]
@@ -33,6 +32,7 @@ namespace Template.API.Controllers
 			return Ok(consultation);
 		}
 
+		[Authorize(Roles = $"{UserRoles.Administrator}")]
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<ConsultationDto>>> GetAllConsultations()
 		{
@@ -47,6 +47,7 @@ namespace Template.API.Controllers
 			return Ok(userConsultations);
 		}
 
+		[Authorize(Roles = $"{UserRoles.Administrator}")]
 		[HttpPatch]
 		[Route("ChangeStatus/{consultationId}")]
 		public async Task<IActionResult> ChangeConsultationStatus([FromRoute] int consultationId, [FromBody]ChangeStatusCommand command)

@@ -1,13 +1,14 @@
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Template.Domain.Repositories;
 using Template.Infrastructure.Configuration;
 
 namespace Template.Infrastructure.Services;
 
-public class BlobStorageFileService(IOptions<AzureBlobSettings> settings) : IFileService
+public class BlobStorageFileService(IOptions<AzureBlobSettings> settings, ILogger<BlobStorageFileService> logger) : IFileService
 {
     private readonly BlobServiceClient _blobServiceClient = new(settings.Value.ConnectionString);
     private readonly string _containerName = settings.Value.ContainerName;
@@ -65,11 +66,27 @@ public class BlobStorageFileService(IOptions<AzureBlobSettings> settings) : IFil
 
     public void DeleteFile(string fileNameWithExtension)
     {
-        var blobContainerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-        var blobClient = blobContainerClient.GetBlobClient(fileNameWithExtension);
+		try
+		{
+			var blobContainerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+			var blobClient = blobContainerClient.GetBlobClient(fileNameWithExtension);
 
-        blobClient.DeleteIfExists();
-    }
+			logger.LogInformation("Attempting to delete file: {FilePath}", fileNameWithExtension);
+
+			if (blobClient.DeleteIfExists())
+			{
+				logger.LogInformation("File deleted: {FilePath}", fileNameWithExtension);
+			}
+			else
+			{
+				logger.LogWarning("File not found, skipping delete: {FilePath}", fileNameWithExtension);
+			}
+		}
+		catch (Exception ex)
+		{ 
+			logger.LogError(ex, "Error deleting file: {FileName}", fileNameWithExtension);
+		}
+	}
 
     private bool IsAllowedExtension(IFormFile file, string[] allowedFileExtensions)
     {

@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Criterias.Commands.CreateCriteriaCommand;
 using Template.Application.Criterias.Commands.DeleteCriteria;
@@ -7,13 +8,13 @@ using Template.Application.Criterias.Dtos;
 using Template.Application.Criterias.Queries.GetAllCriterias;
 using Template.Application.Criterias.Queries.GetCriteriaByIdQuery;
 using Template.Application.Criterias.Queries.GetCriteriasForUserQuery;
+using Template.Domain.Constants;
 
 namespace Template.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize(Roles = UserRoles.Administrator)]
-//[Authorize(Roles = UserRoles.Business)]
+[Authorize(Roles = $"{UserRoles.Administrator},{UserRoles.Business}")]
 public class CriteriaController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
@@ -24,6 +25,7 @@ public class CriteriaController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("{id:int}")]
+    //[Authorize(Roles = $"{UserRoles.Business}")]
     public async Task<IActionResult> GetCriteriaById(int id)
     {
         var criteria = await mediator.Send(new GetCriteriaByIdQuery(id));
@@ -37,6 +39,7 @@ public class CriteriaController(IMediator mediator) : ControllerBase
         return Ok(criterias);
     }
 
+    [Authorize(Roles = $"{UserRoles.Administrator}")]
     [HttpGet("GetAll")]
     public async Task<ActionResult<IEnumerable<CriteriaDto>>> GetAllCriterias([FromQuery] string? status)
     {
@@ -44,6 +47,7 @@ public class CriteriaController(IMediator mediator) : ControllerBase
         return Ok(criterias);
     }
 
+    [Authorize(Roles = $"{UserRoles.Administrator}")]
     [HttpPatch("{id:int}/Status")]
     public async Task<IActionResult> UpdateCriteriaStatus(int id, [FromBody] UpdateCriteriaStatusCommand command)
     {
@@ -52,8 +56,9 @@ public class CriteriaController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = $"{UserRoles.Administrator}")]
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleteCriteriaById(int id)
+    public async Task<IActionResult> DeleteCriteria(int id)
     {
         var command = new DeleteCriteriaCommand(id);
         await mediator.Send(command);

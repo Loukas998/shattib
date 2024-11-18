@@ -11,8 +11,7 @@ namespace Template.API.Controllers;
 
 [ApiController]
 [Route("api/Criterias/{criteriaId:int}/[controller]")]
-//[Authorize(Roles = UserRoles.Business)]
-//[Authorize(Roles = UserRoles.Administrator)]
+[Authorize(Roles = $"{UserRoles.Administrator},{UserRoles.Business}")]
 public class CommentsController(IMediator mediator) : ControllerBase
 {
     [HttpPost]

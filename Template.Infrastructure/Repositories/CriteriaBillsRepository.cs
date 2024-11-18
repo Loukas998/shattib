@@ -40,10 +40,10 @@ public class CriteriaBillsRepository(TemplateDbContext dbContext) : ICriteriaBil
         return bill;
     }
 
-    public async Task<int> CreateBillAsync(CriteriaBill criteriaBill, CancellationToken ct)
+    public async Task<int> CreateBillAsync(CriteriaBill criteriaBill)
     {
         dbContext.CriteriaBills.Add(criteriaBill);
-        await dbContext.SaveChangesAsync(ct);
+        await dbContext.SaveChangesAsync();
         return criteriaBill.Id;
     }
 

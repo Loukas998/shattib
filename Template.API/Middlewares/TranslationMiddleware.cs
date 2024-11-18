@@ -1,266 +1,185 @@
-﻿using System.Text;
-using System.Text.Json;
-using System.Text.Json.Nodes;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Text;
+using JsonException = Newtonsoft.Json.JsonException;
 
-namespace Template.API.Middlewares;
-
-public class TranslationMiddleware(ILogger<TranslationMiddleware> logger) : IMiddleware
+public class TranslationMiddleware(ILogger<TranslationMiddleware> logger, IConfiguration configuration) : IMiddleware
 {
-    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
-    {
-        logger.LogInformation("TranslationMiddleware invoked.");
+	public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+	{
+		logger.LogInformation("TranslationMiddleware invoked.");
 
-        // Capture the language from the request header
-        var targetLanguage = context.Request.Headers["Accept-Language"].ToString();
-        logger.LogInformation($"Accept-Language: {targetLanguage}");
+		if (context.Request.Headers.AcceptLanguage.ToString() == null) await next(context);
 
-        if (!string.IsNullOrWhiteSpace(targetLanguage))
-        {
-            logger.LogInformation("Proceeding with translation logic.");
+		// Capture the language from the request header
+		var targetLanguage = context.Request.Headers["Accept-Language"].ToString();
+		logger.LogInformation($"Accept-Language: {targetLanguage}");
 
-            // Capture the response body
-            var originalBody = context.Response.Body;
-            using var newBody = new MemoryStream();
-            context.Response.Body = newBody;
+		if (!string.IsNullOrEmpty(targetLanguage) && context.Request.Method == "GET" && targetLanguage == "en")
+		{
+			logger.LogInformation("Proceeding with translation logic.");
 
-            // Process the request
-            await next(context);
+			// Capture the response body
+			var originalBody = context.Response.Body;
+			using var newBody = new MemoryStream();
+			context.Response.Body = newBody;
 
-            // After the request is processed, send response to Azure for translation
-            if (context.Response.StatusCode == StatusCodes.Status200OK)
-            {
-                // Read the response body from the memory stream
-                newBody.Seek(0, SeekOrigin.Begin);
-                var responseBody = await new StreamReader(newBody).ReadToEndAsync();
+			// Process the request
+			await next(context);
 
-                // Reset the original response body and write the translated text
-                context.Response.Body = originalBody;
+			// After the request is processed, send response to Azure for translation
+			if (context.Response.StatusCode == StatusCodes.Status200OK)
+			{
+				// Read the response body from the memory stream
+				newBody.Seek(0, SeekOrigin.Begin);
+				var responseBody = await new StreamReader(newBody).ReadToEndAsync();
 
-                var translatedJson = await TranslateJsonResponse(responseBody, targetLanguage);
-                await context.Response.WriteAsync(translatedJson);
-            }
-            else
-            {
-                // If not a 200 status, copy the original content
-                context.Response.Body = originalBody;
-                newBody.Seek(0, SeekOrigin.Begin);
-                await newBody.CopyToAsync(originalBody);
-            }
-        }
-        else
-        {
-            logger.LogInformation("No language header found. Passing request through.");
-            await next(context);
-        }
-    }
+				// Reset the original response body and write the translated text
+				context.Response.Body = originalBody;
 
-    //private bool IsJsonResponse(HttpResponse response)
-    //{
-    //	// Check if the response is likely to be JSON by examining the content type
-    //	return response.ContentType != null && (
-    //	   response.ContentType.Contains("application/json") ||
-    //	   response.ContentType.Contains("text/html") ||
-    //	   response.ContentType.Contains("text/plain") ||
-    //	   response.ContentType.Contains("application/xml")
-    //   );
-    //}
+				var translatedJson = await TranslateJsonResponse(responseBody, targetLanguage);
+				await context.Response.WriteAsync(translatedJson);
+			}
+			else
+			{
+				// If not a 200 status, copy the original content
+				context.Response.Body = originalBody;
+				newBody.Seek(0, SeekOrigin.Begin);
+				await newBody.CopyToAsync(originalBody);
+			}
+		}
+		else
+		{
+			logger.LogInformation("No language header found. Passing request through.");
+			await next(context);
+		}
+	}
 
-    private async Task<string> TranslateTextAsync(string text, string targetLanguage)
-    {
-        var endpoint = "https://api.cognitive.microsofttranslator.com";
-        var route = $"/translate?api-version=3.0&to={targetLanguage}";
-        using (var client = new HttpClient())
-        using (var request = new HttpRequestMessage())
-        {
-            // Build the request.
-            request.Method = HttpMethod.Post;
-            request.RequestUri = new Uri(endpoint + route);
-            request.Content = new StringContent(text, Encoding.UTF8, "application/json");
-            request.Headers.Add("Ocp-Apim-Subscription-Key",
-                "FqyfAN1ywtRSCX0QB42HgCDMLzUuIUpq0EH9WiAf1wxqpUBuoFp0JQQJ99AKACF24PCXJ3w3AAAbACOGGFpp");
-            // location required if you're using a multi-service or regional (not global) resource.
-            request.Headers.Add("Ocp-Apim-Subscription-Region", "uaenorth");
+	private async Task<string> TranslateTextAsync(string text, string targetLanguage)
+	{
+		string endpoint = configuration["AzureAiTranslator:AzureTranslatorEndpoint"]!;
+		string route = $"/translate?api-version=3.0&to={targetLanguage}";
+		using (var client = new HttpClient())
+		using (var request = new HttpRequestMessage())
+		{
+			// Build the request.
+			request.Method = HttpMethod.Post;
+			request.RequestUri = new Uri(endpoint + route);
 
-            // Send the request and get response.
-            var response = await client.SendAsync(request).ConfigureAwait(false);
-            // Read response as a string.
-            var result = await response.Content.ReadAsStringAsync();
-            return result;
-        }
+			object[] body = new object[] { new { Text = text } };
+			var requestBody = JsonConvert.SerializeObject(body);
 
+			request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+			request.Headers.Add("Ocp-Apim-Subscription-Key", configuration["AzureAiTranslator:AzureTranslatorApiKey"]);
+			// location required if you're using a multi-service or regional (not global) resource.
+			request.Headers.Add("Ocp-Apim-Subscription-Region", configuration["AzureAiTranslator:Location"]);
 
-        //logger.LogInformation($"Translating text to {targetLanguage}");
+			// Send the request and get response.
+			HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
+			// Read response as a string.
+			string result = await response.Content.ReadAsStringAsync();
+			return result;
+		}
+	}
 
-        //try
-        //{
-        //	var response = await _translatorClient.TranslateAsync(targetLanguage, new[] { text });
-        //	return response.Value[0].Translations[0].Text;
-        //}
-        //catch (Exception ex)
-        //{
-        //	logger.LogError(ex, "Error during translation.");
+	private async Task<string> TranslateJsonResponse(string jsonResponse, string targetLanguage)
+	{
+		logger.LogInformation($"Translating JSON response to {targetLanguage}");
 
-        //	return "Translation failed.";
-        //}
-    }
+		// Deserialize the JSON response
+		JToken jsonObject;
+		try
+		{
+			jsonObject = JToken.Parse(jsonResponse);
+		}
+		catch (JsonException ex)
+		{
+			logger.LogError($"Failed to parse JSON: {ex.Message}");
+			return jsonResponse;  // Return original response in case of error
+		}
 
-    private async Task<string> TranslateJsonResponse(string jsonResponse, string targetLanguage)
-    {
-        logger.LogInformation($"Translating JSON response to {targetLanguage}");
+		if (jsonObject != null)
+		{
+			// If the root element is an array, process each item
+			if (jsonObject.Type == JTokenType.Array)
+			{
+				var translatedArray = new JArray();
+				foreach (var item in jsonObject)
+				{
+					var translatedItem = await TranslateJsonObject(item, targetLanguage);
+					translatedArray.Add(translatedItem);  // Add the translated item to the array
+				}
+				return JsonConvert.SerializeObject(translatedArray);  // Serialize and return the translated array
+			}
+			else
+			{
+				// If it's a single object, process it directly
+				var translatedObject = await TranslateJsonObject(jsonObject, targetLanguage);
+				return JsonConvert.SerializeObject(translatedObject);  // Serialize and return the translated object
+			}
+		}
 
-        // Deserialize the JSON response into a dictionary
-        var jsonObject = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonResponse);
+		return jsonResponse;  // Return original response if JSON parsing fails
+	}
 
-        if (jsonObject != null)
-            // Iterate over each key-value pair in the dictionary
-            foreach (var key in jsonObject.Keys.ToList())
-            {
-                var value = jsonObject[key];
+	private async Task<JToken> TranslateJsonObject(JToken jsonObject, string targetLanguage)
+	{
+		// If it's an object, process each property
+		if (jsonObject.Type == JTokenType.Object)
+		{
+			var translatedObject = new JObject();
+			foreach (var property in jsonObject.Children<JProperty>())
+			{
+				var translatedValue = await TranslateJsonValue(property.Value, targetLanguage);
+				translatedObject.Add(property.Name, translatedValue);  // Add translated value to new JObject
+			}
+			return translatedObject;  // Return translated object
+		}
 
-                // Log the value type to understand what is being processed
-                logger.LogInformation($"Processing key '{key}' with value '{value}' of type");
+		// If it's not an object, return it as-is
+		return jsonObject;
+	}
 
-                // Handle strings: Translate if it's a non-null, non-empty string
-                if (value is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.String)
-                {
-                    var textValue = jsonElement.GetString();
-                    if (!string.IsNullOrEmpty(textValue))
-                    {
-                        // Log before translation
-                        logger.LogInformation($"Translating text for key '{key}' with value: {textValue}");
+	private async Task<JToken> TranslateJsonValue(JToken value, string targetLanguage)
+	{
+		if (value.Type == JTokenType.String)
+		{
+			// Translate string values
+			var textValue = value.ToString();
+			if (!string.IsNullOrEmpty(textValue))
+			{
+				// Call your TranslateTextAsync method to get the translated value
+				var translatedText = await TranslateTextAsync(textValue, targetLanguage);
 
-                        // Call the translation function
-                        var translatedText = await TranslateTextAsync(textValue, targetLanguage);
+				// Extract the "text" value from the translation response
+				var translationResponse = JArray.Parse(translatedText); // Parse the translation response
+				var translatedTextValue = translationResponse[0]["translations"]?[0]["text"]?.ToString(); // Extract the translated "text"
 
-                        // Log the translated text
-                        logger.LogInformation($"Translated text for key '{key}': {translatedText}");
+				// Log the translation process
+				logger.LogInformation($"Translated text for value '{textValue}' to: {translatedTextValue}");
 
-                        // Replace the original text with the translated text
-                        jsonObject[key] = translatedText;
-                    }
-                }
-                // Handle nested objects (JsonElement): Recursively translate nested objects
-                else if (value is JsonElement nestedObject && nestedObject.ValueKind == JsonValueKind.Object)
-                {
-                    var nestedJson = nestedObject.GetRawText();
-                    var translatedNestedJson = await TranslateJsonResponse(nestedJson, targetLanguage);
-                    jsonObject[key] = JsonSerializer.Deserialize<object>(translatedNestedJson!);
-                }
-                // Handle arrays (JsonArray): Translate string elements in arrays
-                else if (value is JsonArray jsonArray)
-                {
-                    var translatedArray = new List<object>();
-                    foreach (var item in jsonArray)
-                        if (item!.GetValueKind() == JsonValueKind.String)
-                        {
-                            // Log translation for array elements
-                            var translatedItem = await TranslateTextAsync(item.ToString(), targetLanguage);
-                            logger.LogInformation($"Translating array item: {item} to {translatedItem}");
-                            translatedArray.Add(translatedItem);
-                        }
-                        else
-                        {
-                            translatedArray.Add(item); // Non-string items are left as they are
-                        }
+				// Return the translated text if found
+				return translatedTextValue != null ? JToken.FromObject(translatedTextValue) : value;
+			}
+		}
+		else if (value.Type == JTokenType.Array)
+		{
+			// If it's an array, recursively process each item
+			var translatedArray = new JArray();
+			foreach (var item in value)
+			{
+				var translatedItem = await TranslateJsonValue(item, targetLanguage);
+				translatedArray.Add(translatedItem);  // Add translated item to the array
+			}
+			return translatedArray;  // Return translated array
+		}
+		else if (value.Type == JTokenType.Object)
+		{
+			// If it's an object, recursively process each property
+			return await TranslateJsonObject(value, targetLanguage);
+		}
 
-                    jsonObject[key] = translatedArray;
-                }
-                // Handle null or non-translatable types: Leave them unchanged
-                else
-                {
-                    logger.LogInformation($"Skipping translation for key '{key}'");
-                }
-            }
-
-        // Serialize the updated JSON object back into a string
-        return JsonSerializer.Serialize(jsonObject);
-    }
+		// If it's not a string, array, or object (e.g., numbers, booleans), return the value as-is
+		return value;
+	}
 }
-
-//using Microsoft.Extensions.Logging;
-//using Azure.AI.Translation.Text;
-//using Microsoft.AspNetCore.Http;
-//using System.IO;
-//using System.Threading.Tasks;
-
-//namespace Template.API.Middlewares
-//{
-//	public class TranslationMiddleware : IMiddleware
-//	{
-//		private readonly TextTranslationClient _translatorClient;
-//		private readonly ILogger<TranslationMiddleware> logger;
-
-//		public TranslationMiddleware(TextTranslationClient translatorClient, ILogger<TranslationMiddleware> logger)
-//		{
-//			_translatorClient = translatorClient;
-//			logger = logger;
-//		}
-
-//		public async Task InvokeAsync(HttpContext context, RequestDelegate next)
-//		{
-//			logger.LogInformation("TranslationMiddleware invoked.");
-
-//			// Capture the language from the request header
-//			var targetLanguage = context.Request.Headers["Accept-Language"].ToString();
-//			logger.LogInformation($"Accept-Language: {targetLanguage}");
-
-//			if (!string.IsNullOrWhiteSpace(targetLanguage))
-//			{
-//				logger.LogInformation("Proceeding with translation logic.");
-
-//				// Capture the response body
-//				var originalBody = context.Response.Body;
-//				using var newBody = new MemoryStream();
-//				context.Response.Body = newBody;
-
-//				// Process the request
-//				await next(context);
-
-//				// After request is processed, send response to Azure for translation
-//				if (context.Response.StatusCode == StatusCodes.Status200OK)
-//				{
-//					// Read the response body from memory stream
-//					newBody.Seek(0, SeekOrigin.Begin);
-//					var responseBody = await new StreamReader(newBody).ReadToEndAsync();
-
-//					// Translate the response text
-//					var translatedText = await TranslateTextAsync(responseBody, targetLanguage);
-
-//					// Reset the original response body and write the translated text
-//					context.Response.Body = originalBody;
-//					await context.Response.WriteAsync(translatedText);
-//				}
-//				else
-//				{
-//					// If not a 200 status, we simply copy the original content
-//					context.Response.Body = originalBody;
-//					newBody.Seek(0, SeekOrigin.Begin);
-//					await newBody.CopyToAsync(originalBody);
-//				}
-//			}
-//			else
-//			{
-//				logger.LogInformation("No language header found. Passing request through.");
-//				await next(context);
-//			}
-//		}
-
-//		private async Task<string> TranslateTextAsync(string text, string targetLanguage)
-//		{
-//			logger.LogInformation($"Translating text to {targetLanguage}");
-
-//			try
-//			{
-//				var response = await _translatorClient.TranslateAsync(targetLanguage, new[] { text });
-//				var translatedText = response.Value[0].Translations[0].Text;
-//				return translatedText;
-//			}
-//			catch (Exception ex)
-//			{
-//				logger.LogError(ex, "Error during translation.");
-//				return "Translation failed.";
-//			}
-//		}
-
-//	}
-//}

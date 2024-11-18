@@ -16,6 +16,6 @@ public class CreateCriteriaBillCommandHandler(
     {
         logger.LogInformation("Creating new CriteriaBill {@CriteriaBill}", request);
         var bill = mapper.Map<CriteriaBill>(request);
-        return await criteriaBillsRepository.CreateBillAsync(bill, cancellationToken);
+        return await criteriaBillsRepository.CreateBillAsync(bill);
     }
 }

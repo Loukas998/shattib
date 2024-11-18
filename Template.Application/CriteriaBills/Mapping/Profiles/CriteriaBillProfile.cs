@@ -13,6 +13,7 @@ public class CriteriaBillProfile : Profile
         // TODO:: Create Image Resolver
         CreateMap<CreateCriteriaBillCommand, CriteriaBill>()
             .ForMember(dest => dest.Image, opt => opt.MapFrom<BillImageResolver>());
+
         CreateMap<CriteriaBill, CriteriaBillDto>();
     }
 }

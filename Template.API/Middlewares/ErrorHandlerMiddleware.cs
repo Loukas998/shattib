@@ -1,4 +1,5 @@
-﻿using Template.Domain.Exceptions;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Template.Domain.Exceptions;
 namespace Template.API.Middlewares
 {
 	public class ErrorHandlerMiddleware(ILogger<ErrorHandlerMiddleware> logger) : IMiddleware
@@ -15,6 +16,13 @@ namespace Template.API.Middlewares
 
 				context.Response.StatusCode = 404;
 				await context.Response.WriteAsync(notFound.Message);
+			}
+			catch (UnauthorizedException unauth)
+			{
+				logger.LogWarning(unauth.Message);
+
+				context.Response.StatusCode = 401;
+				await context.Response.WriteAsync(unauth.Message);
 			}
 			catch (Exception ex)
 			{

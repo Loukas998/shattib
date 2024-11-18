@@ -324,10 +324,6 @@ namespace Template.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ConsultationTopic")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("DateOfRequest")
                         .HasColumnType("datetime2");
 
@@ -356,6 +352,36 @@ namespace Template.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Consultations", (string)null);
+                });
+
+            modelBuilder.Entity("Template.Domain.Entities.OneTimePassword", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("ActiveUntil")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OneTimePasswords", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Orders.Order", b =>
@@ -415,6 +441,43 @@ namespace Template.Infrastructure.Migrations
                     b.ToTable("OrderItems", (string)null);
                 });
 
+            modelBuilder.Entity("Template.Domain.Entities.Orders.SpecifiedMeasurement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Details")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Height")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Measurement")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Width")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SpecifiedMeasurements", (string)null);
+                });
+
             modelBuilder.Entity("Template.Domain.Entities.Products.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -470,7 +533,7 @@ namespace Template.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Meaurements")
+                    b.Property<string>("Measurements")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -605,6 +668,9 @@ namespace Template.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
@@ -791,6 +857,17 @@ namespace Template.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Template.Domain.Entities.Orders.SpecifiedMeasurement", b =>
+                {
+                    b.HasOne("Template.Domain.Entities.User", "User")
+                        .WithMany("SpecifiedMeasurements")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Template.Domain.Entities.Products.Product", b =>
                 {
                     b.HasOne("Template.Domain.Entities.Products.SubCategory", "SubCategory")
@@ -828,11 +905,13 @@ namespace Template.Infrastructure.Migrations
 
             modelBuilder.Entity("Template.Domain.Entities.Products.SubCategory", b =>
                 {
-                    b.HasOne("Template.Domain.Entities.Products.Category", null)
+                    b.HasOne("Template.Domain.Entities.Products.Category", "Category")
                         .WithMany("SubCategories")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Criterias.Criteria", b =>
@@ -882,6 +961,8 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("Criterias");
 
                     b.Navigation("Orders");
+
+                    b.Navigation("SpecifiedMeasurements");
                 });
 #pragma warning restore 612, 618
         }

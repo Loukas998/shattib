@@ -9,7 +9,7 @@ using Template.Domain.Repositories;
 namespace Template.Application.Products.Commands.UpdateProductCommand
 {
 	public class UpdateProductCommandHandler(ILogger<UpdateProductCommandHandler> logger,
-		IMapper mapper, IProductRepository productRepository) : IRequestHandler<UpdateProductCommand>
+		IMapper mapper, IProductRepository productRepository, IFileService fileService) : IRequestHandler<UpdateProductCommand>
 	{
 		public async Task Handle(UpdateProductCommand request, CancellationToken cancellationToken)
 		{
@@ -21,7 +21,15 @@ namespace Template.Application.Products.Commands.UpdateProductCommand
 			{
 				throw new NotFoundException(nameof(Product), request.ProductId.ToString());
 			}
-			mapper.Map<UpdateProductCommand, Product>(request, product);
+
+			foreach(var image in product.Images)
+			{
+				string fileName = Path.GetFileName(image.ImagePath);
+				string fullPath = Path.Combine("Images", "Products", fileName).Replace("\\", "/");
+				fileService.DeleteFile(fullPath);
+			}
+
+			mapper.Map(request, product);
 			await productRepository.SaveChanges();
 		}
 	}

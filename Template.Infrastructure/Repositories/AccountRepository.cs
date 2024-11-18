@@ -1,6 +1,5 @@
-﻿using Azure.Core;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -19,7 +18,8 @@ namespace Template.Infrastructure.Repositories
 		private readonly string _loginProvidor = "ShattibTokenProvidor";
 		private readonly string _refreshToken = "RefreshToken";
 		private User? _user;
-		private readonly int _expiresInMinutes = Convert.ToInt32(configuration["JwtSettings:DurationInMinutes"]);
+		private readonly int _expiresInMinutes =
+			Convert.ToInt32(configuration["JwtSettings:DurationInMinutes"]) * 24 * 365;
 
 		public async Task<string> CreateRefreshToken()
 		{
@@ -56,7 +56,7 @@ namespace Template.Infrastructure.Repositories
 		public async Task<AuthResponseDto?> Login(string email, string password)
 		{
 			_user = await userManager.FindByEmailAsync(email);
-			if (_user == null)
+			if (_user == null || !_user.IsActive)
 			{
 				return null;
 			}
@@ -108,7 +108,9 @@ namespace Template.Infrastructure.Repositories
 			{
 				new Claim(JwtRegisteredClaimNames.Sub, _user.Id!),
 				new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-				new Claim(JwtRegisteredClaimNames.Email, _user.Email!)
+				new Claim(JwtRegisteredClaimNames.Email, _user.Email!),
+				new Claim(JwtRegisteredClaimNames.PhoneNumber, _user.PhoneNumber!),
+				
 			}.Union(roles);
 
 			var token = new JwtSecurityToken(
@@ -132,6 +134,56 @@ namespace Template.Infrastructure.Repositories
 		public async Task<User> GetUserById(string userId)
 		{
 			return await userManager.FindByIdAsync(userId);
+		}
+
+		public async Task<string> GenerateOTP(string userPhoneNumber)
+		{
+			string otpCode = new Random().Next(100000, 999999).ToString();
+			var dbOtp = await dbContext.OneTimePasswords.FirstOrDefaultAsync(o => o.Code == otpCode);
+			while(dbOtp != null && dbOtp.Code == otpCode)
+			{
+				otpCode = new Random().Next(100000, 999999).ToString();
+			}
+			var ontTimePassword = new OneTimePassword
+			{
+				Code = otpCode,
+				CreatedAt = DateTime.Now,
+				ActiveUntil = DateTime.Now.AddMinutes(10),
+				PhoneNumber = userPhoneNumber,
+				IsActive = true
+			};
+			dbContext.OneTimePasswords.Add(ontTimePassword);
+			await dbContext.SaveChangesAsync();
+			return otpCode;
+		}
+
+		public async Task<bool> VerifyAccountAsync(string otpCode)
+		{
+			var dbOtp = await dbContext.OneTimePasswords.FirstOrDefaultAsync(o => o.Code == otpCode);
+			if (dbOtp != null && dbOtp.IsActive )
+			{
+				var user = await dbContext.Users.FirstOrDefaultAsync(u => u.PhoneNumber == dbOtp.PhoneNumber);
+				if(user != null)
+				{
+					user.IsActive = true;
+					dbContext.OneTimePasswords.Remove(dbOtp);
+					await dbContext.SaveChangesAsync();
+					return true;
+				}
+				return false;
+			}
+			return false;
+		}
+
+		public async Task DeActivateOTPAsync(string otpCode)
+		{
+			var otp = await dbContext.OneTimePasswords.FirstOrDefaultAsync(o => o.Code == otpCode);
+			if (otp != null)
+			{
+				otp.IsActive = false;
+				dbContext.Remove(otp);
+			}
+			await dbContext.SaveChangesAsync();
 		}
 	}
 }

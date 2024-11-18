@@ -12,5 +12,8 @@ namespace Template.Domain.Repositories
 		public Task<AuthResponseDto?> VerifyRefreshToken(RefreshTokenRequest refreshTokenRequest);
 		public Task TokenDelete(User user);
 		public  Task<User> GetUserById(string userId);
+		public Task<string> GenerateOTP(string userPhoneNumber);
+		public Task<bool> VerifyAccountAsync(string otpCode);
+		public Task DeActivateOTPAsync(string otpCode);
 	}
 }

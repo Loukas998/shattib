@@ -18,8 +18,7 @@ namespace Template.API.Controllers
 {
 	[ApiController]
 	[Route("api/[controller]")]
-	[Authorize(Roles = UserRoles.Administrator)]
-	[Authorize(Roles = UserRoles.Client)]
+	[Authorize(Roles = $"{UserRoles.Administrator},{UserRoles.Business},{UserRoles.Client}")]
 	public class OrdersController(IMediator mediator) : ControllerBase
 	{
 		[HttpPost]
@@ -38,6 +37,7 @@ namespace Template.API.Controllers
 		}
 
 		[HttpGet("all")]
+		[Authorize(Roles = $"{UserRoles.Administrator}")]
 		public async Task<ActionResult<IEnumerable<OrderDto>>> GetAllOrders()
 		{
 			var orders = await mediator.Send(new GetAllOrdersQuery());
@@ -45,6 +45,7 @@ namespace Template.API.Controllers
 		}
 
 		[HttpGet("Kind")]
+		[Authorize(Roles = $"{UserRoles.Administrator}")]
 		public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrdersByKind([FromQuery]string kind)
 		{
 			var orders = await mediator.Send(new GetOrdersByKindQuery(kind));
@@ -57,6 +58,7 @@ namespace Template.API.Controllers
 			var orders = await mediator.Send(new GetUserOrdersByKindQuery(kind));
 			return Ok(orders);
 		}
+
 
 		[HttpGet("User")]
 		public async Task<ActionResult<IEnumerable<OrderDto>>> GetUserOrders()
@@ -72,6 +74,7 @@ namespace Template.API.Controllers
 			return Ok(orders);
 		}
 
+		[Authorize(Roles = $"{UserRoles.Administrator}")]
 		[HttpGet("Status")]
 		public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrdersByStatus([FromQuery]string status)
 		{
@@ -87,6 +90,7 @@ namespace Template.API.Controllers
 			return NoContent();
 		}
 
+		[Authorize(Roles = $"{UserRoles.Administrator}")]
 		[HttpPatch]
 		[Route("{orderId}")]
 		public async Task<IActionResult> ChangeStatus([FromRoute]int orderId, [FromBody] UpdateOrderStatusCommand command)

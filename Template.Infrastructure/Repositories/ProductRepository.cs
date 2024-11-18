@@ -71,7 +71,12 @@ public class ProductRepository(
         float? maxPrice, string? searchTerm, string? sortOrder)
     {
         // return await dbContext.Products.Include(p => p.Images).ToListAsync();
-        var query = dbContext.Products.Include(p => p.Images).Include(p => p.SubCategory).AsQueryable();
+        var query = dbContext.Products
+            .Include(p => p.Images)
+            .Include(p => p.SubCategory)
+            .ThenInclude(sb => sb.Category)
+            .AsQueryable();
+
         if (categoryId > 0)
             query = query.Where(p => p.SubCategory.CategoryId == categoryId);
 
@@ -108,6 +113,8 @@ public class ProductRepository(
         return await dbContext.Products
             .Include(p => p.ProductSpecifications)
             .Include(p => p.Images)
+            .Include(p => p.SubCategory)
+            .ThenInclude(sb => sb.Category)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 

@@ -19,5 +19,6 @@ namespace Template.Application.Products.Commands.UpdateProductCommand
 		public string? Deaf { get; set; }
 		public string? RetrivalAndReplacing { get; set; }
 		public string? Notes { get; set; }
+		public List<IFormFile>? Images { get; set; }
 	}
 }

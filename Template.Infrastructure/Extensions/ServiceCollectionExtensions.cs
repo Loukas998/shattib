@@ -56,10 +56,13 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IConsultationRepository, ConsultationRepository>();
         services.AddScoped<IStatisticsRepository, StatisticsRepository>();
         services.AddScoped<IContactUsRepository, ContactUsRepository>();
+        services.AddScoped<ISpecifiedMeasurementRepository, SpecifiedMeasurementRepository>();
 
         services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddScoped<ICriteriaRepository, CriteriaRepository>();
         services.AddScoped<ICriteriaBillsRepository, CriteriaBillsRepository>();
+        //services.AddScoped<IFileService, FileService>();    
         services.AddScoped<IFileService, BlobStorageFileService>();
+        services.AddScoped<IVonageService, VonageService>();
     }
 }

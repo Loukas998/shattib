@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Template.Domain.Constants;
 using Template.Domain.Repositories;
 
 namespace Template.API.Controllers
 {
 	[ApiController]
 	[Route("api/SeededValues")]
+	//[Authorize(Roles = $"{UserRoles.Administrator}, {UserRoles.Business}, {UserRoles.Client}")]
 	public class SeededValuesController(ISeededValuesRepository seededValuesRepository) : ControllerBase
 	{
 		[HttpGet("SubCategories")]

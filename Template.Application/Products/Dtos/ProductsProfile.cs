@@ -10,14 +10,16 @@ public class ProductsProfile : Profile
     public ProductsProfile()
     {
         CreateMap<Product, ProductDto>()
-            .ForMember(dest => dest.ProductSpecifications, opt => opt.Ignore());
+            .ForMember(dest => dest.ProductSpecifications, opt => opt.Ignore())
+            .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(p => p.SubCategory.CategoryId));
 
         CreateMap<CreateProductCommand, Product>()
             .ForMember(dest => dest.Images, opt => opt.MapFrom<ImagesResolver>())
             .ForMember(dest => dest.Specifications, opt => opt.Ignore());
 
         CreateMap<UpdateProductCommand, Product>()
-            .ForAllMembers(opt =>
+			.ForMember(dest => dest.Images, opt => opt.MapFrom<UpdateImagesResolver>())
+			.ForAllMembers(opt =>
                 opt.Condition((src, dst, srcMember) => srcMember != null));
 
         CreateMap<Product, MiniProductDto>().ReverseMap();

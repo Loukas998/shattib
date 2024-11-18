@@ -8,5 +8,6 @@
 		public int CategoryId { get; set; } = default!;
        
         public List<Product> Products { get; set; } = new();
+        public Category Category { get; set; }
     }
 }
