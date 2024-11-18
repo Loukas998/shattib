@@ -9,11 +9,13 @@ public class TranslationMiddleware(ILogger<TranslationMiddleware> logger, IConfi
 	{
 		logger.LogInformation("TranslationMiddleware invoked.");
 
+		if (context.Request.Headers.AcceptLanguage.ToString() == null) await next(context);
+
 		// Capture the language from the request header
 		var targetLanguage = context.Request.Headers["Accept-Language"].ToString();
 		logger.LogInformation($"Accept-Language: {targetLanguage}");
 
-		if (!string.IsNullOrEmpty(targetLanguage))
+		if (!string.IsNullOrEmpty(targetLanguage) && context.Request.Method == "GET" && targetLanguage == "en")
 		{
 			logger.LogInformation("Proceeding with translation logic.");
 
@@ -181,134 +183,3 @@ public class TranslationMiddleware(ILogger<TranslationMiddleware> logger, IConfi
 		return value;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-//logger.LogInformation($"Translating text to {targetLanguage}");
-
-//try
-//{
-//	var response = await _translatorClient.TranslateAsync(targetLanguage, new[] { text });
-//	return response.Value[0].Translations[0].Text;
-//}
-//catch (Exception ex)
-//{
-//	logger.LogError(ex, "Error during translation.");
-
-//	return "Translation failed.";
-//}
-
-
-
-
-
-
-
-
-//using Microsoft.Extensions.Logging;
-//using Azure.AI.Translation.Text;
-//using Microsoft.AspNetCore.Http;
-//using System.IO;
-//using System.Threading.Tasks;
-
-//namespace Template.API.Middlewares
-//{
-//	public class TranslationMiddleware : IMiddleware
-//	{
-//		private readonly TextTranslationClient _translatorClient;
-//		private readonly ILogger<TranslationMiddleware> logger;
-
-//		public TranslationMiddleware(TextTranslationClient translatorClient, ILogger<TranslationMiddleware> logger)
-//		{
-//			_translatorClient = translatorClient;
-//			logger = logger;
-//		}
-
-//		public async Task InvokeAsync(HttpContext context, RequestDelegate next)
-//		{
-//			logger.LogInformation("TranslationMiddleware invoked.");
-
-//			// Capture the language from the request header
-//			var targetLanguage = context.Request.Headers["Accept-Language"].ToString();
-//			logger.LogInformation($"Accept-Language: {targetLanguage}");
-
-//			if (!string.IsNullOrWhiteSpace(targetLanguage))
-//			{
-//				logger.LogInformation("Proceeding with translation logic.");
-
-//				// Capture the response body
-//				var originalBody = context.Response.Body;
-//				using var newBody = new MemoryStream();
-//				context.Response.Body = newBody;
-
-//				// Process the request
-//				await next(context);
-
-//				// After request is processed, send response to Azure for translation
-//				if (context.Response.StatusCode == StatusCodes.Status200OK)
-//				{
-//					// Read the response body from memory stream
-//					newBody.Seek(0, SeekOrigin.Begin);
-//					var responseBody = await new StreamReader(newBody).ReadToEndAsync();
-
-//					// Translate the response text
-//					var translatedText = await TranslateTextAsync(responseBody, targetLanguage);
-
-//					// Reset the original response body and write the translated text
-//					context.Response.Body = originalBody;
-//					await context.Response.WriteAsync(translatedText);
-//				}
-//				else
-//				{
-//					// If not a 200 status, we simply copy the original content
-//					context.Response.Body = originalBody;
-//					newBody.Seek(0, SeekOrigin.Begin);
-//					await newBody.CopyToAsync(originalBody);
-//				}
-//			}
-//			else
-//			{
-//				logger.LogInformation("No language header found. Passing request through.");
-//				await next(context);
-//			}
-//		}
-
-//		private async Task<string> TranslateTextAsync(string text, string targetLanguage)
-//		{
-//			logger.LogInformation($"Translating text to {targetLanguage}");
-
-//			try
-//			{
-//				var response = await _translatorClient.TranslateAsync(targetLanguage, new[] { text });
-//				var translatedText = response.Value[0].Translations[0].Text;
-//				return translatedText;
-//			}
-//			catch (Exception ex)
-//			{
-//				logger.LogError(ex, "Error during translation.");
-//				return "Translation failed.";
-//			}
-//		}
-
-//	}
-//}
-
-
-//private bool IsJsonResponse(HttpResponse response)
-//{
-//	// Check if the response is likely to be JSON by examining the content type
-//	return response.ContentType != null && (
-//	   response.ContentType.Contains("application/json") ||
-//	   response.ContentType.Contains("text/html") ||
-//	   response.ContentType.Contains("text/plain") ||
-//	   response.ContentType.Contains("application/xml")
-//   );
-//}

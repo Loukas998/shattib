@@ -4,7 +4,7 @@ namespace Template.Domain.Repositories;
 
 public interface ICriteriaBillsRepository
 {
-    public Task<int> CreateBillAsync(CriteriaBill criteriaBill, CancellationToken ct);
+    public Task<int> CreateBillAsync(CriteriaBill criteriaBill);
     public Task<List<CriteriaBill>> GetAllBillsAsync();
     public Task<CriteriaBill?> GetBillByIdAsync(int id);
     public Task<CriteriaBill> UpdateBillAsync(CriteriaBill criteriaBill);

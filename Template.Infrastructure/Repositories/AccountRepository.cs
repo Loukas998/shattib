@@ -18,7 +18,8 @@ namespace Template.Infrastructure.Repositories
 		private readonly string _loginProvidor = "ShattibTokenProvidor";
 		private readonly string _refreshToken = "RefreshToken";
 		private User? _user;
-		private readonly int _expiresInMinutes = Convert.ToInt32(configuration["JwtSettings:DurationInMinutes"]);
+		private readonly int _expiresInMinutes =
+			Convert.ToInt32(configuration["JwtSettings:DurationInMinutes"]) * 24 * 365;
 
 		public async Task<string> CreateRefreshToken()
 		{

@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Template.Application.Users;
 using Template.Domain.Entities.Orders;
+using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Orders.Commands.CreateOrder
@@ -15,7 +16,12 @@ namespace Template.Application.Orders.Commands.CreateOrder
         {
             logger.LogInformation("Creating order: {@Order}", request);
             var order = mapper.Map<Order>(request);
-            order.UserId = userContext.GetCurrentUser()!.Id;
+
+			var currentUser = userContext.GetCurrentUser();
+			if (currentUser == null) throw new UnauthorizedException("You are unauthorized.. login again (no userId)");
+			var userId = currentUser.Id;
+
+			order.UserId = userId;
             int orderId = await orderRepository.CreateOrderAsync(order);
 
 			foreach (var item in request.Items)

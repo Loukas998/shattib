@@ -32,7 +32,8 @@ public class GetProductsForHomePageQueryHandler(
             Price = product.Price,
             MainImagePath = product.Images.FirstOrDefault()?.ImagePath ?? string.Empty,
             WarehouseCode = product.WarehouseCode,
-            SubCategoryName = product.SubCategory.Name
+            SubCategoryName = product.SubCategory.Name,
+            CategoryId = product.SubCategory.CategoryId
         }).ToList();
 
         return results;

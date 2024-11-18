@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Users.Commands.Logout
@@ -10,7 +11,9 @@ namespace Template.Application.Users.Commands.Logout
 		public async Task Handle(LogoutUserCommand request, CancellationToken cancellationToken)
 		{
 			logger.LogInformation("Logging a user out");
-			string userId = userContext.GetCurrentUser()!.Id;
+			var currentUser = userContext.GetCurrentUser();
+			if (currentUser == null) throw new UnauthorizedException("You are unauthorized.. login again (no userId)");
+			var userId = currentUser.Id;
 			var user = await accountRepository.GetUserById(userId);
 			await accountRepository.TokenDelete(user);
 		}

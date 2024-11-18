@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Template.Application.Orders.Dtos;
 using Template.Application.Users;
+using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Orders.Queries.GetUserOrdersByStatus
@@ -14,7 +15,9 @@ namespace Template.Application.Orders.Queries.GetUserOrdersByStatus
 		{
 			logger.LogInformation("Getting all user orders with status: {Status}", request.Status);
 
-			string userId = userContext.GetCurrentUser()!.Id;
+			var currentUser = userContext.GetCurrentUser();
+			if (currentUser == null) throw new UnauthorizedException("You are unauthorized.. login again (no userId)");
+			var userId = currentUser.Id;
 			var orders = await orderRepository.GetUserOrdersByStatus(request.Status, userId);
 
 			var orderItemsDict = await orderRepository.GetOrderItemsForOrders(orders.Select(o => o.Id).ToList());

@@ -18,7 +18,8 @@ public class ProductsProfile : Profile
             .ForMember(dest => dest.Specifications, opt => opt.Ignore());
 
         CreateMap<UpdateProductCommand, Product>()
-            .ForAllMembers(opt =>
+			.ForMember(dest => dest.Images, opt => opt.MapFrom<UpdateImagesResolver>())
+			.ForAllMembers(opt =>
                 opt.Condition((src, dst, srcMember) => srcMember != null));
 
         CreateMap<Product, MiniProductDto>().ReverseMap();

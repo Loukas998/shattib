@@ -31,6 +31,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
     internal DbSet<ContactUs> Contacts { get; set; }
 
     internal DbSet<OneTimePassword> OneTimePasswords { get; set; }
+    internal DbSet<SpecifiedMeasurement> SpecifiedMeasurements { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -108,6 +109,12 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
         modelBuilder.Entity<User>()
             .HasMany(u => u.Criterias)
             .WithOne(c => c.User)
+            .HasForeignKey(c => c.UserId);
+
+		// User -> SpecifiedMeasurements (One-to-Many)
+		modelBuilder.Entity<User>()
+            .HasMany(u => u.SpecifiedMeasurements)
+            .WithOne(sm => sm.User)
             .HasForeignKey(c => c.UserId);
 	}
 }

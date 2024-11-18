@@ -13,7 +13,7 @@ namespace Template.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-//[Authorize(Roles = UserRoles.Administrator)]
+[Authorize(Roles = $"{UserRoles.Administrator}")]
 public class StatisticsController(IMediator mediator) : ControllerBase
 {
     [HttpGet("GetClients")]

@@ -12,5 +12,6 @@ namespace Template.Domain.Entities
 		public List<Order>? Orders { get; set; }
 		public List<Consultation>? Consultations { get; set; }
 		public List<Criteria>? Criterias { get; set; }
+		public List<SpecifiedMeasurement>? SpecifiedMeasurements { get; set; }
 	}
 }
