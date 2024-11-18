@@ -13,7 +13,7 @@ public class CreateProductCommand : IRequest<int>
     public string Features { get; set; } = default!;
     public float Price { get; set; }
     public string MeasurementUnit { get; set; } = default!;
-    public string Meaurements { get; set; } = default!;
+    public string Measurements { get; set; } = default!;
     public string ManufacturingCountry { get; set; } = default!;
     public string Color { get; set; } = default!;
     public string Deaf { get; set; } = default!;
