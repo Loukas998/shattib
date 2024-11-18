@@ -10,11 +10,12 @@ public class CriteriaDto
     public string Status { get; set; } = default!;
     public string DisplayName { get; set; } = default!;
     public string PhoneNumber { get; set; } = default!;
-	[DataType(DataType.Date)]
-	public DateTime DateOfCreation { get; set; } = default!;
+
+    [DataType(DataType.Date)] public DateTime DateOfCreation { get; set; } = default!;
+
     public List<GetCriteriaItemDto> CriteriaItems { get; set; }
 
     public List<CommentDto> Comments { get; set; }
 
-    public List<CreateCriteriaBillsDto> Invoices { get; set; }
+    public List<GetCriteriaBillDto> Invoices { get; set; }
 }
