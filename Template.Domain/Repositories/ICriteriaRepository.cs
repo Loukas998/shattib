@@ -12,4 +12,6 @@ public interface ICriteriaRepository
     public Task<List<Criteria>> GetAllByUserId(string userId, string status);
     public Task<Criteria?> UpdateCriteriaStatusAsync(int id, string status);
     public Task<Criteria> UpdateCriteriaAsync(Criteria criteria);
+
+    public Task DeleteCriteriaAsync(Criteria criteria);
 }

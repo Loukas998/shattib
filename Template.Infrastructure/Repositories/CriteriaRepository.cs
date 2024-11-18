@@ -15,10 +15,7 @@ public class CriteriaRepository(TemplateDbContext dbContext) : ICriteriaReposito
             .Include(c => c.User)
             .AsQueryable();
 
-        if (string.IsNullOrEmpty(status))
-        {
-            return await query.ToListAsync();
-        }
+        if (string.IsNullOrEmpty(status)) return await query.ToListAsync();
 
         return await query.Where(c => c.Status == status).ToListAsync();
     }
@@ -45,15 +42,12 @@ public class CriteriaRepository(TemplateDbContext dbContext) : ICriteriaReposito
     {
         var criterias = dbContext.Criterias.AsQueryable()
             .Include(criteria => criteria.CriteriaItems)
-			.ThenInclude(criteriaItem => criteriaItem.Category)
-			.Include(criteria => criteria.Comments)
-			.Include(criteria => criteria.CriteriaBills)
-			.Where(criteria => criteria.UserId == userId);
+            .ThenInclude(criteriaItem => criteriaItem.Category)
+            .Include(criteria => criteria.Comments)
+            .Include(criteria => criteria.CriteriaBills)
+            .Where(criteria => criteria.UserId == userId);
 
-        if (string.IsNullOrEmpty(status))
-        {
-            return await criterias.ToListAsync();
-        }
+        if (string.IsNullOrEmpty(status)) return await criterias.ToListAsync();
         criterias = criterias.Where(c => c.Status == status);
         return await criterias.ToListAsync();
     }
@@ -72,5 +66,11 @@ public class CriteriaRepository(TemplateDbContext dbContext) : ICriteriaReposito
         dbContext.Criterias.Update(criteria);
         await dbContext.SaveChangesAsync();
         return criteria;
+    }
+
+    public async Task DeleteCriteriaAsync(Criteria criteria)
+    {
+        dbContext.Criterias.Remove(criteria);
+        await dbContext.SaveChangesAsync();
     }
 }

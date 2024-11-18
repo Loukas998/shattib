@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Diagnostics;
 using Serilog;
 using Template.API.Extensions;
 using Template.API.Middlewares;
@@ -21,7 +20,7 @@ try
     builder.AddPresentation();
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
-    
+
 
     builder.Host.UseSerilog(
         (context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
@@ -34,14 +33,14 @@ try
                 .AllowAnyMethod());
     });
 
-	//builder.Services.AddTransient<TranslationMiddleware>();
-	builder.Services.AddTransient<ErrorHandlerMiddleware>();
-    
+    builder.Services.AddTransient<TranslationMiddleware>();
+    builder.Services.AddTransient<ErrorHandlerMiddleware>();
+
     //builder.Services.AddTransient<TokenValidationMiddleware>();
 
-	var app = builder.Build();
+    var app = builder.Build();
 
-	var scope = app.Services.CreateScope(); //for seeders
+    var scope = app.Services.CreateScope(); //for seeders
     // example: var govSeeder = scope.ServiceProvider.GetRequiredService<IGovernorateSeeder>();
     var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
     await seeder.Seed();
@@ -49,10 +48,10 @@ try
     await catSedder.Seed();
     //await catSedder.SetSubCategoriesImages();
     //await catSedder.SetCategoriesImages();
-	
-	
-	// Configure the HTTP request pipeline.
-	if (app.Environment.IsDevelopment())
+
+
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
         app.UseSwaggerUI();
@@ -60,11 +59,11 @@ try
 
     app.UseSerilogRequestLogging();
 
-	app.UseMiddleware<ErrorHandlerMiddleware>();
-    //app.UseMiddleware<TranslationMiddleware>();
+    app.UseMiddleware<ErrorHandlerMiddleware>();
+    app.UseMiddleware<TranslationMiddleware>();
     //app.UseMiddleware<TokenValidationMiddleware>();
 
-	app.UseHttpsRedirection();
+    app.UseHttpsRedirection();
 
     //app.MapGroup("api/identity").WithTags("Identity").MapIdentityApi<User>();
 
@@ -78,16 +77,15 @@ try
     app.UseStaticFiles();
     app.UseCors("AllowAll");
 
-	
 
-	app.UseAuthentication();
+    app.UseAuthentication();
 
     app.UseAuthorization();
-	
-	app.MapControllers();
+
+    app.MapControllers();
     app.MapFallbackToFile("index.html");
-	
-	app.Run();
+
+    app.Run();
 }
 catch (Exception ex)
 {
