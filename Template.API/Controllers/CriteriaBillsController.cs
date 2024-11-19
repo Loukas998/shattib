@@ -30,7 +30,7 @@ public class CriteriaBillsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPatch("{id:int}/Accepted")]
-    [Authorize(Roles = $"{UserRoles.Business}")]
+    [Authorize(Roles = UserRoles.Business)]
     public async Task<IActionResult> UpdateAcceptedBill(int id, [FromBody] UpdateCriteriaBillAcceptedCommand command)
     {
         command.Id = id;
@@ -39,7 +39,7 @@ public class CriteriaBillsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPatch("{id:int}/Receipt")]
-    [Authorize(Roles = $"{UserRoles.Business}")]
+    [Authorize(Roles = UserRoles.Business)]
     public async Task<IActionResult> AddReceipt(int id, [FromForm] AddReceiptCommand command)
     {
         command.Id = id;
