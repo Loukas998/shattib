@@ -12,7 +12,7 @@ namespace Template.Application.SpecifiedMeasurements.Dtos
 		{
 			return source.Image == null ?
 					null :
-					fileService.SaveFile(source.Image!, "Images/SpecifiedMeasurement/", [".jpg", ".png"]);
+					fileService.SaveFile(source.Image!, "Images/SpecifiedMeasurement/", [".jpg", ".png", ".jpeg", ".webg", ".JPG", ".PNG", ".jfif"]);
 		}
 	}
 }

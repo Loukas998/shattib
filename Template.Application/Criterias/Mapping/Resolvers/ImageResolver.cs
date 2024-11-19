@@ -10,6 +10,6 @@ public class ImageResolver(IFileService fileService) : IValueResolver<CreateCrit
     public string Resolve(CreateCriteriaItemDto source, CriteriaItem destination, string destMember,
         ResolutionContext context)
     {
-        return fileService.SaveFile(source.Image, "Images/Criteria/CriteriaItems", [".jpg", ".png", ".jpeg"]);
+        return fileService.SaveFile(source.Image, "Images/Criteria/CriteriaItems", [".jpg", ".png", ".jpeg", ".webg", ".JPG", ".PNG", ".jfif"]);
     }
 }

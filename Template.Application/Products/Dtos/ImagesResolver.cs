@@ -13,7 +13,7 @@ public class ImagesResolver(IFileService fileService)
     {
         List<ProductImages> productImages = [];
 
-        var paths = fileService.SaveFiles(source.Images, "Images/Products", [".jpg", ".png", ".jpeg"]);
+        var paths = fileService.SaveFiles(source.Images, "Images/Products", [".jpg", ".png", ".jpeg", ".webg", ".JPG", ".PNG", ".jfif"]);
         if (paths != null) productImages.AddRange(paths.Select(path => new ProductImages { ImagePath = path }));
         return productImages;
     }

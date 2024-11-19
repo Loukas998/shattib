@@ -45,6 +45,7 @@ public class CriteriaRepository(TemplateDbContext dbContext) : ICriteriaReposito
             .ThenInclude(criteriaItem => criteriaItem.Category)
             .Include(criteria => criteria.Comments)
             .Include(criteria => criteria.CriteriaBills)
+            .Include(c => c.User)
             .Where(criteria => criteria.UserId == userId);
 
         if (string.IsNullOrEmpty(status)) return await criterias.ToListAsync();

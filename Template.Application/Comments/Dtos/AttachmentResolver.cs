@@ -12,6 +12,6 @@ public class AttachmentResolver(IFileService fileService) : IValueResolver<Creat
     {
         return source.AttachmentFile == null
             ? null
-            : fileService.SaveFile(source.AttachmentFile!, "Images/Criteria/Comments", [".jpg", ".png"]);
+            : fileService.SaveFile(source.AttachmentFile!, "Images/Criteria/Comments", [".jpg", ".png", ".jpeg", ".webg", ".JPG", ".PNG", ".jfif", ".doc", ".docx", ".csv", ".pdf"]);
     }
 }

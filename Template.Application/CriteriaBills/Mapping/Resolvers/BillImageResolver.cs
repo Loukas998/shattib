@@ -11,6 +11,6 @@ public class BillImageResolver(IFileService fileService)
     public string Resolve(CreateCriteriaBillCommand source, CriteriaBill destination, string destMember,
         ResolutionContext context)
     {
-        return fileService.SaveFile(source.Image, "Images/Criteria/Bills", [".jpg", ".png"]);
+        return fileService.SaveFile(source.Image, "Images/Criteria/Bills", [".jpg", ".png", ".jpeg", ".webg", ".JPG", ".PNG", ".jfif"]);
     }
 }

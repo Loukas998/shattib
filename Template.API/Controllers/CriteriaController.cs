@@ -39,17 +39,19 @@ public class CriteriaController(IMediator mediator) : ControllerBase
         return Ok(criterias);
     }
 
-    [Authorize(Roles = $"{UserRoles.Administrator}")]
+    
     [HttpGet("GetAll")]
-    public async Task<ActionResult<IEnumerable<CriteriaDto>>> GetAllCriterias([FromQuery] string? status)
+	[Authorize(Roles = $"{UserRoles.Administrator}")]
+	public async Task<ActionResult<IEnumerable<CriteriaDto>>> GetAllCriterias([FromQuery] string? status)
     {
         var criterias = await mediator.Send(new GetAllCriteriasQuery(status));
         return Ok(criterias);
     }
 
-    [Authorize(Roles = $"{UserRoles.Administrator}")]
+    
     [HttpPatch("{id:int}/Status")]
-    public async Task<IActionResult> UpdateCriteriaStatus(int id, [FromBody] UpdateCriteriaStatusCommand command)
+	[Authorize(Roles = UserRoles.Business)]
+	public async Task<IActionResult> UpdateCriteriaStatus(int id, [FromBody] UpdateCriteriaStatusCommand command)
     {
         command.Id = id;
         await mediator.Send(command);
