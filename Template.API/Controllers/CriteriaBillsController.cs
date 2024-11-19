@@ -15,6 +15,7 @@ namespace Template.API.Controllers;
 public class CriteriaBillsController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
+    [Authorize(Roles = UserRoles.Administrator)]
     public async Task<IActionResult> CreateBill([FromForm] CreateCriteriaBillCommand command)
     {
         var id = await mediator.Send(command);
@@ -29,8 +30,8 @@ public class CriteriaBillsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPatch("{id:int}/Accepted")]
-	[Authorize(Roles = $"{UserRoles.Business}")]
-	public async Task<IActionResult> UpdateAcceptedBill(int id, [FromBody] UpdateCriteriaBillAcceptedCommand command)
+    [Authorize(Roles = $"{UserRoles.Business}")]
+    public async Task<IActionResult> UpdateAcceptedBill(int id, [FromBody] UpdateCriteriaBillAcceptedCommand command)
     {
         command.Id = id;
         await mediator.Send(command);
@@ -38,8 +39,8 @@ public class CriteriaBillsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPatch("{id:int}/Receipt")]
-	[Authorize(Roles = $"{UserRoles.Business}")]
-	public async Task<IActionResult> AddReceipt(int id, [FromForm] AddReceiptCommand command)
+    [Authorize(Roles = $"{UserRoles.Business}")]
+    public async Task<IActionResult> AddReceipt(int id, [FromForm] AddReceiptCommand command)
     {
         command.Id = id;
         var bill = await mediator.Send(command);
