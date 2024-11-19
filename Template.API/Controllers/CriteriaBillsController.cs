@@ -32,7 +32,7 @@ public class CriteriaBillsController(IMediator mediator) : ControllerBase
     [HttpPatch("{id:int}/Accepted")]
     [Authorize(Roles = UserRoles.Business)]
     public async Task<IActionResult> UpdateAcceptedBill([FromRoute] int id,
-        [FromBody] UpdateCriteriaBillAcceptedCommand command)
+        [FromForm] UpdateCriteriaBillAcceptedCommand command)
     {
         command.Id = id;
         await mediator.Send(command);
