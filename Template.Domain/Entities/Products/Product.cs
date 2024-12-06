@@ -19,7 +19,7 @@ public class Product
     public float InstallationTeam { get; set; }
 
     public List<ProductImages> Images { get; set; } = new();
-    public List<Specification>? Specifications { get; set; } = [];
+    public List<Specification> Specifications { get; set; } = [];
     public List<ProductSpecification> ProductSpecifications { get; set; } = [];
     public List<Order>? Orders { get; set; }
     public List<OrderItem>? OrderItems { get; set; }

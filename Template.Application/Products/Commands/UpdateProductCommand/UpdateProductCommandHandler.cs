@@ -9,8 +9,7 @@ using Template.Domain.Repositories;
 namespace Template.Application.Products.Commands.UpdateProductCommand
 {
 	public class UpdateProductCommandHandler(ILogger<UpdateProductCommandHandler> logger,
-		IMapper mapper, IProductRepository productRepository, IFileService fileService, 
-		ISpecificationRepository specificationRepository) : IRequestHandler<UpdateProductCommand>
+		IMapper mapper, IProductRepository productRepository, IFileService fileService) : IRequestHandler<UpdateProductCommand>
 	{
 		public async Task Handle(UpdateProductCommand request, CancellationToken cancellationToken)
 		{
@@ -43,7 +42,7 @@ namespace Template.Application.Products.Commands.UpdateProductCommand
 					{
 						HexCode = c.HexCode,
 						Price = c.Price,
-						ImagePath = fileService.SaveFile(color.ImagePath, "Images/Products/Colors", [".jpg", ".png", ".JPG", ".PNG", ".jpeg", ".JPEG", ".pdf"])
+						ImagePath = fileService.SaveFile(c.ImagePath, "Images/Products/Colors", [".jpg", ".png", ".JPG", ".PNG", ".jpeg", ".JPEG", ".pdf"])
 					})
 				);
 			}
@@ -55,6 +54,13 @@ namespace Template.Application.Products.Commands.UpdateProductCommand
 					request.Specifications.Select(s => new Specification
 					{
 						Name = s.Name,
+					})
+				);
+
+				product.ProductSpecifications.AddRange(
+					request.Specifications.Select(s => new ProductSpecification
+					{
+						ProductId = product.Id,
 						Value = s.Value
 					})
 				);

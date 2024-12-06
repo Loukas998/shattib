@@ -24,10 +24,10 @@ public class ProductsProfile : Profile
 			.ForMember(dest => dest.Measurements, opt => opt.Ignore());
 
 		CreateMap<UpdateProductCommand, Product>()
-            .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null))
 			.ForMember(dest => dest.Specifications, opt => opt.Ignore())
 			.ForMember(dest => dest.Colors, opt => opt.Ignore())
-			.ForMember(dest => dest.Measurements, opt => opt.Ignore()); ;
+			.ForMember(dest => dest.Measurements, opt => opt.Ignore())
+			.ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null)); 
 
         CreateMap<Product, MiniProductDto>().ReverseMap();
 
