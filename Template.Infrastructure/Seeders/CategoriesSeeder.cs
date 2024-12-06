@@ -172,6 +172,167 @@ internal class CategoriesSeeder(TemplateDbContext dbContext) : ICategoriesSeeder
 		await dbContext.SaveChangesAsync();
 	}
 
+    public async Task FixSubCateogry()
+    {
+        var subcat = await dbContext.Subcategories.FirstOrDefaultAsync(sb => sb.Id == 21);
+        subcat.Name = "الأوراك";
+        await dbContext.SaveChangesAsync();
+
+    }
+
+    public async Task AddCategories()
+    {
+        List<Category> categories =
+        [
+           new()
+           {
+                Name = "جرانيت"
+           },
+
+		   new()
+		   {
+				Name = "مقابض"
+		   },
+		   new()
+		   {
+				Name = "إنارة داخلية"
+		   },
+           new()
+		   {
+				Name = "إنارة خارجية"
+		   },
+	    ];
+        dbContext.Categories.AddRange(categories);
+        await dbContext.SaveChangesAsync();
+	}
+
+	public async Task AddSubCategories()
+	{
+		List<SubCategory> subcategories =
+		[
+		   new()
+		   {
+				Name = "جرانيت الأرضيات الداخلية",
+                CategoryId = 17
+		   },
+		   new()
+		   {
+				Name = "جرانيت الأرضيات الخارجية",
+				CategoryId = 17
+		   },
+		   new()
+		   {
+				Name = "جرانيت الجدران",
+				CategoryId = 17
+		   },
+		   new()
+		   {
+				Name = "جرانيت الحمامات والمطابخ",
+				CategoryId = 17
+		   },
+
+		   new()
+		   {
+				Name = "المقابض الذكية",
+				CategoryId = 18
+		   },
+		   new()
+		   {
+				Name = "مسكات الأبواب الداخلية",
+				CategoryId = 18
+		   },
+		   new()
+		   {
+				Name = "مسكات الأبواب الخارجية",
+				CategoryId = 18
+		   },
+		   new()
+		   {
+				Name = "الكيلونات",
+				CategoryId = 18
+
+		   },
+		   new()
+		   {
+				Name = "السلندرات",
+				CategoryId = 18
+		   },
+		   new()
+		   {
+				Name = "الردادات",
+				CategoryId = 18
+		   },
+
+		   new()
+		   {
+				Name = "داون لايت",
+				CategoryId = 19
+		   },
+		   new()
+		   {
+				Name = "الإنارة المخفية وأشرطة اليد",
+				CategoryId = 19
+		   },
+		   new()
+		   {
+				Name = "إطارات فريمات ضد التوهج وغاطسة",
+				CategoryId = 19
+		   },
+		   new()
+		   {
+				Name = "إنارة المسار المغناطيسي",
+				CategoryId = 19
+		   },
+		   new()
+		   {
+				Name = "الإنارة الخطية",
+				CategoryId = 19
+		   },
+		   new()
+		   {
+				Name = "قنوات الألومنيوم الليد بروفايل",
+				CategoryId = 19
+		   },
+		   new()
+		   {
+				Name = "إنارة المسار تراك لايت",
+				CategoryId = 19
+		   },
+		   new()
+		   {
+				Name = "لمبات اللطش والبانل",
+				CategoryId = 19
+		   },
+		   new()
+		   {
+				Name = "لمبات موجهة لمبات الفريمات",
+				CategoryId = 19
+		   },
+		   new()
+		   {
+				Name = "لمبات ليد كروية وثريات",
+				CategoryId = 19
+		   },
+
+		   new()
+		   {
+				Name = "إضاءة السور الخارجية",
+				CategoryId = 20
+		   },
+		   new()
+		   {
+				Name = "الكشافات الخارجية",
+				CategoryId = 20
+		   },
+		   new()
+		   {
+				Name = "الإضاءات الجدارية والمعلقات",
+				CategoryId = 20
+		   },
+		];
+		dbContext.Subcategories.AddRange(subcategories);
+		await dbContext.SaveChangesAsync();
+	}
 
 
 	private IEnumerable<SubCategory> GetSubCategories()

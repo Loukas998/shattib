@@ -9,7 +9,8 @@ using Template.Domain.Repositories;
 namespace Template.Application.Products.Commands.UpdateProductCommand
 {
 	public class UpdateProductCommandHandler(ILogger<UpdateProductCommandHandler> logger,
-		IMapper mapper, IProductRepository productRepository, IFileService fileService) : IRequestHandler<UpdateProductCommand>
+		IMapper mapper, IProductRepository productRepository, IFileService fileService, 
+		ISpecificationRepository specificationRepository) : IRequestHandler<UpdateProductCommand>
 	{
 		public async Task Handle(UpdateProductCommand request, CancellationToken cancellationToken)
 		{
@@ -22,12 +23,49 @@ namespace Template.Application.Products.Commands.UpdateProductCommand
 				throw new NotFoundException(nameof(Product), request.ProductId.ToString());
 			}
 
-			foreach(var image in product.Images)
+			if (request.Measurements != null)
 			{
-				string fileName = Path.GetFileName(image.ImagePath);
-				string fullPath = Path.Combine("Images", "Products", fileName).Replace("\\", "/");
-				fileService.DeleteFile(fullPath);
+				product.Measurements.Clear();
+				product.Measurements.AddRange(
+					request.Measurements.Select(m => new Measurement
+					{
+						Name = m.Name,
+						Price = m.Price
+					})
+				);
 			}
+
+			if (request.Colors != null)
+			{
+				product.Colors.Clear();
+				product.Colors.AddRange(
+					request.Colors.Select(c => new Color
+					{
+						HexCode = c.HexCode,
+						Price = c.Price,
+						ImagePath = fileService.SaveFile(color.ImagePath, "Images/Products/Colors", [".jpg", ".png", ".JPG", ".PNG", ".jpeg", ".JPEG", ".pdf"])
+					})
+				);
+			}
+
+			if (request.Specifications != null)
+			{
+				product.Specifications.Clear();
+				product.Specifications.AddRange(
+					request.Specifications.Select(s => new Specification
+					{
+						Name = s.Name,
+						Value = s.Value
+					})
+				);
+			}
+
+			//foreach(var image in product.Images)
+			//{
+			//	string fileName = Path.GetFileName(image.ImagePath);
+			//	string fullPath = Path.Combine("Images", "Products", fileName).Replace("\\", "/");
+			//	fileService.DeleteFile(fullPath);
+			//}
 
 			mapper.Map(request, product);
 			await productRepository.SaveChanges();

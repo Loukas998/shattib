@@ -18,7 +18,7 @@ public interface IProductRepository
     public Task DeleteProductImageAsync(ProductImages image);
     public Task<ProductImages?> GetProductImageAsync(int imageId);
 
-    public Task StoreProductImageAsync(IFormFile images, int entityId);
+    public Task<string> StoreProductImageAsync(string fullImagePath, int entityId);
     //don't change anything in the last 3... you will get an error.. leave it to me
 
     public Task<IEnumerable<Category>> GetCategoriesWithSubWithProductsAsync(int categoryId);

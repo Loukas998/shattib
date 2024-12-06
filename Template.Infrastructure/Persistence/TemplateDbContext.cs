@@ -33,6 +33,10 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
     internal DbSet<OneTimePassword> OneTimePasswords { get; set; }
     internal DbSet<SpecifiedMeasurement> SpecifiedMeasurements { get; set; }
 
+    internal DbSet<Visit> Visits { get; set; }
+
+    internal DbSet<Color> Colors { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -96,7 +100,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
         // User -> Orders (One-to-Many)
         modelBuilder.Entity<User>()
             .HasMany(u => u.Orders)
-            .WithOne()
+            .WithOne(o => o.User)
             .HasForeignKey(o => o.UserId);
 
         // User -> Consultations (One-to-Many)
@@ -116,5 +120,17 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
             .HasMany(u => u.SpecifiedMeasurements)
             .WithOne(sm => sm.User)
             .HasForeignKey(c => c.UserId);
+
+        // Product -> Colors (One-to-Many)
+        modelBuilder.Entity<Product>()
+            .HasMany(p => p.Colors)
+            .WithOne(c => c.Product)
+            .HasForeignKey(c => c.ProductId);
+
+		// Product -> Colors (One-to-Many)
+		modelBuilder.Entity<Product>()
+            .HasMany(p => p.Measurements)
+            .WithOne(m => m.Product)
+            .HasForeignKey(m => m.ProductId);
 	}
 }

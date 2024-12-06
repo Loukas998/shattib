@@ -6,6 +6,7 @@
 		public string Height { get; set; } = default!;
 		public string Width { get; set; } = default!;
 		public string Details { get; set; } = default!;
+		public string PhoneNumber { get; set; } = default!;
 		public string? Measurement { get; set; }
 		public string? ImagePath { get; set; }
 	}

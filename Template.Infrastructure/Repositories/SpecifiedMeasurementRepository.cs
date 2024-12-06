@@ -22,12 +22,12 @@ namespace Template.Infrastructure.Repositories
 
 		public async Task<IEnumerable<SpecifiedMeasurement>> GetAllAsync()
 		{
-			return await dbContext.SpecifiedMeasurements.ToListAsync();
+			return await dbContext.SpecifiedMeasurements.Include(sm => sm.User).ToListAsync();
 		}
 
 		public async Task<IEnumerable<SpecifiedMeasurement>> GetAllByUserAsync(string userId)
 		{
-			return await dbContext.SpecifiedMeasurements.Where(sm => sm.UserId == userId).ToListAsync();
+			return await dbContext.SpecifiedMeasurements.Include(sm => sm.User).Where(sm => sm.UserId == userId).ToListAsync();
 		}
 
 		public async Task<SpecifiedMeasurement?> GetByIdAsync(int id)

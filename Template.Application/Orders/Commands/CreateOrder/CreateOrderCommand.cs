@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using System.ComponentModel.DataAnnotations;
 using Template.Application.Orders.Dtos;
-using Template.Application.Products.Dtos;
-using Template.Domain.Entities.Products;
 
 namespace Template.Application.Orders.Commands.CreateOrder
 {

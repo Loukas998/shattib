@@ -14,7 +14,7 @@ public class CriteriaBillsRepository(TemplateDbContext dbContext) : ICriteriaBil
 
     public async Task<CriteriaBill?> GetBillByIdAsync(int id)
     {
-        return await dbContext.CriteriaBills.FindAsync(id);
+        return await dbContext.CriteriaBills.Include(b => b.Criteria).FirstOrDefaultAsync(b => b.Id == id);
     }
 
     public async Task<CriteriaBill> UpdateBillAsync(CriteriaBill criteriaBill)

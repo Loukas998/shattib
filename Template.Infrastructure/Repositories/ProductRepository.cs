@@ -8,10 +8,7 @@ using Template.Infrastructure.Persistence;
 
 namespace Template.Infrastructure.Repositories;
 
-public class ProductRepository(
-    TemplateDbContext dbContext,
-    IWebHostEnvironment webHostEnvironment,
-    IFileService fileService) : IProductRepository
+public class ProductRepository(TemplateDbContext dbContext) : IProductRepository
 {
     // private readonly List<string> allowedExtension = [".jpg", ".jpeg", ".png"];
     public async Task<int> CreateProductAsync(Product entity)
@@ -21,9 +18,8 @@ public class ProductRepository(
         return entity.Id;
     }
 
-    public async Task StoreProductImageAsync(IFormFile image, int entityId)
+    public async Task<string> StoreProductImageAsync(string fullImagePath, int entityId)
     {
-        var fullImagePath = fileService.SaveFile(image, "Images/Products", [".jpg", ".jpeg", ".png"]);
 
         var productImage = new ProductImages
         {
@@ -33,15 +29,13 @@ public class ProductRepository(
 
         dbContext.ProductImages.Add(productImage);
         await dbContext.SaveChangesAsync();
+        return productImage.ImagePath;
     }
 
     public async Task DeleteProductImageAsync(ProductImages image)
     {
         dbContext.Remove(image);
         await dbContext.SaveChangesAsync();
-
-        var fullPath = Path.Combine(webHostEnvironment.ContentRootPath, image.ImagePath);
-        File.Delete(fullPath);
     }
 
     public async Task<ProductImages?> GetProductImageAsync(int imageId)
@@ -52,16 +46,6 @@ public class ProductRepository(
 
     public async Task Delete(Product entity)
     {
-        //var productImages = dbContext.ProductImages.Where(i => i.ProductId == entity.Id);
-
-        //foreach (var productImage in productImages)
-        //{
-        //    dbContext.ProductImages.Remove(productImage);
-
-        //    var fullPath = Path.Combine(webHostEnvironment.ContentRootPath, productImage.ImagePath);
-        //    File.Delete(fullPath);
-        //}
-
         dbContext.Products.Remove(entity);
         await dbContext.SaveChangesAsync();
     }
@@ -77,14 +61,18 @@ public class ProductRepository(
             .ThenInclude(sb => sb.Category)
             .AsQueryable();
 
-        if (categoryId > 0)
+		if (!string.IsNullOrEmpty(searchTerm))
+			query = query.Where(p =>
+				p.Name.Contains(searchTerm) ||
+				p.Description.Contains(searchTerm) ||
+				p.WarehouseCode.Contains(searchTerm) || p.SubCategory.Name.Contains(searchTerm) ||
+				p.SubCategory.Category.Name.Contains(searchTerm));
+
+		if (categoryId > 0)
             query = query.Where(p => p.SubCategory.CategoryId == categoryId);
 
         if (subcategoryId > 0)
             query = query.Where(p => p.SubCategoryId == subcategoryId);
-
-        if (!string.IsNullOrEmpty(color))
-            query = query.Where(p => p.Color == color);
 
         query = query.Where(p => p.Price >= minPrice);
 
@@ -112,6 +100,8 @@ public class ProductRepository(
     {
         return await dbContext.Products
             .Include(p => p.ProductSpecifications)
+            .Include(p => p.Colors)
+            .Include(p => p.Measurements)
             .Include(p => p.Images)
             .Include(p => p.SubCategory)
             .ThenInclude(sb => sb.Category)

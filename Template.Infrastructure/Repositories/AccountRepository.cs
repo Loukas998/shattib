@@ -56,6 +56,7 @@ namespace Template.Infrastructure.Repositories
 		public async Task<AuthResponseDto?> Login(string email, string password)
 		{
 			_user = await userManager.FindByEmailAsync(email);
+
 			if (_user == null || !_user.IsActive)
 			{
 				return null;

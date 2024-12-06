@@ -48,10 +48,11 @@ try
     var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
     await seeder.Seed();
     var catSedder = scope.ServiceProvider.GetRequiredService<ICategoriesSeeder>();
-    await catSedder.Seed();
+    //await catSedder.Seed();
     //await catSedder.SetSubCategoriesImages();
     //await catSedder.SetCategoriesImages();
-	
+    //await catSedder.FixSubCateogry();
+    //await catSedder.AddSubCategories();
 	
 	// Configure the HTTP request pipeline.
 	if (app.Environment.IsDevelopment())

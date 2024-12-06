@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System.Reflection.Metadata.Ecma335;
 using Template.Application.Products.Commands.CreateProductCommand;
 using Template.Application.Products.Commands.UpdateProductCommand;
 using Template.Domain.Entities.Products;
@@ -13,14 +14,20 @@ public class ProductsProfile : Profile
             .ForMember(dest => dest.ProductSpecifications, opt => opt.Ignore())
             .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(p => p.SubCategory.CategoryId));
 
+        CreateMap<Color, ColorDto>();
+        CreateMap<Measurement, MeasurementDto>();
+
         CreateMap<CreateProductCommand, Product>()
             .ForMember(dest => dest.Images, opt => opt.MapFrom<ImagesResolver>())
-            .ForMember(dest => dest.Specifications, opt => opt.Ignore());
+            .ForMember(dest => dest.Specifications, opt => opt.Ignore())
+            .ForMember(dest => dest.Colors, opt => opt.Ignore())
+			.ForMember(dest => dest.Measurements, opt => opt.Ignore());
 
-        CreateMap<UpdateProductCommand, Product>()
-			.ForMember(dest => dest.Images, opt => opt.MapFrom<UpdateImagesResolver>())
-			.ForAllMembers(opt =>
-                opt.Condition((src, dst, srcMember) => srcMember != null));
+		CreateMap<UpdateProductCommand, Product>()
+            .ForAllMembers(opt => opt.Condition((src, dst, srcMember) => srcMember != null))
+			.ForMember(dest => dest.Specifications, opt => opt.Ignore())
+			.ForMember(dest => dest.Colors, opt => opt.Ignore())
+			.ForMember(dest => dest.Measurements, opt => opt.Ignore()); ;
 
         CreateMap<Product, MiniProductDto>().ReverseMap();
 

@@ -77,7 +77,7 @@ public class AccountsController(IMediator mediator, IUserContext userContext) : 
 	}
 
 	[HttpPatch]
-	[Route("Deactivate code")]
+	[Route("DeactivateCode")]
 	public async Task<IActionResult> DeactivateCode([FromBody] DeActivateCodeCommand command)
 	{
 		await mediator.Send(command);

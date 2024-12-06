@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Template.Application.Orders.Dtos;
+using Template.Domain.Constants;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Orders.Queries.GetByKind
@@ -25,6 +26,7 @@ namespace Template.Application.Orders.Queries.GetByKind
 				{
 					orderDto.OrderItems = orderItems;
 				}
+				if (orderDto.Kind == OrderConstants.Sample) orderDto.TotalPrice = 0;
 			}
 			return orderDtos;
 		}

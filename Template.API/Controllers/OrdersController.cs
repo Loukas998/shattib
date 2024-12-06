@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Orders.Commands.CancelOrder;
+using Template.Application.Orders.Commands.ChangeOrderStatus;
 using Template.Application.Orders.Commands.CreateOrder;
 using Template.Application.Orders.Commands.UpdateOrderStatus;
 using Template.Application.Orders.Dtos;
@@ -93,7 +94,7 @@ namespace Template.API.Controllers
 		[Authorize(Roles = $"{UserRoles.Administrator}")]
 		[HttpPatch]
 		[Route("{orderId}")]
-		public async Task<IActionResult> ChangeStatus([FromRoute]int orderId, [FromBody] UpdateOrderStatusCommand command)
+		public async Task<IActionResult> ChangeStatus([FromRoute]int orderId, [FromBody] ChangeOrderStatusCommand command)
 		{
 			command.OrderId = orderId;
 			await mediator.Send(command);

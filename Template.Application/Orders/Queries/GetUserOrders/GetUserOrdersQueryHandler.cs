@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Template.Application.Orders.Dtos;
 using Template.Application.Users;
+using Template.Domain.Constants;
 using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
@@ -31,6 +32,7 @@ namespace Template.Application.Orders.Queries.GetUserOrders
 				{
 					orderDto.OrderItems = orderItems;
 				}
+				if (orderDto.Kind == OrderConstants.Sample) orderDto.TotalPrice = 0;
 			}
 			return orderDtos;
 		}

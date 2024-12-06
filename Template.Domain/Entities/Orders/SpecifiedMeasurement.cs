@@ -8,6 +8,7 @@
 		public string Width { get; set; } = default!;
 		public string Details { get; set; } = default!;
 		public string? Measurement { get; set; }
+		public float Quantity { get; set; } = default!;
 		public string? ImagePath { get; set; }
 		public User User { get; set; }
 	}

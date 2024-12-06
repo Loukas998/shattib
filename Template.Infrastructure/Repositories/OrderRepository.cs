@@ -47,7 +47,7 @@ namespace Template.Infrastructure.Repositories
 
 		public async Task<Order?> GetOrderById(int id)
 		{
-			var order = await dbContext.Orders.FirstOrDefaultAsync(o => o.Id == id);
+			var order = await dbContext.Orders.Include(o => o.User).FirstOrDefaultAsync(o => o.Id == id);
 			return order;
 		}
 
@@ -62,7 +62,9 @@ namespace Template.Infrastructure.Repositories
 								 ProductMainImage = p.Images.FirstOrDefault().ImagePath ?? string.Empty,
 								 ProductName = p.Name,
 								 Quantitiy = oi.Quantity,
+								 Color = oi.Color,
 								 TotalPriceForThisProduct = oi.Price,
+								 WithInstallation = oi.WithInstallation
 							 };
 			return await orderItems.SingleOrDefaultAsync();
 		}
@@ -82,6 +84,7 @@ namespace Template.Infrastructure.Repositories
 									 ProductMainImage = p.Images.FirstOrDefault().ImagePath ?? string.Empty,
 									 ProductName = p.Name,
 									 Quantitiy = oi.Quantity,
+									 Color = oi.Color,
 									 TotalPriceForThisProduct = oi.Price,
 								 }
 							 };

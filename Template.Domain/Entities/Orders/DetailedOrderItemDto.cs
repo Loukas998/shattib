@@ -4,7 +4,9 @@
 	{
 		public string ProductName { get; set; } = default!;
 		public string ProductMainImage { get; set; } = default!;
+		public string Color { get; set; } = default!;
 		public int Quantitiy { get; set; }
 		public float TotalPriceForThisProduct { get; set; }
+		public bool WithInstallation { get; set; } = default!;
 	}
 }

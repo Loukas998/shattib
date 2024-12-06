@@ -2,7 +2,9 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Template.Application.Users;
+using Template.Domain.Constants;
 using Template.Domain.Entities.Orders;
+using Template.Domain.Entities.Products;
 using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
@@ -22,6 +24,7 @@ namespace Template.Application.Orders.Commands.CreateOrder
 			var userId = currentUser.Id;
 
 			order.UserId = userId;
+			if (order.Kind == OrderConstants.Sample) order.TotalPrice = 0;
             int orderId = await orderRepository.CreateOrderAsync(order);
 
 			foreach (var item in request.Items)
@@ -29,12 +32,35 @@ namespace Template.Application.Orders.Commands.CreateOrder
 				logger.LogInformation("adding item: {@Item} to order with id: {Id}", item, order.Id);
 
 				var product = await productRepository.GetProductByIdAsync(item.ProductId);
+				if (product == null)
+				{
+					throw new NotFoundException(nameof(Product), item.ProductId.ToString());
+				}
+
+				var color = product.Colors.FirstOrDefault(c => c.Id == item.ColorId);
+				if (color == null)
+				{
+					throw new NotFoundException(nameof(Color), item.ColorId.ToString());
+				}
+
+				var measurement = product.Measurements.FirstOrDefault(m => m.Id == item.MeasurementId);
+				if (measurement == null)
+				{
+					throw new NotFoundException(nameof(Measurement), item.MeasurementId.ToString());
+				}
 
 				float totalPriceForEachItem = 0;
-				if (product != null)
+				if (product != null && order.Kind == OrderConstants.Order)
 				{
-					totalPriceForEachItem = item.Quantity * product.Price;
+					totalPriceForEachItem = (item.Quantity * product.Price);
 				}
+
+				if (product != null && item.WithInstallation)
+				{
+					totalPriceForEachItem += product.InstallationTeam;
+				}
+
+				totalPriceForEachItem = measurement.Price + color.Price;
 
 				order.TotalPrice = totalPriceForEachItem;
 
@@ -42,8 +68,10 @@ namespace Template.Application.Orders.Commands.CreateOrder
 				{
 					OrderId = orderId,
 					ProductId = item.ProductId,
+					Color = color.ImagePath,
 					Price = totalPriceForEachItem,
 					Quantity = item.Quantity,
+					WithInstallation = item.WithInstallation
 				};
 				order.OrderItems.Add(orderItem);
 			}

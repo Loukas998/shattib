@@ -8,9 +8,7 @@ public class TranslationMiddleware(ILogger<TranslationMiddleware> logger, IConfi
 	public async Task InvokeAsync(HttpContext context, RequestDelegate next)
 	{
 		logger.LogInformation("TranslationMiddleware invoked.");
-
 		if (context.Request.Headers.AcceptLanguage.ToString() == null) await next(context);
-
 		// Capture the language from the request header
 		var targetLanguage = context.Request.Headers["Accept-Language"].ToString();
 		logger.LogInformation($"Accept-Language: {targetLanguage}");

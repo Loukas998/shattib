@@ -19,7 +19,7 @@ namespace Template.Application.Consultations.Commands.CreateConsultation
 			var currentUser = userContext.GetCurrentUser();
 			if (currentUser == null) throw new UnauthorizedException("You are unauthorized.. login again (no userId)");
 			var userId = currentUser.Id;
-
+			consultation.UserId = userId;
 			return await consultationRepository.CreateConsultationAsync(consultation);
 		}
 	}

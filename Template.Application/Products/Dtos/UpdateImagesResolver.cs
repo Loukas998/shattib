@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿/*using AutoMapper;
 using Template.Application.Products.Commands.UpdateProductCommand;
 using Template.Domain.Entities.Products;
 using Template.Domain.Repositories;
@@ -14,9 +14,10 @@ namespace Template.Application.Products.Dtos
 			List<ProductImages> productImages = [];
 			if (source.Images == null) return productImages;
 
-			var paths = fileService.SaveFiles(source.Images, "Images/Products", [".jpg", ".png", ".jpeg", ".webg", ".JPG", ".PNG", ".jfif"]);
+			var paths = fileService.SaveFiles(source.Images, "Images/Products", [".jpg", ".png", ".jpeg", ".webg", ".JPG", ".PNG", ".jfif", ".pdf"]);
 			if (paths != null) productImages.AddRange(paths.Select(path => new ProductImages { ImagePath = path }));
 			return productImages;
 		}
 	}
 }
+*/

@@ -9,6 +9,7 @@ namespace Template.Application.SpecifiedMeasurements.Commands.CreateSpecifiedMea
 		public string Width { get; set; } = default!;
 		public string Details { get; set; } = default!;
 		public string? Measurement { get; set; }
+		public float Quantity { get; set; } = default!;
 		public IFormFile? Image { get; set; }
 	}
 }

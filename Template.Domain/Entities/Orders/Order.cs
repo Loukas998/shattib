@@ -20,5 +20,6 @@ namespace Template.Domain.Entities.Orders
 
 		public List<Product> Products { get; set; } = [];
 		public List<OrderItem> OrderItems { get; set; } = [];
+		public User User { get; set; }
 	}
 }

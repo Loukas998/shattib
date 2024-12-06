@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Template.Application.Products.Dtos;
-using Template.Application.Products.Queries.GetAllProducts;
 using Template.Domain.Entities.Products;
 using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
@@ -26,7 +25,13 @@ namespace Template.Application.Products.Queries.GetProduct
 			{
 				productResult.ProductSpecifications = productSpecsDtos;
 			}
-			
+
+			var colorDtos = mapper.Map<List<ColorDto>>(product.Colors);
+			productResult.Colors = colorDtos;
+
+			var measurementDto = mapper.Map<List<MeasurementDto>>(product.Measurements);
+			productResult.Measurements = measurementDto;
+
 			return productResult;
 		}
 	}

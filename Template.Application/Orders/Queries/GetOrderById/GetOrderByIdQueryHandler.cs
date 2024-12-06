@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Template.Application.Orders.Dtos;
+using Template.Domain.Constants;
 using Template.Domain.Entities.Orders;
 using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
@@ -21,6 +22,7 @@ namespace Template.Application.Orders.Queries.GetOrderById
 			}
 			var result = mapper.Map<OrderDto>(order);
 			result.OrderItems.Add(await orderRepository.GetItemsForOrder(request.OrderId));
+			if (result.Kind == OrderConstants.Sample) result.TotalPrice = 0;
 			return result;
 		}
 	}

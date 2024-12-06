@@ -17,7 +17,8 @@ namespace Template.Application.SpecifiedMeasurements.Dtos
 				.ForAllMembers(opt =>
 						opt.Condition((src, dst, srcMember) => srcMember != null));
 
-			CreateMap<SpecifiedMeasurement, SpecifiedMeasurementDto>();
+			CreateMap<SpecifiedMeasurement, SpecifiedMeasurementDto>()
+				.ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber));
 		}
 	}
 }

@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Products.Commands.CreateProductCommand;
+using Template.Application.Products.Commands.CreateProductCommand.AppendImage;
+using Template.Application.Products.Commands.DeleteImagesCommand.DeleteImagesCommand;
 using Template.Application.Products.Commands.DeleteProductCommand;
 using Template.Application.Products.Commands.UpdateProductCommand;
 using Template.Application.Products.Dtos;
@@ -69,31 +71,30 @@ public class ProductsController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
-	//   [HttpDelete("Images/{imageId:int}")]
-	////[Authorize(Roles = UserRoles.Administrator)]
-	//public async Task<IActionResult> DeleteProductImage([FromRoute] int imageId)
-	//   {
-	//       await mediator.Send(new DeleteProductImageCommand(imageId));
-	//       return NoContent();
-	//   }
+    [HttpDelete]
+	[Route("{productId}/Images/{imageId}")]
+	[Authorize(Roles = UserRoles.Administrator)]
+	public async Task<IActionResult> DeleteProductImage([FromRoute] int imageId, [FromRoute] int productId)
+    {
+        await mediator.Send(new DeleteProductImageCommand(imageId, productId));
+        return NoContent();
+    }
 
-	//   [HttpPatch]
-	//   [Route("{productId}/images/{imageId}")]
-	////[Authorize(Roles = UserRoles.Administrator)]
-	//public async Task<IActionResult> UpdateProductImage([FromForm] UpdateProductImageCommand command,
-	//       [FromRoute] int imageId,
-	//       [FromRoute] int productId)
-	//   {
-	//       command.OldImageId = imageId;
-	//       command.ProductId = productId;
-	//       await mediator.Send(command);
-	//       return NoContent();
-	//   }
+    [HttpPatch]
+    [Route("{productId}/Images")]
+    [Authorize(Roles = UserRoles.Administrator)]
+    public async Task<ActionResult<ImageDto>> AppendProductImage([FromForm] AppendImageCommand command,
+        [FromRoute] int productId)
+    {
+        command.ProductId = productId;
+        var imageDto = await mediator.Send(command);
+        return Ok(imageDto);
+    }
 
-	//[HttpGet]
-	//public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProducts()
-	//{
-	//    var products = await mediator.Send(new GetAllProductQuery());
-	//    return Ok(products);
-	//}
+    //[HttpGet]
+    //public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProducts()
+    //{
+    //    var products = await mediator.Send(new GetAllProductQuery());
+    //    return Ok(products);
+    //}
 }

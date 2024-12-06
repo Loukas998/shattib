@@ -16,6 +16,9 @@ namespace Template.Application.Orders.Dtos
 		[DataType(DataType.Date)]
 		public DateTime? DateOfArrival { get; set; }
 		public string Status { get; set; } = default!;
+		public string Kind { get; set; } = default!;
+		public string PhoneNumber { get; set; } = default!;
+		public string Email { get; set; } = default!;
 
 		public List<DetailedOrderItemDto> OrderItems { get; set; } = [];
 	}

@@ -33,7 +33,7 @@ public class AddReceiptCommandHandler(
             throw new UnauthorizedException("The resource isn't yours");
         }
         logger.LogInformation("Add receipt to bill with Id: {CriteriaBillId}", request.Id);
-        var imagePath = await fileService.SaveFileAsync(request.Receipt, "Images/Criteria/Receipt", [".jpg", ".png"]);
+        var imagePath = await fileService.SaveFileAsync(request.Receipt, "Images/Criteria/Receipt", [".jpg", ".png", ".pdf"]);
         var updatedBill = await criteriaBillsRepository.CreateReceiptAsync(request.Id, imagePath);
         return mapper.Map<CriteriaBillDto>(updatedBill);
     }
