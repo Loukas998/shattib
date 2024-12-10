@@ -9,7 +9,8 @@ using Template.Domain.Repositories;
 namespace Template.Application.Products.Commands.UpdateProductCommand
 {
 	public class UpdateProductCommandHandler(ILogger<UpdateProductCommandHandler> logger,
-		IMapper mapper, IProductRepository productRepository, IFileService fileService) : IRequestHandler<UpdateProductCommand>
+		IMapper mapper, IProductRepository productRepository, IFileService fileService,
+		ISpecificationRepository specificationRepository) : IRequestHandler<UpdateProductCommand>
 	{
 		public async Task Handle(UpdateProductCommand request, CancellationToken cancellationToken)
 		{
@@ -21,60 +22,66 @@ namespace Template.Application.Products.Commands.UpdateProductCommand
 			{
 				throw new NotFoundException(nameof(Product), request.ProductId.ToString());
 			}
-
-			if (request.Measurements != null)
-			{
-				product.Measurements.Clear();
-				product.Measurements.AddRange(
-					request.Measurements.Select(m => new Measurement
-					{
-						Name = m.Name,
-						Price = m.Price
-					})
-				);
-			}
-
-			if (request.Colors != null)
-			{
-				product.Colors.Clear();
-				product.Colors.AddRange(
-					request.Colors.Select(c => new Color
-					{
-						HexCode = c.HexCode,
-						Price = c.Price,
-						ImagePath = fileService.SaveFile(c.ImagePath, "Images/Products/Colors", [".jpg", ".png", ".JPG", ".PNG", ".jpeg", ".JPEG", ".pdf"])
-					})
-				);
-			}
-
-			if (request.Specifications != null)
-			{
-				product.Specifications.Clear();
-				product.Specifications.AddRange(
-					request.Specifications.Select(s => new Specification
-					{
-						Name = s.Name,
-					})
-				);
-
-				product.ProductSpecifications.AddRange(
-					request.Specifications.Select(s => new ProductSpecification
-					{
-						ProductId = product.Id,
-						Value = s.Value
-					})
-				);
-			}
-
-			//foreach(var image in product.Images)
-			//{
-			//	string fileName = Path.GetFileName(image.ImagePath);
-			//	string fullPath = Path.Combine("Images", "Products", fileName).Replace("\\", "/");
-			//	fileService.DeleteFile(fullPath);
-			//}
-
 			mapper.Map(request, product);
 			await productRepository.SaveChanges();
 		}
 	}
 }
+
+//if (request.Measurements != null)
+//{
+//	product.Measurements.Clear();
+//	product.Measurements.AddRange(
+//		request.Measurements.Select(m => new Measurement
+//		{
+//			Name = m.Name,
+//			Price = m.Price
+//		})
+//	);
+//}
+
+//if (request.Colors != null)
+//{
+//	product.Colors.Clear();
+//	product.Colors.AddRange(
+//		request.Colors.Select(c => new Color
+//		{
+//			HexCode = c.HexCode,
+//			Price = c.Price,
+//			ImagePath = fileService.SaveFile(c.ImagePath, "Images/Products/Colors", [".jpg", ".png", ".JPG", ".PNG", ".jpeg", ".JPEG", ".pdf"])
+//		})
+//	);
+//}
+
+//if (request.Specifications != null && request.Specifications.Count != 0)
+//{
+//	product.Specifications.Clear();
+//	foreach (var specification in request.Specifications)
+//	{
+//		int specificationId;
+//		var specfromdb = await specificationRepository.GetAttributeByName(specification.Name);
+
+//		if (specfromdb != null)
+//			specificationId = specfromdb.Id;
+//		else
+//			specificationId =
+//				await specificationRepository.AddAttribute(new Specification { Name = specification.Name });
+
+//		var productSpec = new ProductSpecification
+//		{
+//			SpecificationId = specificationId,
+//			ProductId = product.Id,
+//			Value = specification.Value
+//		};
+
+//		product.ProductSpecifications.Add(productSpec);
+//	}
+//}
+
+
+//foreach(var image in product.Images)
+//{
+//	string fileName = Path.GetFileName(image.ImagePath);
+//	string fullPath = Path.Combine("Images", "Products", fileName).Replace("\\", "/");
+//	fileService.DeleteFile(fullPath);
+//}

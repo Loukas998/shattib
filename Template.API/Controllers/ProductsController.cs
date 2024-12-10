@@ -91,10 +91,32 @@ public class ProductsController(IMediator mediator) : ControllerBase
         return Ok(imageDto);
     }
 
-    //[HttpGet]
-    //public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProducts()
-    //{
-    //    var products = await mediator.Send(new GetAllProductQuery());
-    //    return Ok(products);
-    //}
+	[HttpPatch]
+	[Route("{productId}/Colors")]
+	[Authorize(Roles = UserRoles.Administrator)]
+	public async Task<ActionResult<ImageDto>> AppendProductColors([FromForm] AppendImageCommand command,
+		[FromRoute] int productId)
+	{
+		command.ProductId = productId;
+		var imageDto = await mediator.Send(command);
+		return Ok(imageDto);
+	}
+
+	[HttpPatch]
+	[Route("{productId}/Measurements")]
+	[Authorize(Roles = UserRoles.Administrator)]
+	public async Task<ActionResult<ImageDto>> AppendProductMeasurements([FromForm] AppendImageCommand command,
+		[FromRoute] int productId)
+	{
+		command.ProductId = productId;
+		var imageDto = await mediator.Send(command);
+		return Ok(imageDto);
+	}
+
+	//[HttpGet]
+	//public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProducts()
+	//{
+	//    var products = await mediator.Send(new GetAllProductQuery());
+	//    return Ok(products);
+	//}
 }

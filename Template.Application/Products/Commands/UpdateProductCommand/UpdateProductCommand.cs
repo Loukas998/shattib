@@ -21,8 +21,8 @@ namespace Template.Application.Products.Commands.UpdateProductCommand
 		public string? Deaf { get; set; }
 		public string? RetrivalAndReplacing { get; set; }
 		public string? Notes { get; set; }
-		public List<ProductMeasurements>? Measurements { get; set; }
-		public List<ProductColors>? Colors { get; set; }
-		public List<SpecificationDto>? Specifications { get; set; }
+		//public List<ProductMeasurements>? Measurements { get; set; }
+		//public List<ProductColors>? Colors { get; set; }
+		//public List<SpecificationDto>? Specifications { get; set; }
 	}
 }
